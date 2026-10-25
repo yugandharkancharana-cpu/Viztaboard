@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "Vizta Board",
+    "slug": "vizta-board",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1B7A3E"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.skaah.viztaboard",
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#1B7A3E"
+      },
+      "package": "com.skaah.viztaboard",
+      "versionCode": 1,
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "INTERNET"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/images/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Vizta Board to access your photos for campaign artwork upload."
+        }
+      ],
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.skaah.viztaboard",
+          "enableGooglePay": true
+        }
+      ]
+    ],
+    "extra": {
+      "clerkPublishableKey": "pk_test_REPLACE_WITH_YOUR_CLERK_KEY",
+      "apiBaseUrl": "https://api.viztaboard.com/api/v1",
+      "eas": {
+        "projectId": "REPLACE_WITH_YOUR_EAS_PROJECT_ID"
+      }
+    }
+  }
+}

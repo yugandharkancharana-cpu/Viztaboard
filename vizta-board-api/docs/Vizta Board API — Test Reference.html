@@ -1,0 +1,1257 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Vizta Board API — Test Reference</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f8f9fb;
+    --bg-card: #ffffff;
+    --border: #e2e6ed;
+    --border-strong: #c8cfd9;
+    --fg: #111827;
+    --fg-muted: #6b7280;
+    --fg-light: #9ca3af;
+    --accent: #2563eb;
+    --accent-bg: #eff6ff;
+    --accent-border: #bfdbfe;
+    --success: #059669;
+    --success-bg: #ecfdf5;
+    --success-border: #a7f3d0;
+    --warning: #d97706;
+    --warning-bg: #fffbeb;
+    --warning-border: #fde68a;
+    --unit-color: #7c3aed;
+    --unit-bg: #f5f3ff;
+    --unit-border: #ddd6fe;
+    --integration-color: #0369a1;
+    --integration-bg: #e0f2fe;
+    --integration-border: #bae6fd;
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1117;
+      --bg-subtle: #161b27;
+      --bg-card: #1a2033;
+      --border: #252d40;
+      --border-strong: #334155;
+      --fg: #e2e8f0;
+      --fg-muted: #94a3b8;
+      --fg-light: #64748b;
+      --accent: #3b82f6;
+      --accent-bg: #1e3a5f;
+      --accent-border: #1d4ed8;
+      --success: #10b981;
+      --success-bg: #064e3b;
+      --success-border: #065f46;
+      --warning: #f59e0b;
+      --warning-bg: #451a03;
+      --warning-border: #78350f;
+      --unit-color: #a78bfa;
+      --unit-bg: #2e1065;
+      --unit-border: #4c1d95;
+      --integration-color: #38bdf8;
+      --integration-bg: #0c4a6e;
+      --integration-border: #075985;
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0f1117;
+    --bg-subtle: #161b27;
+    --bg-card: #1a2033;
+    --border: #252d40;
+    --border-strong: #334155;
+    --fg: #e2e8f0;
+    --fg-muted: #94a3b8;
+    --fg-light: #64748b;
+    --accent: #3b82f6;
+    --accent-bg: #1e3a5f;
+    --accent-border: #1d4ed8;
+    --success: #10b981;
+    --success-bg: #064e3b;
+    --success-border: #065f46;
+    --warning: #f59e0b;
+    --warning-bg: #451a03;
+    --warning-border: #78350f;
+    --unit-color: #a78bfa;
+    --unit-bg: #2e1065;
+    --unit-border: #4c1d95;
+    --integration-color: #38bdf8;
+    --integration-bg: #0c4a6e;
+    --integration-border: #075985;
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    padding-inline: 0;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 max(24px, calc((100vw - 960px) / 2));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 60px;
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 100;
+  }
+
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .topbar-logo {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+
+  .topbar-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--fg);
+  }
+
+  .topbar-meta {
+    font-size: 12px;
+    color: var(--fg-muted);
+    white-space: nowrap;
+  }
+
+  /* ── Layout ── */
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, var(--accent-bg) 0%, var(--bg-subtle) 100%);
+    border: 1px solid var(--accent-border);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 48px;
+  }
+
+  .hero-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--fg);
+    text-wrap: balance;
+    margin-bottom: 8px;
+  }
+
+  .hero-sub {
+    color: var(--fg-muted);
+    font-size: 15px;
+    max-width: 560px;
+    margin-bottom: 32px;
+  }
+
+  .stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .stat-chip {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 110px;
+  }
+
+  .stat-chip .num {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -1px;
+  }
+
+  .stat-chip .lbl {
+    font-size: 12px;
+    color: var(--fg-muted);
+    font-weight: 500;
+  }
+
+  /* ── Section headers ── */
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 24px;
+    margin-top: 52px;
+  }
+
+  .section-title:first-of-type {
+    margin-top: 0;
+  }
+
+  /* ── Module cards ── */
+  .module {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .module-header {
+    padding: 18px 22px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: background 0.1s;
+  }
+
+  .module-header:hover {
+    background: var(--bg-subtle);
+  }
+
+  .module.open .module-header {
+    border-bottom-color: var(--border);
+    background: var(--bg-subtle);
+  }
+
+  .module-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .module-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--fg);
+  }
+
+  .module-path {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--fg-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .module-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 5px;
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+
+  .badge-count {
+    background: var(--fg);
+    color: var(--bg);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .badge-unit {
+    background: var(--unit-bg);
+    color: var(--unit-color);
+    border: 1px solid var(--unit-border);
+  }
+
+  .badge-integration {
+    background: var(--integration-bg);
+    color: var(--integration-color);
+    border: 1px solid var(--integration-border);
+  }
+
+  .chevron {
+    color: var(--fg-light);
+    font-size: 16px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .module.open .chevron {
+    transform: rotate(180deg);
+  }
+
+  /* ── Test list ── */
+  .test-list {
+    display: none;
+    padding: 0;
+  }
+
+  .module.open .test-list {
+    display: block;
+  }
+
+  .test-group {
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .test-group:last-child {
+    border-bottom: none;
+  }
+
+  .test-group-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tg-count {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-variant-numeric: tabular-nums;
+    font-size: 11px;
+    color: var(--fg-light);
+    font-weight: 500;
+  }
+
+  .test-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .test-item:last-child { border-bottom: none; }
+
+  .test-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .test-icon::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+  }
+
+  .test-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--fg);
+    flex: 1;
+    min-width: 0;
+    word-break: break-all;
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    color: var(--fg-muted);
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  /* ── Info box ── */
+  .info-box {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 13.5px;
+    color: var(--fg);
+    margin-bottom: 32px;
+    line-height: 1.7;
+  }
+
+  .info-box strong { color: var(--accent); }
+
+  /* ── Coverage table ── */
+  .coverage-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-bottom: 40px;
+  }
+
+  .coverage-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--fg-muted);
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border-strong);
+  }
+
+  .coverage-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .coverage-table tr:last-child td { border-bottom: none; }
+
+  .coverage-table td:nth-child(3) {
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    font-weight: 600;
+  }
+
+  .area-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 2px 7px;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 12.5px;
+    color: var(--fg-muted);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  @media (max-width: 640px) {
+    .hero { padding: 24px; }
+    .hero h1 { font-size: 22px; }
+    .module-path { max-width: 180px; }
+    .stats-row { gap: 10px; }
+  }
+</style>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">VB</div>
+    <span class="topbar-title">Vizta Board API</span>
+  </div>
+  <span class="topbar-meta">Test Reference · October 2026</span>
+</div>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-label">Quality Assurance</div>
+    <h1>Automated Test Suite Reference</h1>
+    <p class="hero-sub">
+      Complete specification of unit and integration tests for the Vizta Board API.
+      This document is the authoritative reference for test coverage, naming conventions,
+      and the business rules each test validates.
+    </p>
+    <div class="stats-row">
+      <div class="stat-chip">
+        <span class="num">198</span>
+        <span class="lbl">Total Tests</span>
+      </div>
+      <div class="stat-chip">
+        <span class="num">65</span>
+        <span class="lbl">Unit Tests</span>
+      </div>
+      <div class="stat-chip">
+        <span class="num">133</span>
+        <span class="lbl">Integration</span>
+      </div>
+      <div class="stat-chip">
+        <span class="num">12</span>
+        <span class="lbl">Test Modules</span>
+      </div>
+      <div class="stat-chip">
+        <span class="num">8</span>
+        <span class="lbl">Apps Covered</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test architecture info -->
+  <div class="info-box">
+    <strong>Test strategy:</strong> Tests are split into two tiers by <code>pytest.mark</code>.
+    <strong>Unit tests</strong> (<code>pytest.mark.unit</code>) run with no database and no I/O — all external
+    dependencies are replaced with <code>MagicMock</code> objects. They are fast, deterministic, and ideal for
+    CI pre-merge gates. <strong>Integration tests</strong> (<code>pytest.mark.django_db</code>) use a real
+    SQLite test database and DRF's <code>APIClient</code> with <code>force_authenticate</code> (no JWT
+    overhead). Factory Boy factories build every fixture object, keeping tests independent and hermetic.
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background: var(--unit-color)"></div>
+      Unit — no DB, MagicMock dependencies
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background: var(--integration-color)"></div>
+      Integration — real DB, DRF APIClient
+    </div>
+  </div>
+
+  <!-- Coverage overview table -->
+  <p class="section-title">Coverage Overview</p>
+
+  <table class="coverage-table">
+    <thead>
+      <tr>
+        <th>Module</th>
+        <th>Type</th>
+        <th>Tests</th>
+        <th>What it validates</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>core/tests/test_permissions.py</code></td>
+        <td><span class="badge badge-unit">Unit</span></td>
+        <td>22</td>
+        <td>All 7 RBAC permission classes; unauthenticated, wrong role, multi-role grants</td>
+      </tr>
+      <tr>
+        <td><code>core/tests/test_utils.py</code></td>
+        <td><span class="badge badge-unit">Unit</span></td>
+        <td>16</td>
+        <td>AES-256-CBC field encryption roundtrip, IV uniqueness, tamper detection; invoice number format &amp; uniqueness</td>
+      </tr>
+      <tr>
+        <td><code>apps/bookings/tests/test_services.py</code></td>
+        <td><span class="badge badge-unit">Unit</span></td>
+        <td>11</td>
+        <td>PricingEngine — all 10 visibility multipliers, all 8 duration discount tiers, combined scenarios, edge cases</td>
+      </tr>
+      <tr>
+        <td><code>apps/notifications/tests/test_tasks.py</code></td>
+        <td><span class="badge badge-unit">Unit</span></td>
+        <td>16</td>
+        <td>AWS SES email dispatch, Expo push notification, fault tolerance when external APIs fail</td>
+      </tr>
+      <tr>
+        <td><code>apps/users/tests/test_models.py</code></td>
+        <td><span class="badge badge-integration">Integration</span></td>
+        <td>10</td>
+        <td>User role helper properties; BillboardOwner bank-detail encryption roundtrip; default commission rate</td>
+      </tr>
+      <tr>
+        <td><code>apps/users/tests/test_views.py</code></td>
+        <td><span class="badge badge-integration">Integration</span></td>
+        <td>16</td>
+        <td>GET /auth/me, user list RBAC, commission rate PATCH validation, audit log access control</td>
+      </tr>
+      <tr>
+        <td><code>apps/billboards/tests/test_models.py</code></td>
+        <td><span class="badge badge-integration">Integration</span></td>
+        <td>7</td>
+        <td>Billboard UUID PK, default status, soft delete, image field default, price precision</td>
+      </tr>
+      <tr>
+        <td><code>apps/billboards/tests/test_views.py</code></td>
+        <td><span class="badge badge-integration">Integration</span></td>
+        <td>21</td>
+        <td>List role filtering, create RBAC, soft delete, availability endpoint with overlap detection</td>
+      </tr>
+      <tr>
+        <td><code>apps/bookings/tests/test_models.py</code></td>
+        <td><span class="badge badge-integration">Integration</span></td>
+        <td>16</td>
+        <td>Booking auto-computed num_days &amp; total_price on save; status transitions; Decimal types</td>
+      </tr>
+      <tr>
+        <td><code>apps/bookings/tests/test_views.py</code></td>
+        <td><span class="badge badge-integration">Integration</span></td>
+        <td>26</td>
+        <td>Create, list (role-filtered), approve, reject, cancel, pay (Stripe PaymentIntent mock)</td>
+      </tr>
+      <tr>
+        <td><code>apps/finance/tests/test_models.py</code></td>
+        <td><span class="badge badge-integration">Integration</span></td>
+        <td>17</td>
+        <td>Invoice auto-computed platform_fee (15 %) &amp; amount_net; custom commission rates; status transitions</td>
+      </tr>
+      <tr>
+        <td><code>apps/finance/tests/test_views.py</code></td>
+        <td><span class="badge badge-integration">Integration</span></td>
+        <td>20</td>
+        <td>Invoice list/detail RBAC, settle endpoint transitions, Stripe webhook handler (signature verification)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Test modules, expandable -->
+  <p class="section-title">Test Modules</p>
+
+  <!-- core/permissions -->
+  <div class="module open" id="mod-permissions">
+    <div class="module-header" onclick="toggle('mod-permissions')">
+      <div class="module-meta">
+        <span class="module-name">Permission Classes</span>
+        <span class="module-path">core/tests/test_permissions.py</span>
+      </div>
+      <div class="module-badges">
+        <span class="badge badge-unit">Unit</span>
+        <span class="badge badge-count">22</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="test-list">
+      <div class="test-group">
+        <div class="test-group-name">IsSuperAdmin <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_super_admin_allowed</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_admin_denied</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unauthenticated_denied</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_denied</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">IsAdmin <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_admin_allowed</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_super_admin_allowed_as_admin</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_denied</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unauthenticated_denied</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">IsFinanceTeam <span class="tg-count">3</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_privileged_roles_allowed (parametrize: super_admin, admin, finance_team)</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_denied</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_owner_denied</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">IsBillboardOwner · IsAdvertiser · IsAdminOrOwner · IsAuthenticated <span class="tg-count">11</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_owner_allowed / test_non_owner_denied</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_allowed / test_non_advertiser_denied</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_admin_and_owner_each_pass_admin_or_owner</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unauthenticated_denied_all_classes</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- core/utils -->
+  <div class="module" id="mod-utils">
+    <div class="module-header" onclick="toggle('mod-utils')">
+      <div class="module-meta">
+        <span class="module-name">Utilities — Encryption &amp; Invoice Numbers</span>
+        <span class="module-path">core/tests/test_utils.py</span>
+      </div>
+      <div class="module-badges">
+        <span class="badge badge-unit">Unit</span>
+        <span class="badge badge-count">16</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="test-list">
+      <div class="test-group">
+        <div class="test-group-name">AES-256-CBC Field Encryption <span class="tg-count">8</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_roundtrip_ascii — decrypt(encrypt(x)) == x</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_roundtrip_unicode — Nigerian characters (₦, Yoruba diacritics)</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_two_encryptions_of_same_value_differ — random IV</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_ciphertext_not_in_plaintext — opaque output</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_tampered_ciphertext_returns_none — integrity</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_none_input_returns_none</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_empty_string_roundtrip</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_long_payload_roundtrip — 1 KB block-boundary crossing</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">Invoice Number Generator <span class="tg-count">8</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_format_matches_pattern — INV-YYYY-NNNNN</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_year_is_current_year</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_sequential_numbers_differ</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_100_numbers_are_unique</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_no_collisions_across_calls</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_prefix_always_INV</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_minimum_length_ten_chars</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_numeric_suffix_zero_padded</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- bookings/services -->
+  <div class="module" id="mod-pricing">
+    <div class="module-header" onclick="toggle('mod-pricing')">
+      <div class="module-meta">
+        <span class="module-name">PricingEngine</span>
+        <span class="module-path">apps/bookings/tests/test_services.py</span>
+      </div>
+      <div class="module-badges">
+        <span class="badge badge-unit">Unit</span>
+        <span class="badge badge-count">11</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="test-list">
+      <div class="test-group">
+        <div class="test-group-name">Duration Calculation <span class="tg-count">3</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_7_day_booking — num_days == 7</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_1_day_booking — minimum duration</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_30_day_booking — monthly campaign</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">Visibility Multipliers — Parametrized (10 cases) <span class="tg-count">1</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_multiplier_applied — scores 95→1.30, 90→1.30, 80→1.15, 75→1.15, 60→1.00, 50→1.00, 35→0.85, 25→0.85, 10→0.70, 0→0.70</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">Duration Discounts — Parametrized (8 cases) <span class="tg-count">1</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_discount_rate — 1d→0%, 6d→0%, 7d→2%, 13d→2%, 14d→5%, 29d→5%, 30d→10%, 60d→10%</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">Combined &amp; Edge Cases <span class="tg-count">6</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_high_visibility_long_duration — score 90 × 30 days → 10% off 1.30× price</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_low_visibility_short_duration — score 10 × 5 days → 0.70× base, no discount</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_result_keys_are_present — num_days, price_per_day, subtotal, discount_rate, discount_amount, total</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_total_is_never_negative — minimum price ₦1/day, score 0, 60 days</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_discount_reduces_total — total &lt; subtotal when discount &gt; 0</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_no_discount_for_short_booking — 3-day booking, discount_amount ≈ 0</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- notifications -->
+  <div class="module" id="mod-notify">
+    <div class="module-header" onclick="toggle('mod-notify')">
+      <div class="module-meta">
+        <span class="module-name">Notification Tasks (Celery)</span>
+        <span class="module-path">apps/notifications/tests/test_tasks.py</span>
+      </div>
+      <div class="module-badges">
+        <span class="badge badge-unit">Unit</span>
+        <span class="badge badge-count">16</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="test-list">
+      <div class="test-group">
+        <div class="test-group-name">send_booking_confirmation_email <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_sends_email_to_advertiser — boto3 SES client called</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_email_subject_contains_billboard_title</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_email_sent_to_correct_recipient</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_ses_exception_does_not_crash_task — fault tolerance</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">send_booking_status_update_email <span class="tg-count">2</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_approved_status_sends_email</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_rejected_status_sends_email</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">send_push_notification <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_push_sent_to_expo_endpoint</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_push_payload_contains_title_and_body</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_no_push_sent_if_token_is_none</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_expo_error_does_not_propagate</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">Orchestration Tasks <span class="tg-count">6</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_owner_receives_email_and_push — notify_owner_new_booking</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_notified_on_approval — notify_advertiser_booking_approved</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_email_sent_to_advertiser_address — address routing</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_notified_on_rejection — notify_advertiser_booking_rejected</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_payment_notification_sent_to_advertiser — notify_payment_received</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_payment_email_contains_amount — ₦ amount in body</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- users/models -->
+  <div class="module" id="mod-user-models">
+    <div class="module-header" onclick="toggle('mod-user-models')">
+      <div class="module-meta">
+        <span class="module-name">User &amp; BillboardOwner Models</span>
+        <span class="module-path">apps/users/tests/test_models.py</span>
+      </div>
+      <div class="module-badges">
+        <span class="badge badge-integration">Integration</span>
+        <span class="badge badge-count">10</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="test-list">
+      <div class="test-group">
+        <div class="test-group-name">Role Helper Properties <span class="tg-count">5</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_is_advertiser — is_advertiser True, is_admin False, is_billboard_owner False</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_admin_is_admin</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_super_admin_is_admin — super_admin satisfies is_admin</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_billboard_owner_user_is_owner</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_finance_user_is_not_admin</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">Bank Details Encryption <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_set_and_get_bank_details_roundtrip</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_encrypted_value_is_not_plaintext</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_get_bank_details_returns_none_when_unset</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_default_commission_rate — 15.0 %</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">String Representation <span class="tg-count">1</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_str_contains_email</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- users/views -->
+  <div class="module" id="mod-user-views">
+    <div class="module-header" onclick="toggle('mod-user-views')">
+      <div class="module-meta">
+        <span class="module-name">User API Views</span>
+        <span class="module-path">apps/users/tests/test_views.py</span>
+      </div>
+      <div class="module-badges">
+        <span class="badge badge-integration">Integration</span>
+        <span class="badge badge-count">16</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="test-list">
+      <div class="test-group">
+        <div class="test-group-name">GET /v1/auth/me <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_authenticated_user_gets_own_profile — email + role in response</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unauthenticated_returns_401</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_response_has_envelope_structure — {data, errors} keys</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_admin_user_gets_own_profile</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">GET /v1/users/ (admin list) <span class="tg-count">5</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_admin_can_list_users</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_super_admin_can_list_users</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_cannot_list_users — 403</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unauthenticated_cannot_list_users — 401</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_pagination_meta_present</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">PATCH /v1/users/:id/commission <span class="tg-count">5</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_super_admin_can_update_commission — 18.50 % persisted</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_commission_rate_below_zero_rejected — 400</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_commission_rate_above_100_rejected — 400</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_admin_cannot_update_commission — 403</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_setting_commission_for_non_owner_user_returns_404</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">GET /v1/audit-logs/ <span class="tg-count">2</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_admin_can_read_audit_logs</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_cannot_read_audit_logs — 403</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- billboards/models -->
+  <div class="module" id="mod-bb-models">
+    <div class="module-header" onclick="toggle('mod-bb-models')">
+      <div class="module-meta">
+        <span class="module-name">Billboard Model</span>
+        <span class="module-path">apps/billboards/tests/test_models.py</span>
+      </div>
+      <div class="module-badges">
+        <span class="badge badge-integration">Integration</span>
+        <span class="badge badge-count">7</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="test-list">
+      <div class="test-group">
+        <div class="test-group-name">Model Fields &amp; Defaults <span class="tg-count">7</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_str_contains_title</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_default_status_is_active</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_soft_delete_changes_status_to_inactive</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_billboard_has_uuid_pk</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_images_field_defaults_to_empty_list</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_base_price_persists_correctly — Decimal("500.00")</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_visibility_score_in_valid_range — 0..100</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- billboards/views -->
+  <div class="module" id="mod-bb-views">
+    <div class="module-header" onclick="toggle('mod-bb-views')">
+      <div class="module-meta">
+        <span class="module-name">Billboard API Views</span>
+        <span class="module-path">apps/billboards/tests/test_views.py</span>
+      </div>
+      <div class="module-badges">
+        <span class="badge badge-integration">Integration</span>
+        <span class="badge badge-count">21</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="test-list">
+      <div class="test-group">
+        <div class="test-group-name">GET /v1/billboards/ — Role Filtering <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unauthenticated_sees_only_active</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_sees_only_active</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_admin_sees_all_statuses</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_owner_sees_own_inactive_billboard</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">GET /v1/billboards/ — Filters <span class="tg-count">3</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_filter_by_city</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_filter_by_min_price — billboard excluded at ₦500 when min=₦1000</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_filter_by_max_price</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">POST /v1/billboards/ <span class="tg-count">5</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_owner_can_create_billboard — 201</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_cannot_create_billboard — 403</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unauthenticated_cannot_create_billboard — 401</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_missing_required_field_returns_400 — city omitted</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_too_many_images_rejected — 11 images → 400</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">DELETE /v1/billboards/:id/ (soft delete) <span class="tg-count">3</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_owner_can_soft_delete_own_billboard — status → INACTIVE</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_cannot_delete_billboard — 403 or 404</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_record_not_physically_removed — exists() still True</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">GET /v1/billboards/:id/availability <span class="tg-count">6</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_available_when_no_bookings</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unavailable_when_approved_booking_overlaps</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_available_when_booking_does_not_overlap</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_cancelled_booking_does_not_block_availability</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unauthenticated_cannot_check_availability — 401</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_end_before_start_returns_400</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- bookings/models -->
+  <div class="module" id="mod-book-models">
+    <div class="module-header" onclick="toggle('mod-book-models')">
+      <div class="module-meta">
+        <span class="module-name">Booking Model</span>
+        <span class="module-path">apps/bookings/tests/test_models.py</span>
+      </div>
+      <div class="module-badges">
+        <span class="badge badge-integration">Integration</span>
+        <span class="badge badge-count">16</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="test-list">
+      <div class="test-group">
+        <div class="test-group-name">Basic Persistence <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_booking_has_uuid_pk</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_str_contains_billboard_title</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_default_status_is_pending</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_start_end_dates_persisted</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">num_days Auto-Computed <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_num_days_is_computed_on_save — (end - start).days</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_num_days_updates_when_dates_change</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_num_days_minimum_is_one</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_num_days_thirty_day_booking</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">total_price Auto-Computed <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_total_price_is_positive</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_total_price_scales_with_duration</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_total_price_is_decimal</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_total_price_not_zero</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">Status Transitions <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_approve_booking</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_reject_booking</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_cancel_booking</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_cancelled_booking_does_not_affect_num_days</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- bookings/views -->
+  <div class="module" id="mod-book-views">
+    <div class="module-header" onclick="toggle('mod-book-views')">
+      <div class="module-meta">
+        <span class="module-name">Booking API Views</span>
+        <span class="module-path">apps/bookings/tests/test_views.py</span>
+      </div>
+      <div class="module-badges">
+        <span class="badge badge-integration">Integration</span>
+        <span class="badge badge-count">26</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="test-list">
+      <div class="test-group">
+        <div class="test-group-name">POST /v1/bookings/ <span class="tg-count">7</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_can_create_booking — status PENDING in response</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_billboard_owner_cannot_create_booking_on_own_board — 403</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unauthenticated_cannot_create_booking — 401</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_end_date_before_start_date_returns_400</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_booking_on_inactive_billboard_returns_400 — 400 or 404</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_overlapping_approved_booking_returns_409</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_created_booking_has_total_price — &gt; 0</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">GET /v1/bookings/ <span class="tg-count">5</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_sees_only_own_bookings</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_owner_sees_bookings_for_own_billboards</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_admin_sees_all_bookings</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unauthenticated_cannot_list_bookings — 401</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_filter_by_status</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">PATCH /v1/bookings/:id/approve <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_owner_can_approve_booking — status APPROVED</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_cannot_approve_booking — 403</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_cannot_approve_already_approved_booking — 400 or 409</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_cannot_approve_cancelled_booking — 400</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">PATCH /v1/bookings/:id/reject <span class="tg-count">3</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_owner_can_reject_booking</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_cannot_reject_booking — 403</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_cannot_reject_already_rejected</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">POST /v1/bookings/:id/cancel <span class="tg-count">3</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_can_cancel_own_pending_booking</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_owner_can_cancel_booking_on_own_billboard</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_cannot_cancel_already_cancelled</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">POST /v1/bookings/:id/pay (Stripe PaymentIntent) <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_approved_booking_returns_client_secret — mock Stripe</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_pending_booking_cannot_be_paid — 400</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unauthenticated_cannot_initiate_payment — 401</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_stripe_amount_matches_booking_total — amount in kobo (×100)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- finance/models -->
+  <div class="module" id="mod-fin-models">
+    <div class="module-header" onclick="toggle('mod-fin-models')">
+      <div class="module-meta">
+        <span class="module-name">Invoice Model</span>
+        <span class="module-path">apps/finance/tests/test_models.py</span>
+      </div>
+      <div class="module-badges">
+        <span class="badge badge-integration">Integration</span>
+        <span class="badge badge-count">17</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="test-list">
+      <div class="test-group">
+        <div class="test-group-name">Basic Persistence <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_invoice_has_uuid_pk</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_str_contains_invoice_number</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_default_status_is_pending</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_invoice_linked_to_booking</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">platform_fee Auto-Computed <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_platform_fee_computed_at_15_percent</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_platform_fee_changes_with_custom_commission_rate — 20 % override</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_platform_fee_is_decimal</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_platform_fee_is_non_negative</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">amount_net Auto-Computed <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_amount_net_is_total_minus_fee</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_amount_net_is_always_less_than_total</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_amount_net_is_positive</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_amount_net_is_decimal</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">Invoice Number &amp; Status <span class="tg-count">5</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_invoice_number_is_unique</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_invoice_number_auto_generated</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_mark_invoice_paid</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_mark_invoice_settled</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_platform_fee_does_not_change_on_status_update</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- finance/views -->
+  <div class="module" id="mod-fin-views">
+    <div class="module-header" onclick="toggle('mod-fin-views')">
+      <div class="module-meta">
+        <span class="module-name">Finance API Views &amp; Stripe Webhook</span>
+        <span class="module-path">apps/finance/tests/test_views.py</span>
+      </div>
+      <div class="module-badges">
+        <span class="badge badge-integration">Integration</span>
+        <span class="badge badge-count">20</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="test-list">
+      <div class="test-group">
+        <div class="test-group-name">GET /v1/invoices/ <span class="tg-count">7</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_finance_team_can_list_invoices</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_admin_can_list_invoices</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_super_admin_can_list_invoices</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_owner_sees_only_own_invoices</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_cannot_list_invoices — 403</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unauthenticated_cannot_list_invoices — 401</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_filter_by_status_pending</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">GET /v1/invoices/:id/ <span class="tg-count">4</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_finance_team_can_retrieve_invoice</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_response_contains_platform_fee</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_response_contains_amount_net</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_cannot_retrieve_invoice — 403</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">POST /v1/invoices/:id/settle <span class="tg-count">6</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_super_admin_can_settle_paid_invoice — PAID → SETTLED</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_finance_team_can_settle_paid_invoice</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_cannot_settle_pending_invoice — 400</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_cannot_settle_already_settled_invoice — 400 or 409</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_admin_cannot_settle_invoice — 403</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_advertiser_cannot_settle_invoice — 403</div></div>
+      </div>
+      <div class="test-group">
+        <div class="test-group-name">POST /v1/webhooks/stripe/ <span class="tg-count">3</span></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_payment_succeeded_marks_booking_paid — event payment_intent.succeeded</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_invalid_stripe_signature_returns_400 — SignatureVerificationError</div></div>
+        <div class="test-item"><div class="test-icon"></div><div class="test-name">test_unhandled_event_type_returns_200 — silent pass-through</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Run instructions -->
+  <p class="section-title">Running the Tests</p>
+
+  <div class="module" id="mod-run" style="border-radius: 12px; overflow: hidden;">
+    <div class="test-group" style="border-bottom: 1px solid var(--border);">
+      <div class="test-group-name">All tests</div>
+      <div class="test-item" style="border: none; padding-block: 0;">
+        <div class="test-name" style="font-size: 13px; padding: 8px 0; line-height: 1.8;">
+          <code style="display: block; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; white-space: pre; overflow-x: auto;">pytest --tb=short -q</code>
+        </div>
+      </div>
+    </div>
+    <div class="test-group" style="border-bottom: 1px solid var(--border);">
+      <div class="test-group-name">Unit tests only (no DB — fast pre-commit gate)</div>
+      <div class="test-item" style="border: none;">
+        <div class="test-name" style="font-size: 13px;">
+          <code style="display: block; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; white-space: pre; overflow-x: auto;">pytest -m unit --tb=short</code>
+        </div>
+      </div>
+    </div>
+    <div class="test-group" style="border-bottom: 1px solid var(--border);">
+      <div class="test-group-name">Integration tests only</div>
+      <div class="test-item" style="border: none;">
+        <div class="test-name" style="font-size: 13px;">
+          <code style="display: block; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; white-space: pre; overflow-x: auto;">pytest -m django_db --tb=short</code>
+        </div>
+      </div>
+    </div>
+    <div class="test-group">
+      <div class="test-group-name">Single module</div>
+      <div class="test-item" style="border: none;">
+        <div class="test-name" style="font-size: 13px;">
+          <code style="display: block; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; white-space: pre; overflow-x: auto;">pytest apps/bookings/tests/test_services.py -v</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>Vizta Board API — Test Reference v1.0</span>
+    <span>198 tests · 12 modules · Generated October 2026</span>
+  </div>
+
+</div>
+
+<script>
+  function toggle(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+</script>
+
+</body></html>

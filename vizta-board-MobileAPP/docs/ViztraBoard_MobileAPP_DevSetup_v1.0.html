@@ -1,0 +1,1075 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Vizta Board Dev Setup</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+/* ── Tokens ─────────────────────────────────────────── */
+:root {
+  --bg:           #FFFFFF;
+  --surface:      #F8FAF9;
+  --surface-alt:  #F1F8F4;
+  --border:       #E2EBE6;
+  --fg:           #1A1A1A;
+  --fg-mid:       #3D3D3D;
+  --fg-muted:     #6B7C74;
+  --accent:       #1B7A3E;
+  --accent-dark:  #145E30;
+  --accent-light: #D6EFE0;
+  --accent-xlight:#F1F8F4;
+  --code-bg:      #EEF6F1;
+  --code-border:  #C8E0D2;
+  --warn-bg:      #FEF3C7;
+  --warn-border:  #FCD34D;
+  --warn-fg:      #92400E;
+  --tip-bg:       #EFF6FF;
+  --tip-border:   #BFDBFE;
+  --tip-fg:       #1E40AF;
+  --pill-bg:      #D6EFE0;
+  --pill-fg:      #145E30;
+  --step-num:     #1B7A3E;
+  --shadow:       0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.05);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:           #0D1410;
+    --surface:      #141C18;
+    --surface-alt:  #111A14;
+    --border:       #243020;
+    --fg:           #EDF3EF;
+    --fg-mid:       #C4D5CB;
+    --fg-muted:     #7DA690;
+    --accent:       #2EAA5A;
+    --accent-dark:  #3DC46A;
+    --accent-light: #1B3526;
+    --accent-xlight:#121E16;
+    --code-bg:      #0F1A12;
+    --code-border:  #1E3526;
+    --warn-bg:      #2A1E06;
+    --warn-border:  #7C5010;
+    --warn-fg:      #FDE68A;
+    --tip-bg:       #0D1A2E;
+    --tip-border:   #1E3A5F;
+    --tip-fg:       #93C5FD;
+    --pill-bg:      #1B3526;
+    --pill-fg:      #6EE09C;
+    --step-num:     #3DC46A;
+    --shadow:       0 1px 3px rgba(0,0,0,.3), 0 4px 12px rgba(0,0,0,.2);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg:           #0D1410;
+  --surface:      #141C18;
+  --surface-alt:  #111A14;
+  --border:       #243020;
+  --fg:           #EDF3EF;
+  --fg-mid:       #C4D5CB;
+  --fg-muted:     #7DA690;
+  --accent:       #2EAA5A;
+  --accent-dark:  #3DC46A;
+  --accent-light: #1B3526;
+  --accent-xlight:#121E16;
+  --code-bg:      #0F1A12;
+  --code-border:  #1E3526;
+  --warn-bg:      #2A1E06;
+  --warn-border:  #7C5010;
+  --warn-fg:      #FDE68A;
+  --tip-bg:       #0D1A2E;
+  --tip-border:   #1E3A5F;
+  --tip-fg:       #93C5FD;
+  --pill-bg:      #1B3526;
+  --pill-fg:      #6EE09C;
+  --step-num:     #3DC46A;
+  --shadow:       0 1px 3px rgba(0,0,0,.3), 0 4px 12px rgba(0,0,0,.2);
+  color-scheme: dark;
+}
+
+/* ── Reset / base ───────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  margin: 0;
+  padding-inline: 16px;
+  padding-block: 0;
+}
+
+/* ── Layout ─────────────────────────────────────────── */
+.shell {
+  max-width: 860px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 0 40px;
+  align-items: start;
+}
+
+/* ── Header ─────────────────────────────────────────── */
+.site-header {
+  grid-column: 1 / -1;
+  border-bottom: 1px solid var(--border);
+  padding-block: 28px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo-mark {
+  width: 36px;
+  height: 36px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.header-text { min-width: 0; }
+.header-text h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fg);
+  margin: 0;
+  line-height: 1.2;
+}
+.header-text p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin: 3px 0 0;
+}
+
+.badge {
+  margin-left: auto;
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── TOC sidebar ─────────────────────────────────────── */
+.toc {
+  position: sticky;
+  top: 20px;
+  padding-block: 28px;
+  align-self: start;
+}
+
+.toc-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-bottom: 12px;
+}
+
+.toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toc a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--fg-muted);
+  text-decoration: none;
+  padding: 5px 10px 5px 8px;
+  border-radius: 7px;
+  border-left: 2px solid transparent;
+  transition: all .15s;
+  line-height: 1.3;
+}
+
+.toc a:hover {
+  color: var(--accent);
+  background: var(--accent-xlight);
+  border-left-color: var(--accent);
+}
+
+.toc-num {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  min-width: 18px;
+}
+
+/* ── Main content ─────────────────────────────────────── */
+.content {
+  padding-block: 28px 60px;
+  min-width: 0;
+}
+
+/* ── Checklist intro ─────────────────────────────────── */
+.prereq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.prereq-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.prereq-icon { font-size: 20px; }
+.prereq-name { font-size: 13px; font-weight: 600; color: var(--fg); }
+.prereq-ver  { font-size: 12px; color: var(--fg-muted); font-family: 'JetBrains Mono', monospace; }
+
+/* ── Section ─────────────────────────────────────────── */
+.section {
+  margin-bottom: 48px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.step-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  color: var(--step-num);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.section-head h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fg);
+  margin: 0;
+  text-wrap: balance;
+}
+
+p { margin: 0 0 12px; color: var(--fg-mid); }
+p:last-child { margin-bottom: 0; }
+
+/* ── Code blocks ─────────────────────────────────────── */
+.code-block {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 14px 0;
+}
+
+.code-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--code-border);
+  background: var(--surface-alt);
+}
+
+.code-lang {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.copy-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  color: var(--fg-muted);
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.copy-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+.copy-btn.copied { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+
+pre {
+  margin: 0;
+  padding: 16px 18px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--fg);
+}
+
+pre .c   { color: var(--fg-muted); font-style: italic; }
+pre .kw  { color: var(--accent-dark); font-weight: 500; }
+pre .str { color: #C05621; }
+pre .var { color: var(--accent); }
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 5px;
+  padding: 1px 6px;
+  color: var(--accent-dark);
+}
+
+/* ── Callouts ─────────────────────────────────────────── */
+.callout {
+  border-radius: 10px;
+  padding: 13px 16px;
+  margin: 14px 0;
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.callout-warn { background: var(--warn-bg); border: 1px solid var(--warn-border); color: var(--warn-fg); }
+.callout-tip  { background: var(--tip-bg);  border: 1px solid var(--tip-border);  color: var(--tip-fg);  }
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── Extension list ─────────────────────────────────────── */
+.ext-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+.ext-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 15px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.ext-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.ext-info { min-width: 0; }
+.ext-name  { font-size: 13px; font-weight: 600; color: var(--fg); }
+.ext-id    { font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--fg-muted); word-break: break-all; }
+.ext-why   { font-size: 12px; color: var(--fg-muted); margin-top: 3px; }
+.ext-req   { display: inline-block; font-size: 10px; font-weight: 700; background: var(--accent-light); color: var(--accent); padding: 1px 7px; border-radius: 100px; margin-top: 4px; }
+
+/* ── Key config ─────────────────────────────────────────── */
+.key-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 14px 0;
+}
+
+.key-row-item {
+  display: grid;
+  grid-template-columns: 140px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.key-row-item:last-child { border-bottom: none; }
+
+.key-name  { font-weight: 600; color: var(--fg); }
+.key-file  { font-family: 'JetBrains Mono', monospace; color: var(--fg-muted); font-size: 12px; }
+.key-link  { color: var(--accent); text-decoration: none; font-size: 12px; font-weight: 500; white-space: nowrap; }
+.key-link:hover { text-decoration: underline; }
+
+/* ── Env table ─────────────────────────────────────────── */
+.env-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 14px 0;
+}
+
+.env-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.env-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.env-table tr:last-child td { border-bottom: none; }
+.env-table td:first-child { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 12px; white-space: nowrap; }
+.env-table td:last-child { color: var(--fg-muted); font-size: 12px; }
+
+.env-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+
+/* ── Run options ─────────────────────────────────────────── */
+.run-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.run-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.run-card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.run-card p { font-size: 13px; margin: 0; color: var(--fg-muted); }
+
+.run-cmd {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--accent);
+  margin-top: auto;
+}
+
+/* ── Divider ─────────────────────────────────────────── */
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 32px 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .toc {
+    position: static;
+    padding-block: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .key-row-item {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .prereq-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+
+<div class="shell">
+
+  <!-- ── Header ─────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="logo-mark">📱</div>
+    <div class="header-text">
+      <h1>Vizta Board Mobile</h1>
+      <p>VS Code + Linux dev environment setup</p>
+    </div>
+    <span class="badge">Expo SDK 51 · RN 0.74.5</span>
+  </header>
+
+  <!-- ── TOC ───────────────────────────────────────── -->
+  <nav class="toc">
+    <div class="toc-label">On this page</div>
+    <ul>
+      <li><a href="#prereqs"><span class="toc-num">00</span>Prerequisites</a></li>
+      <li><a href="#node"><span class="toc-num">01</span>Install Node.js</a></li>
+      <li><a href="#vscode"><span class="toc-num">02</span>Install VS Code</a></li>
+      <li><a href="#extensions"><span class="toc-num">03</span>Extensions</a></li>
+      <li><a href="#android"><span class="toc-num">04</span>Android SDK</a></li>
+      <li><a href="#project"><span class="toc-num">05</span>Project setup</a></li>
+      <li><a href="#keys"><span class="toc-num">06</span>Configure keys</a></li>
+      <li><a href="#run"><span class="toc-num">07</span>Run the app</a></li>
+      <li><a href="#trouble"><span class="toc-num">08</span>Troubleshooting</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Content ───────────────────────────────────── -->
+  <main class="content">
+
+    <!-- Prereqs overview -->
+    <section class="section" id="prereqs">
+      <div class="section-head">
+        <span class="step-badge">00</span>
+        <h2>What you'll install</h2>
+      </div>
+      <div class="prereq-grid">
+        <div class="prereq-card">
+          <span class="prereq-icon">⬡</span>
+          <span class="prereq-name">Node.js</span>
+          <span class="prereq-ver">v20 LTS (via nvm)</span>
+        </div>
+        <div class="prereq-card">
+          <span class="prereq-icon">📦</span>
+          <span class="prereq-name">npm</span>
+          <span class="prereq-ver">bundled with Node</span>
+        </div>
+        <div class="prereq-card">
+          <span class="prereq-icon">🔵</span>
+          <span class="prereq-name">VS Code</span>
+          <span class="prereq-ver">latest stable</span>
+        </div>
+        <div class="prereq-card">
+          <span class="prereq-icon">☕</span>
+          <span class="prereq-name">Java JDK</span>
+          <span class="prereq-ver">17 (OpenJDK)</span>
+        </div>
+        <div class="prereq-card">
+          <span class="prereq-icon">🤖</span>
+          <span class="prereq-name">Android Studio</span>
+          <span class="prereq-ver">Hedgehog+</span>
+        </div>
+        <div class="prereq-card">
+          <span class="prereq-icon">🚀</span>
+          <span class="prereq-name">Expo CLI</span>
+          <span class="prereq-ver">via npx (no install)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01 Node.js -->
+    <section class="section" id="node">
+      <div class="section-head">
+        <span class="step-badge">01</span>
+        <h2>Install Node.js via nvm</h2>
+      </div>
+      <p>Use <strong>nvm</strong> (Node Version Manager) — it lets you switch Node versions cleanly and avoids permission issues with global npm installs.</p>
+
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">bash — install nvm</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash</pre>
+      </div>
+
+      <p>After install, restart your terminal (or source your shell config), then:</p>
+
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">bash</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="c"># Reload shell config</span>
+source ~/.bashrc   <span class="c"># or ~/.zshrc if you use zsh</span>
+
+<span class="c"># Install Node 20 LTS and set as default</span>
+nvm install 20
+nvm use 20
+nvm alias default 20
+
+<span class="c"># Verify</span>
+node -v   <span class="c"># → v20.x.x</span>
+npm  -v   <span class="c"># → 10.x.x</span></pre>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <span>Expo SDK 51 is tested against Node 18 and 20. Node 22 may work but can surface version mismatch warnings in some Expo CLI paths — stick with 20 LTS for a smooth experience.</span>
+      </div>
+    </section>
+
+    <!-- 02 VS Code -->
+    <section class="section" id="vscode">
+      <div class="section-head">
+        <span class="step-badge">02</span>
+        <h2>Install VS Code</h2>
+      </div>
+      <p>The fastest method on Debian/Ubuntu is Microsoft's own apt repo, which keeps VS Code auto-updated.</p>
+
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">bash — Debian / Ubuntu</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="c"># Add Microsoft GPG key and repo</span>
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
+  | gpg --dearmor \
+  | sudo tee /usr/share/keyrings/microsoft.gpg > /dev/null
+
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] \
+  https://packages.microsoft.com/repos/code stable main" \
+  | sudo tee /etc/apt/sources.list.d/vscode.list
+
+<span class="c"># Install</span>
+sudo apt update && sudo apt install -y code
+
+<span class="c"># Launch</span>
+code .</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">bash — Fedora / RHEL / CentOS</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+sudo dnf install -y code</pre>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <span>On Arch / Manjaro: <code>yay -S visual-studio-code-bin</code>&nbsp; · &nbsp;On any distro: download the <code>.deb</code> or <code>.rpm</code> from <strong>code.visualstudio.com</strong> and install with <code>dpkg -i</code> or <code>rpm -i</code>.</span>
+      </div>
+    </section>
+
+    <!-- 03 Extensions -->
+    <section class="section" id="extensions">
+      <div class="section-head">
+        <span class="step-badge">03</span>
+        <h2>Recommended VS Code extensions</h2>
+      </div>
+      <p>Install all required extensions in one shot, then the optional ones as needed.</p>
+
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">bash — install all at once</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>code --install-extension msjsdiag.vscode-react-native \
+     --install-extension dbaeumer.vscode-eslint \
+     --install-extension esbenp.prettier-vscode \
+     --install-extension ms-vscode.vscode-typescript-next \
+     --install-extension bradlc.vscode-tailwindcss \
+     --install-extension PKief.material-icon-theme \
+     --install-extension streetsidesoftware.code-spell-checker</pre>
+      </div>
+
+      <div class="ext-grid">
+        <div class="ext-card">
+          <div class="ext-icon" style="background:#0066B8;color:#fff">⚛</div>
+          <div class="ext-info">
+            <div class="ext-name">React Native Tools</div>
+            <div class="ext-id">msjsdiag.vscode-react-native</div>
+            <div class="ext-why">Debugger, IntelliSense, run from sidebar</div>
+            <span class="ext-req">Required</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon" style="background:#4B32C3;color:#fff">ES</div>
+          <div class="ext-info">
+            <div class="ext-name">ESLint</div>
+            <div class="ext-id">dbaeumer.vscode-eslint</div>
+            <div class="ext-why">Inline linting, auto-fix on save</div>
+            <span class="ext-req">Required</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon" style="background:#F7B93E;color:#1A1A1A">✦</div>
+          <div class="ext-info">
+            <div class="ext-name">Prettier</div>
+            <div class="ext-id">esbenp.prettier-vscode</div>
+            <div class="ext-why">Auto-format TypeScript/TSX on save</div>
+            <span class="ext-req">Required</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon" style="background:#3178C6;color:#fff">TS</div>
+          <div class="ext-info">
+            <div class="ext-name">TypeScript Next</div>
+            <div class="ext-id">ms-vscode.vscode-typescript-next</div>
+            <div class="ext-why">Latest TS language server for strict mode</div>
+            <span class="ext-req">Required</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon" style="background:#1E3A5F;color:#93C5FD">🔍</div>
+          <div class="ext-info">
+            <div class="ext-name">Path IntelliSense</div>
+            <div class="ext-id">christian-kohler.path-intellisense</div>
+            <div class="ext-why">Autocomplete for @/ path aliases</div>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon" style="background:#F1F8F4;color:#1B7A3E">📁</div>
+          <div class="ext-info">
+            <div class="ext-name">Material Icon Theme</div>
+            <div class="ext-id">PKief.material-icon-theme</div>
+            <div class="ext-why">File icons — easy to spot .tsx vs .ts</div>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top:16px">Add a <code>.vscode/settings.json</code> at the project root to enable format-on-save:</p>
+
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">.vscode/settings.json</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.importModuleSpecifier": "non-relative"
+}</pre>
+      </div>
+    </section>
+
+    <!-- 04 Android -->
+    <section class="section" id="android">
+      <div class="section-head">
+        <span class="step-badge">04</span>
+        <h2>Android SDK &amp; emulator</h2>
+      </div>
+      <p>React Native on Linux requires Android Studio to manage the SDK and create virtual devices. There is no iOS simulator on Linux — use a physical iPhone with <strong>Expo Go</strong>, or focus on Android development.</p>
+
+      <p><strong>Step 1 — Install Java 17</strong></p>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">bash — Debian / Ubuntu</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>sudo apt install -y openjdk-17-jdk
+java -version   <span class="c"># → openjdk version "17.x.x"</span></pre>
+      </div>
+
+      <p><strong>Step 2 — Install Android Studio</strong></p>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">bash</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="c"># Using snap (easiest, works on most distros)</span>
+sudo snap install android-studio --classic
+
+<span class="c"># Or download the .tar.gz from developer.android.com/studio</span>
+<span class="c"># and extract to ~/android-studio, then run:</span>
+<span class="c"># ~/android-studio/bin/studio.sh</span></pre>
+      </div>
+
+      <p><strong>Step 3 — SDK components inside Android Studio</strong></p>
+      <p>Open Android Studio → <em>More Actions → SDK Manager</em> → <strong>SDK Platforms</strong> tab → check <strong>Android 14 (API 34)</strong>. Then <strong>SDK Tools</strong> tab → check: Android SDK Build-Tools, Android SDK Platform-Tools, Android Emulator, Android SDK Command-line Tools.</p>
+
+      <p><strong>Step 4 — Create an AVD (emulator)</strong></p>
+      <p>Android Studio → <em>More Actions → Virtual Device Manager → Create Device</em>. Pick <strong>Pixel 7</strong> (or similar), select <strong>API 34</strong> system image, click Finish. Launch the emulator once to confirm it boots.</p>
+
+      <p><strong>Step 5 — Set environment variables</strong></p>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">bash — add to ~/.bashrc or ~/.zshrc</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="c"># Java</span>
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+
+<span class="c"># Android SDK (adjust path if you used a different install location)</span>
+export ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_SDK_ROOT=$ANDROID_HOME
+
+<span class="c"># Add platform-tools and emulator to PATH</span>
+export PATH="$PATH:$ANDROID_HOME/emulator"
+export PATH="$PATH:$ANDROID_HOME/platform-tools"
+export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin"
+
+<span class="c"># Reload</span>
+source ~/.bashrc</pre>
+      </div>
+
+      <div class="env-wrap">
+        <table class="env-table">
+          <thead>
+            <tr><th>Variable</th><th>Typical value on Ubuntu</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>JAVA_HOME</td><td>/usr/lib/jvm/java-17-openjdk-amd64</td><td>React Native Gradle build</td></tr>
+            <tr><td>ANDROID_HOME</td><td>$HOME/Android/Sdk</td><td>Expo CLI finds SDK tools</td></tr>
+            <tr><td>PATH addition</td><td>$ANDROID_HOME/platform-tools</td><td>adb device commands</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">bash — verify</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>adb version          <span class="c"># → Android Debug Bridge version 1.0.4x</span>
+emulator -list-avds  <span class="c"># → lists your virtual device name</span></pre>
+      </div>
+
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠️</span>
+        <span>If Android Studio was installed via snap, the SDK may be at <code>~/snap/android-studio/current/android-sdk</code>. Check <em>Settings → Android SDK → SDK location</em> inside Android Studio for the exact path.</span>
+      </div>
+    </section>
+
+    <!-- 05 Project setup -->
+    <section class="section" id="project">
+      <div class="section-head">
+        <span class="step-badge">05</span>
+        <h2>Project setup</h2>
+      </div>
+      <p>Extract the ZIP you downloaded, then install dependencies.</p>
+
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">bash</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="c"># Extract the archive</span>
+unzip ViztraBoard_Mobile_v1.0.zip
+cd vizta-board-mobile
+
+<span class="c"># Install all dependencies (takes 1–3 min first time)</span>
+npm install
+
+<span class="c"># Verify Expo CLI is accessible</span>
+npx expo --version   <span class="c"># → 0.18.x or similar</span></pre>
+      </div>
+
+      <p>Open the folder in VS Code:</p>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">bash</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>code .</pre>
+      </div>
+
+      <p>VS Code will detect the TypeScript project. When it prompts <em>"Use workspace TypeScript version?"</em>, click <strong>Allow</strong> to use the project's own <code>node_modules/typescript</code>.</p>
+    </section>
+
+    <!-- 06 Keys -->
+    <section class="section" id="keys">
+      <div class="section-head">
+        <span class="step-badge">06</span>
+        <h2>Configure API keys</h2>
+      </div>
+      <p>Two placeholder keys must be replaced before the app will boot. Both are in the project root.</p>
+
+      <div class="key-row">
+        <div class="key-row-item">
+          <div>
+            <div class="key-name">Clerk publishable key</div>
+            <div class="key-file">app.json → extra.clerkPublishableKey</div>
+          </div>
+          <div style="font-size:13px;color:var(--fg-muted)">Replace <code>pk_test_REPLACE_WITH_YOUR_CLERK_KEY</code></div>
+          <a class="key-link" href="https://dashboard.clerk.com" target="_blank">Get key ↗</a>
+        </div>
+        <div class="key-row-item">
+          <div>
+            <div class="key-name">Stripe publishable key</div>
+            <div class="key-file">App.tsx → STRIPE_KEY constant</div>
+          </div>
+          <div style="font-size:13px;color:var(--fg-muted)">Replace <code>pk_test_REPLACE_WITH_YOUR_STRIPE_PUBLISHABLE_KEY</code></div>
+          <a class="key-link" href="https://dashboard.stripe.com/apikeys" target="_blank">Get key ↗</a>
+        </div>
+        <div class="key-row-item">
+          <div>
+            <div class="key-name">API base URL</div>
+            <div class="key-file">app.json → extra.apiBaseUrl</div>
+          </div>
+          <div style="font-size:13px;color:var(--fg-muted)">Point to your Django backend (or <code>http://10.0.2.2:8000/api/v1</code> for local)</div>
+          <span style="font-size:12px;color:var(--fg-muted)">app.json</span>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <span><code>10.0.2.2</code> is the Android emulator's alias for your Linux machine's <code>localhost</code>. Use it when pointing the app at a local Django dev server.</span>
+      </div>
+
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠️</span>
+        <span>Never commit real keys to version control. Add <code>.env</code> to <code>.gitignore</code> and consider using <code>expo-constants</code> with a local <code>.env</code> file + <code>dotenv</code> for local development.</span>
+      </div>
+    </section>
+
+    <!-- 07 Run -->
+    <section class="section" id="run">
+      <div class="section-head">
+        <span class="step-badge">07</span>
+        <h2>Run the app</h2>
+      </div>
+      <p>Start the Expo dev server, then choose how to view the app.</p>
+
+      <div class="code-block">
+        <div class="code-label">
+          <span class="code-lang">bash — start dev server</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>npx expo start</pre>
+      </div>
+
+      <p>This opens the Expo dev menu in your terminal. Press one of these keys:</p>
+
+      <div class="run-cards">
+        <div class="run-card">
+          <h3>🤖 Android emulator</h3>
+          <p>Make sure the AVD is already running (start it from Android Studio's Virtual Device Manager first).</p>
+          <div class="run-cmd">Press a  in the Expo terminal</div>
+        </div>
+        <div class="run-card">
+          <h3>📱 Physical Android</h3>
+          <p>Enable USB Debugging on your phone. Connect via USB. Run <code>adb devices</code> to confirm it's recognized.</p>
+          <div class="run-cmd">Press a  in the Expo terminal</div>
+        </div>
+        <div class="run-card">
+          <h3>📲 Expo Go (WiFi)</h3>
+          <p>Install <strong>Expo Go</strong> on any phone. Scan the QR code shown by the dev server. Phone and laptop must be on the same network.</p>
+          <div class="run-cmd">Scan QR code with Expo Go</div>
+        </div>
+        <div class="run-card">
+          <h3>🌐 Web preview</h3>
+          <p>Limited fidelity (no native modules), but useful for logic and layout work without a device.</p>
+          <div class="run-cmd">Press w  in the Expo terminal</div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <span>Press <code>r</code> in the Expo terminal to reload, <code>j</code> to open the Expo debugger, <code>m</code> to toggle the in-app dev menu on device. For a full native build (required before submitting to Play Store), use <code>npx expo run:android</code> — this requires Android Studio's build tools to be on PATH.</span>
+      </div>
+    </section>
+
+    <!-- 08 Trouble -->
+    <section class="section" id="trouble">
+      <div class="section-head">
+        <span class="step-badge">08</span>
+        <h2>Common issues</h2>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label"><span class="code-lang">ANDROID_HOME is not set</span></div>
+        <pre><span class="c"># Check env is exported from the correct shell file</span>
+echo $ANDROID_HOME
+<span class="c"># If blank, re-source your shell config or log out and back in:</span>
+source ~/.bashrc</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label"><span class="code-lang">Emulator not found / adb devices shows nothing</span></div>
+        <pre><span class="c"># Start AVD from Android Studio OR from CLI:</span>
+emulator -avd Pixel_7_API_34 &amp;
+
+<span class="c"># For USB device: enable USB debugging + trust this computer</span>
+adb kill-server &amp;&amp; adb start-server
+adb devices</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label"><span class="code-lang">Metro bundler port conflict</span></div>
+        <pre><span class="c"># Kill whatever is on port 8081</span>
+npx kill-port 8081
+npx expo start</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label"><span class="code-lang">node_modules issues / clean install</span></div>
+        <pre>rm -rf node_modules .expo
+npm install
+npx expo start --clear</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label"><span class="code-lang">Clerk key error on startup</span></div>
+        <pre><span class="c"># Ensure app.json extra field is set correctly:</span>
+"extra": {
+  "clerkPublishableKey": "pk_test_YOUR_REAL_KEY_HERE",
+  "apiBaseUrl": "https://api.viztaboard.com/api/v1"
+}</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label"><span class="code-lang">expo-secure-store crash on web</span></div>
+        <pre><span class="c"># expo-secure-store is native-only — don't use web target (w) for auth testing.</span>
+<span class="c"># Use Android emulator or Expo Go instead.</span></pre>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <span>Run <code>npx expo doctor</code> at any time — it checks your environment (Node version, Android SDK, package versions) and flags mismatches with one command.</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    const sel = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(pre);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  });
+}
+</script>
+
+</body></html>

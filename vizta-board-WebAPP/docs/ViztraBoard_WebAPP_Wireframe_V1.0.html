@@ -1,0 +1,1562 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Vizta Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.1/feather.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════════════ */
+:root {
+  --green:        #1B7A3E;
+  --green-dk:     #145E30;
+  --green-lt:     #D6EFE0;
+  --green-xl:     #F1F8F4;
+  --green-bg:     #E2F0E9;
+  --sidebar-bg:   #0F3D20;
+  --dark:         #1A1A1A;
+  --mid:          #3D3D3D;
+  --muted:        #6B6B6B;
+  --border:       #E5E7EB;
+  --white:        #FFFFFF;
+  --off:          #F9FAFB;
+  --success:      #16A34A; --success-bg: #DCFCE7;
+  --warn:         #D97706; --warn-bg:    #FEF3C7;
+  --error:        #DC2626; --error-bg:   #FEE2E2;
+  --info:         #2563EB; --info-bg:    #DBEAFE;
+
+  --bg:      var(--white);
+  --surface: var(--off);
+  --fg:      var(--dark);
+  --fg2:     var(--mid);
+  --fg3:     var(--muted);
+  --bdr:     var(--border);
+
+  --sw: 240px;   /* sidebar width */
+  --th: 60px;    /* topbar height */
+  --r:  12px;    /* card radius */
+
+  --sh-card:  0 1px 3px rgba(0,0,0,.07), 0 2px 10px rgba(0,0,0,.05);
+  --sh-modal: 0 8px 40px rgba(0,0,0,.14), 0 2px 8px rgba(0,0,0,.08);
+  --sh-drawer:−12px 0 40px rgba(0,0,0,.12);
+
+  --font-d: 'Nunito', sans-serif;
+  --font-b: 'Inter', system-ui, sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:       #0D1410; --surface:   #141C18;
+    --fg:       #EDF3EF; --fg2:       #C4D5CB; --fg3: #7DA690;
+    --bdr:      #243020;
+    --green:    #2EAA5A; --green-dk:  #3DC46A;
+    --green-lt: #1B3526; --green-xl:  #121E16; --green-bg: #162B1E;
+    --off:      #141C18;
+    --sidebar-bg: #071409;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:       #0D1410; --surface:   #141C18;
+  --fg:       #EDF3EF; --fg2:       #C4D5CB; --fg3: #7DA690;
+  --bdr:      #243020;
+  --green:    #2EAA5A; --green-dk:  #3DC46A;
+  --green-lt: #1B3526; --green-xl:  #121E16; --green-bg: #162B1E;
+  --off:      #141C18;
+  --sidebar-bg: #071409;
+  color-scheme: dark;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESET + BASE
+═══════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--font-b); font-size: 14px; line-height: 1.5;
+}
+a { color: var(--green); text-decoration: none; }
+img { max-width: 100%; }
+button { cursor: pointer; font-family: var(--font-b); }
+
+/* ═══════════════════════════════════════════════════════
+   ROLE SELECTOR (landing)
+═══════════════════════════════════════════════════════ */
+.role-screen {
+  min-height: 100vh; background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.role-card {
+  background: var(--bg); border-radius: 20px;
+  box-shadow: var(--sh-modal); padding: 48px;
+  max-width: 520px; width: 100%; text-align: center;
+}
+.role-logo {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-bottom: 8px;
+}
+.role-logo-mark {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--green); display: flex; align-items: center; justify-content: center;
+}
+.role-logo-mark span { color: #fff; font-family: var(--font-d); font-weight: 900; font-size: 18px; }
+.role-logo-text { font-family: var(--font-d); font-weight: 900; font-size: 22px; color: var(--fg); }
+.role-tagline { font-size: 13px; color: var(--fg3); margin: 0 0 36px; }
+.role-heading { font-family: var(--font-d); font-size: 20px; font-weight: 800; color: var(--fg); margin: 0 0 6px; }
+.role-sub { font-size: 13px; color: var(--fg3); margin: 0 0 28px; }
+.role-options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+.role-option {
+  border: 2px solid var(--bdr); border-radius: 14px;
+  padding: 22px 18px; cursor: pointer; transition: all .18s;
+  background: var(--surface); text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.role-option:hover { border-color: var(--green); background: var(--green-xl); }
+.role-option.selected { border-color: var(--green); background: var(--green-xl); }
+.role-option-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; font-size: 24px;
+}
+.role-option-name { font-weight: 700; font-size: 14px; color: var(--fg); }
+.role-option-desc { font-size: 12px; color: var(--fg3); line-height: 1.4; }
+.role-footer { font-size: 12px; color: var(--fg3); }
+
+/* ═══════════════════════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════════════════════ */
+.shell {
+  display: flex; min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sw); flex-shrink: 0; background: var(--sidebar-bg);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
+}
+.sidebar-logo {
+  padding: 20px 20px 16px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.sidebar-logo-mark {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--green); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.sidebar-logo-mark span { color: #fff; font-family: var(--font-d); font-weight: 900; font-size: 15px; }
+.sidebar-logo-text { font-family: var(--font-d); font-weight: 900; font-size: 16px; color: #fff; }
+.sidebar-role-badge {
+  font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  background: rgba(255,255,255,.12); color: rgba(255,255,255,.7);
+  border-radius: 100px; padding: 2px 8px; margin-left: auto; flex-shrink: 0;
+}
+.sidebar-nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+.nav-section-label {
+  font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: rgba(255,255,255,.35); padding: 10px 8px 4px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 9px; cursor: pointer;
+  color: rgba(255,255,255,.6); font-size: 13px; font-weight: 500;
+  transition: all .15s; border: none; background: none; width: 100%; text-align: left;
+}
+.nav-item:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.9); }
+.nav-item.active { background: rgba(255,255,255,.12); color: #fff; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; background: var(--error); color: #fff;
+  font-size: 10px; font-weight: 700; border-radius: 100px; padding: 1px 6px; min-width: 18px; text-align: center;
+}
+.sidebar-user {
+  padding: 14px 14px 14px; border-top: 1px solid rgba(255,255,255,.08);
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-avatar {
+  width: 34px; height: 34px; border-radius: 50%; background: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-d); font-weight: 800; font-size: 13px; color: #fff; flex-shrink: 0;
+}
+.sidebar-user-info { flex: 1; min-width: 0; }
+.sidebar-user-name { font-size: 13px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-user-role { font-size: 11px; color: rgba(255,255,255,.5); }
+.sidebar-logout { background: none; border: none; cursor: pointer; color: rgba(255,255,255,.4); padding: 4px; transition: color .15s; }
+.sidebar-logout:hover { color: rgba(255,255,255,.8); }
+.sidebar-logout svg { width: 15px; height: 15px; display: block; }
+
+/* ── Main ── */
+.main { margin-left: var(--sw); flex: 1; display: flex; flex-direction: column; min-height: 100vh; min-width: 0; }
+
+/* ── Topbar ── */
+.topbar {
+  height: var(--th); background: var(--bg); border-bottom: 1px solid var(--bdr);
+  display: flex; align-items: center; padding: 0 28px; gap: 16px;
+  position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-family: var(--font-d); font-size: 18px; font-weight: 800; color: var(--fg); flex: 1; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+/* ── Content ── */
+.content { flex: 1; padding: 28px; background: var(--surface); }
+
+/* ═══════════════════════════════════════════════════════
+   COMMON COMPONENTS
+═══════════════════════════════════════════════════════ */
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px; border-radius: 9px; font-size: 13px; font-weight: 600;
+  border: none; transition: all .15s; white-space: nowrap;
+}
+.btn svg { width: 14px; height: 14px; }
+.btn-primary { background: var(--green); color: #fff; }
+.btn-primary:hover { background: var(--green-dk); }
+.btn-outline { background: transparent; color: var(--green); border: 1.5px solid var(--green); }
+.btn-outline:hover { background: var(--green-xl); }
+.btn-ghost { background: transparent; color: var(--fg3); border: 1.5px solid var(--bdr); }
+.btn-ghost:hover { background: var(--surface); color: var(--fg); }
+.btn-danger { background: transparent; color: var(--error); border: 1.5px solid var(--error); }
+.btn-danger:hover { background: var(--error-bg); }
+.btn-success { background: var(--green); color: #fff; }
+.btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 7px; }
+.btn-lg { padding: 11px 24px; font-size: 14px; border-radius: 11px; }
+
+/* Status pills */
+.pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: 100px; font-size: 11px; font-weight: 600; white-space: nowrap;
+}
+.pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.pill-active       { background: var(--success-bg); color: var(--success); }
+.pill-pending      { background: var(--warn-bg);    color: var(--warn); }
+.pill-approved     { background: var(--green-lt);   color: var(--green-dk); }
+.pill-rejected     { background: var(--error-bg);   color: var(--error); }
+.pill-completed    { background: var(--surface);     color: var(--fg3); border: 1px solid var(--bdr); }
+.pill-draft        { background: var(--info-bg);    color: var(--info); }
+.pill-digital      { background: var(--info-bg);    color: var(--info); }
+
+/* KPI tiles */
+.kpi-row { display: grid; gap: 16px; }
+.kpi-tile {
+  background: var(--bg); border: 1px solid var(--bdr); border-radius: var(--r);
+  padding: 20px 22px; display: flex; flex-direction: column; gap: 4px;
+}
+.kpi-label { font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--fg3); }
+.kpi-value { font-family: var(--font-d); font-size: 28px; font-weight: 800; color: var(--fg); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.kpi-sub { font-size: 12px; color: var(--fg3); }
+.kpi-accent { color: var(--green); }
+.kpi-warn   { color: var(--warn); }
+.kpi-error  { color: var(--error); }
+
+/* Cards */
+.card {
+  background: var(--bg); border: 1px solid var(--bdr); border-radius: var(--r);
+  box-shadow: var(--sh-card);
+}
+
+/* Search */
+.search-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg); border: 1.5px solid var(--bdr); border-radius: 10px;
+  padding: 0 12px; transition: border-color .15s;
+}
+.search-bar:focus-within { border-color: var(--green); }
+.search-bar svg { color: var(--fg3); width: 15px; height: 15px; flex-shrink: 0; }
+.search-bar input {
+  flex: 1; border: none; background: transparent; outline: none;
+  font-family: var(--font-b); font-size: 13px; color: var(--fg); padding: 9px 0;
+}
+.search-bar input::placeholder { color: var(--fg3); }
+
+/* Filter chips */
+.filter-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  padding: 5px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; cursor: pointer;
+  border: 1.5px solid var(--bdr); background: var(--bg); color: var(--fg3); transition: all .15s;
+}
+.chip:hover { border-color: var(--green); color: var(--green); }
+.chip.active { border-color: var(--green); background: var(--green-xl); color: var(--green); }
+
+/* Section heads */
+.section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.section-head h3 { font-family: var(--font-d); font-size: 15px; font-weight: 800; color: var(--fg); margin: 0; }
+
+/* ═══════════════════════════════════════════════════════
+   BROWSE / BILLBOARD GRID
+═══════════════════════════════════════════════════════ */
+.browse-toolbar {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.browse-toolbar .search-bar { flex: 1; min-width: 220px; }
+
+.bb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+
+.bb-card {
+  background: var(--bg); border: 1px solid var(--bdr); border-radius: 14px;
+  overflow: hidden; cursor: pointer; transition: transform .18s, box-shadow .18s;
+}
+.bb-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,.12); }
+
+.bb-thumb {
+  height: 160px; display: flex; align-items: flex-end; justify-content: flex-start;
+  padding: 12px; position: relative;
+}
+.bb-format-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  background: rgba(0,0,0,.5); color: #fff; backdrop-filter: blur(4px);
+  border-radius: 6px; padding: 3px 8px;
+}
+.bb-digital-badge {
+  position: absolute; top: 12px; right: 12px;
+  background: rgba(37,99,235,.85); color: #fff; font-size: 10px; font-weight: 700;
+  border-radius: 6px; padding: 3px 8px; backdrop-filter: blur(4px);
+}
+.bb-body { padding: 16px; }
+.bb-title { font-family: var(--font-d); font-size: 15px; font-weight: 800; color: var(--fg); margin: 0 0 4px; }
+.bb-loc { font-size: 12px; color: var(--fg3); display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
+.bb-loc svg { width: 12px; height: 12px; }
+.bb-specs { display: flex; gap: 14px; margin-bottom: 14px; }
+.bb-spec { display: flex; flex-direction: column; gap: 1px; }
+.bb-spec-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--fg3); }
+.bb-spec-val { font-size: 12px; font-weight: 600; color: var(--fg); }
+.bb-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--bdr); }
+.bb-rate { font-family: var(--font-d); font-size: 17px; font-weight: 800; color: var(--green); }
+.bb-rate span { font-size: 12px; font-weight: 500; color: var(--fg3); }
+.bb-views { font-size: 11px; color: var(--fg3); display: flex; align-items: center; gap: 4px; }
+.bb-views svg { width: 12px; height: 12px; }
+
+/* ═══════════════════════════════════════════════════════
+   DETAIL DRAWER
+═══════════════════════════════════════════════════════ */
+.drawer-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 200;
+  display: flex; justify-content: flex-end; backdrop-filter: blur(2px);
+}
+.drawer {
+  width: 520px; max-width: 94vw; background: var(--bg);
+  height: 100%; overflow-y: auto; display: flex; flex-direction: column;
+  box-shadow: var(--sh-modal);
+}
+.drawer-hero { height: 220px; position: relative; flex-shrink: 0; }
+.drawer-close {
+  position: absolute; top: 14px; left: 14px;
+  background: rgba(0,0,0,.4); border: none; color: #fff; cursor: pointer;
+  width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px); transition: background .15s;
+}
+.drawer-close:hover { background: rgba(0,0,0,.65); }
+.drawer-close svg { width: 16px; height: 16px; }
+.drawer-body { padding: 24px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+.drawer-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.drawer-title { font-family: var(--font-d); font-size: 20px; font-weight: 900; color: var(--fg); margin: 0; }
+.drawer-loc { font-size: 13px; color: var(--fg3); display: flex; align-items: center; gap: 5px; margin-top: 4px; }
+.drawer-loc svg { width: 13px; height: 13px; }
+
+.specs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.spec-box {
+  background: var(--green-xl); border-radius: 10px; padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.spec-box .label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--green-dk); }
+.spec-box .val { font-size: 13px; font-weight: 700; color: var(--fg); }
+
+.drawer-desc { font-size: 13px; color: var(--fg2); line-height: 1.65; }
+.drawer-audience { background: var(--surface); border-radius: 10px; padding: 14px 16px; font-size: 13px; color: var(--fg2); }
+.drawer-audience strong { color: var(--fg); }
+
+.drawer-footer {
+  padding: 18px 24px; border-top: 1px solid var(--bdr); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between; background: var(--bg);
+  position: sticky; bottom: 0;
+}
+.drawer-rate { font-family: var(--font-d); font-size: 22px; font-weight: 900; color: var(--green); }
+.drawer-rate span { font-size: 13px; font-weight: 500; color: var(--fg3); }
+
+/* ═══════════════════════════════════════════════════════
+   BOOKING OVERLAY
+═══════════════════════════════════════════════════════ */
+.booking-overlay {
+  position: fixed; inset: 0; background: var(--bg); z-index: 300;
+  display: flex; flex-direction: column;
+}
+.booking-header {
+  height: var(--th); background: var(--bg); border-bottom: 1px solid var(--bdr);
+  display: flex; align-items: center; padding: 0 28px; gap: 16px; flex-shrink: 0;
+}
+.booking-back { background: none; border: none; color: var(--green); cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; }
+.booking-back svg { width: 15px; height: 15px; }
+.booking-title { font-family: var(--font-d); font-size: 16px; font-weight: 800; color: var(--fg); }
+.booking-steps-bar {
+  display: flex; align-items: center; gap: 0; padding: 0 28px; margin-left: auto;
+}
+.booking-step-item { display: flex; align-items: center; gap: 7px; }
+.step-circle {
+  width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--bdr);
+  display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;
+  background: var(--bg); color: var(--fg3); transition: all .2s;
+}
+.step-circle.done { background: var(--green); border-color: var(--green); color: #fff; }
+.step-circle.active { border-color: var(--green); color: var(--green); }
+.step-label { font-size: 12px; font-weight: 500; color: var(--fg3); }
+.step-label.active { color: var(--green); font-weight: 600; }
+.step-label.done { color: var(--fg2); }
+.step-connector { width: 32px; height: 2px; background: var(--bdr); margin: 0 8px; }
+.step-connector.done { background: var(--green); }
+
+.booking-body { flex: 1; overflow-y: auto; padding: 32px; display: flex; gap: 32px; align-items: flex-start; }
+.booking-left { flex: 1; min-width: 0; }
+.booking-right { width: 300px; flex-shrink: 0; }
+
+/* Calendar */
+.cal-month-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.cal-month-nav h4 { font-family: var(--font-d); font-size: 15px; font-weight: 800; margin: 0; color: var(--fg); }
+.cal-nav-btn { background: none; border: 1.5px solid var(--bdr); border-radius: 7px; color: var(--fg3); cursor: pointer; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+.cal-nav-btn:hover { border-color: var(--green); color: var(--green); }
+.cal-nav-btn svg { width: 14px; height: 14px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.cal-hdr { text-align: center; font-size: 11px; font-weight: 600; color: var(--fg3); padding: 4px 0 8px; }
+.cal-day {
+  aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; font-size: 13px; cursor: pointer; transition: all .12s;
+  color: var(--fg); user-select: none;
+}
+.cal-day:hover:not(.past):not(.empty) { background: var(--green-xl); color: var(--green); }
+.cal-day.empty { pointer-events: none; }
+.cal-day.past { color: var(--fg3); opacity: .4; pointer-events: none; }
+.cal-day.in-range { background: var(--green-xl); color: var(--green); border-radius: 0; }
+.cal-day.sel-start { background: var(--green); color: #fff; border-radius: 8px 0 0 8px; }
+.cal-day.sel-end   { background: var(--green); color: #fff; border-radius: 0 8px 8px 0; }
+.cal-day.sel-start.sel-end { border-radius: 8px; }
+
+.booking-type-toggle { display: flex; gap: 10px; margin-bottom: 24px; }
+.type-btn {
+  flex: 1; padding: 14px; border: 1.5px solid var(--bdr); border-radius: 10px;
+  background: var(--bg); cursor: pointer; text-align: left; transition: all .15s;
+}
+.type-btn:hover { border-color: var(--green); }
+.type-btn.active { border-color: var(--green); background: var(--green-xl); }
+.type-btn h5 { font-size: 13px; font-weight: 700; margin: 0 0 3px; color: var(--fg); }
+.type-btn p  { font-size: 11px; margin: 0; color: var(--fg3); }
+
+/* Booking summary card */
+.summary-card { background: var(--surface); border: 1px solid var(--bdr); border-radius: 12px; padding: 20px; }
+.summary-card h4 { font-family: var(--font-d); font-weight: 800; font-size: 14px; margin: 0 0 14px; color: var(--fg); }
+.summary-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 6px 0; }
+.summary-row.total { border-top: 1px solid var(--bdr); margin-top: 6px; padding-top: 12px; font-weight: 700; font-size: 14px; }
+.summary-row.total .val { color: var(--green); font-family: var(--font-d); font-size: 18px; font-weight: 900; }
+.summary-label { color: var(--fg3); }
+.summary-val   { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.booking-footer {
+  padding: 18px 28px; border-top: 1px solid var(--bdr); background: var(--bg);
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+
+/* Payment form */
+.payment-form { display: flex; flex-direction: column; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--fg); }
+.form-input {
+  padding: 10px 13px; border: 1.5px solid var(--bdr); border-radius: 9px;
+  font-family: var(--font-b); font-size: 13px; color: var(--fg); background: var(--bg); outline: none;
+  transition: border-color .15s;
+}
+.form-input:focus { border-color: var(--green); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.booking-success {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center;
+}
+.success-icon {
+  width: 72px; height: 72px; border-radius: 50%; background: var(--success-bg);
+  display: flex; align-items: center; justify-content: center; font-size: 32px;
+}
+.success-title { font-family: var(--font-d); font-size: 24px; font-weight: 900; color: var(--fg); }
+.success-sub { font-size: 14px; color: var(--fg3); max-width: 360px; }
+
+/* ═══════════════════════════════════════════════════════
+   CAMPAIGNS
+═══════════════════════════════════════════════════════ */
+.campaign-list { display: flex; flex-direction: column; gap: 12px; }
+.campaign-card {
+  background: var(--bg); border: 1px solid var(--bdr); border-radius: var(--r);
+  padding: 20px 22px; display: flex; flex-direction: column; gap: 12px;
+  cursor: pointer; transition: box-shadow .15s;
+}
+.campaign-card:hover { box-shadow: var(--sh-card); }
+.campaign-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.campaign-name { font-family: var(--font-d); font-size: 15px; font-weight: 800; color: var(--fg); margin: 0; }
+.campaign-meta { font-size: 12px; color: var(--fg3); margin-top: 4px; display: flex; gap: 14px; }
+.campaign-meta span { display: flex; align-items: center; gap: 4px; }
+.campaign-meta svg { width: 12px; height: 12px; }
+.progress-bar { background: var(--bdr); border-radius: 100px; height: 6px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--green); border-radius: 100px; transition: width .5s; }
+.campaign-footer { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--fg3); }
+
+/* ═══════════════════════════════════════════════════════
+   ANALYTICS
+═══════════════════════════════════════════════════════ */
+.analytics-layout { display: flex; flex-direction: column; gap: 24px; }
+.chart-card { background: var(--bg); border: 1px solid var(--bdr); border-radius: var(--r); padding: 22px; }
+.chart-card h4 { font-family: var(--font-d); font-size: 14px; font-weight: 800; margin: 0 0 20px; color: var(--fg); }
+.chart-wrap { position: relative; height: 280px; }
+
+/* ═══════════════════════════════════════════════════════
+   NOTIFICATIONS
+═══════════════════════════════════════════════════════ */
+.notif-list { display: flex; flex-direction: column; gap: 0; background: var(--bg); border: 1px solid var(--bdr); border-radius: var(--r); overflow: hidden; }
+.notif-item {
+  display: flex; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--bdr);
+  cursor: pointer; transition: background .12s; position: relative;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: var(--surface); }
+.notif-item.unread { background: var(--green-xl); }
+.notif-icon {
+  width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.notif-body { flex: 1; min-width: 0; }
+.notif-title { font-size: 13px; font-weight: 600; color: var(--fg); margin-bottom: 2px; }
+.notif-msg   { font-size: 12px; color: var(--fg3); line-height: 1.4; }
+.notif-time  { font-size: 11px; color: var(--fg3); margin-top: 4px; }
+.notif-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+  position: absolute; top: 18px; right: 16px; flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════
+   PROFILE
+═══════════════════════════════════════════════════════ */
+.profile-layout { display: grid; grid-template-columns: 260px 1fr; gap: 20px; align-items: start; }
+.profile-card { background: var(--bg); border: 1px solid var(--bdr); border-radius: var(--r); padding: 28px; text-align: center; }
+.profile-avatar {
+  width: 72px; height: 72px; border-radius: 50%; background: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-d); font-weight: 900; font-size: 26px; color: #fff; margin: 0 auto 14px;
+}
+.profile-name { font-family: var(--font-d); font-size: 18px; font-weight: 900; color: var(--fg); margin-bottom: 6px; }
+.profile-email { font-size: 13px; color: var(--fg3); margin-bottom: 12px; }
+.menu-group { background: var(--bg); border: 1px solid var(--bdr); border-radius: var(--r); overflow: hidden; margin-bottom: 14px; }
+.menu-group-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--fg3); padding: 12px 18px 8px; }
+.menu-row {
+  display: flex; align-items: center; gap: 12px; padding: 13px 18px;
+  border-top: 1px solid var(--bdr); cursor: pointer; transition: background .12s;
+}
+.menu-row:first-of-type { border-top: none; }
+.menu-row:hover { background: var(--surface); }
+.menu-row svg { width: 15px; height: 15px; color: var(--fg3); }
+.menu-row-label { font-size: 13px; font-weight: 500; color: var(--fg); flex: 1; }
+.menu-row-arrow { color: var(--fg3); }
+.menu-row-arrow svg { width: 14px; height: 14px; }
+
+/* ═══════════════════════════════════════════════════════
+   OWNER DASHBOARD
+═══════════════════════════════════════════════════════ */
+.pending-list { display: flex; flex-direction: column; gap: 12px; }
+.pending-card {
+  background: var(--bg); border: 1px solid var(--bdr); border-left: 3px solid var(--warn);
+  border-radius: var(--r); padding: 18px 20px; display: flex; align-items: center; gap: 16px;
+}
+.pending-info { flex: 1; min-width: 0; }
+.pending-advertiser { font-size: 12px; font-weight: 600; color: var(--fg3); margin-bottom: 2px; }
+.pending-billboard { font-size: 14px; font-weight: 700; color: var(--fg); margin-bottom: 4px; }
+.pending-dates { font-size: 12px; color: var(--fg3); display: flex; gap: 14px; }
+.pending-dates span { display: flex; align-items: center; gap: 4px; }
+.pending-dates svg { width: 11px; height: 11px; }
+.pending-amount { font-family: var(--font-d); font-size: 20px; font-weight: 900; color: var(--fg); text-align: right; flex-shrink: 0; }
+.pending-amount span { display: block; font-size: 11px; font-weight: 500; color: var(--fg3); font-family: var(--font-b); }
+.pending-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+.earnings-breakdown { background: var(--bg); border: 1px solid var(--bdr); border-radius: var(--r); overflow: hidden; }
+.earnings-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--bdr); font-size: 13px; }
+.earnings-row:last-child { border-bottom: none; font-weight: 700; background: var(--green-xl); }
+.earnings-label { color: var(--fg2); }
+.earnings-val { font-weight: 600; color: var(--fg); font-variant-numeric: tabular-nums; }
+.earnings-neg { color: var(--error); }
+.earnings-pos { color: var(--green); }
+
+/* ═══════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════ */
+.toast-container {
+  position: fixed; bottom: 24px; right: 24px; z-index: 1000;
+  display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+}
+.toast {
+  background: var(--dark); color: #fff; padding: 12px 18px; border-radius: 10px;
+  font-size: 13px; font-weight: 500; box-shadow: var(--sh-modal);
+  display: flex; align-items: center; gap: 10px; pointer-events: auto;
+  animation: toast-in .25s ease;
+}
+.toast svg { width: 15px; height: 15px; flex-shrink: 0; }
+.toast-success { background: var(--success); }
+.toast-error   { background: var(--error); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ═══════════════════════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════════════════════ */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 60px 20px; text-align: center;
+  background: var(--bg); border: 1px dashed var(--bdr); border-radius: var(--r);
+}
+.empty-icon { font-size: 36px; }
+.empty-title { font-family: var(--font-d); font-size: 16px; font-weight: 800; color: var(--fg); }
+.empty-sub { font-size: 13px; color: var(--fg3); }
+
+/* responsive */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .profile-layout { grid-template-columns: 1fr; }
+  .booking-body { flex-direction: column; }
+  .booking-right { width: 100%; }
+}
+</style>
+
+<div id="root"></div>
+<div class="toast-container" id="toasts"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   MOCK DATA
+═══════════════════════════════════════════════════════ */
+const BILLBOARDS = [
+  { id:1, title:"Lekki-Epe Expressway Mega", city:"Lagos", country:"Nigeria",
+    addr:"Lekki-Epe Expressway, km 14, Lagos", format:"Digital LED",
+    size:"48'×14'", rate:450, minDays:7, dailyViews:85000, illuminated:true, facing:"East",
+    desc:"Premium highway-facing digital display on Lagos' busiest arterial road. High dwell time from traffic buildup; excellent reach for mass-market FMCG and automotive brands.",
+    audience:"Commuters, professionals, C1/C2 income bracket",
+    color:"linear-gradient(135deg,#1B7A3E 0%,#0D4A25 100%)" },
+  { id:2, title:"Victoria Island Junction Gantry", city:"Lagos", country:"Nigeria",
+    addr:"Ozumba Mbadiwe Ave, Victoria Island, Lagos", format:"Gantry",
+    size:"60'×20'", rate:320, minDays:14, dailyViews:62000, illuminated:true, facing:"North",
+    desc:"Iconic gantry spanning the VI junction intersection. Maximum visibility from three traffic directions. A flagship site for brand launches and product reveals.",
+    audience:"Business professionals, high-income earners, tourists",
+    color:"linear-gradient(135deg,#1E3A5F 0%,#0D2440 100%)" },
+  { id:3, title:"CBD Roundabout Billboard", city:"Nairobi", country:"Kenya",
+    addr:"Kenyatta Ave / Uhuru Hwy Roundabout, Nairobi", format:"Standard",
+    size:"40'×14'", rate:280, minDays:7, dailyViews:54000, illuminated:false, facing:"West",
+    desc:"High-traffic roundabout location in central Nairobi. Adjacent to key government offices and financial institutions. Ideal for B2B and corporate campaigns.",
+    audience:"Office workers, government employees, retail shoppers",
+    color:"linear-gradient(135deg,#7C3AED 0%,#4C1D95 100%)" },
+  { id:4, title:"Westlands Rooftop Sign", city:"Nairobi", country:"Kenya",
+    addr:"Westlands Commercial Centre, Nairobi", format:"Rooftop",
+    size:"30'×10'", rate:190, minDays:7, dailyViews:31000, illuminated:true, facing:"South",
+    desc:"Elevated rooftop installation above the Westlands commercial hub. Visible from the Waiyaki Way flyover. Strong affinity audience for lifestyle and food brands.",
+    audience:"Middle-class consumers, expats, young professionals",
+    color:"linear-gradient(135deg,#D97706 0%,#92400E 100%)" },
+  { id:5, title:"Accra Ring Road Lamppost Cluster", city:"Accra", country:"Ghana",
+    addr:"Ring Road West, Accra", format:"Lamp Post",
+    size:"8'×4' × 12 units", rate:85, minDays:14, dailyViews:44000, illuminated:false, facing:"Both",
+    desc:"A cluster of 12 lamppost banners along Ring Road West. Cost-effective high-frequency exposure for local market activation. Package rate covers all 12 units.",
+    audience:"Commuters, pedestrians, market shoppers",
+    color:"linear-gradient(135deg,#DC2626 0%,#7F1D1D 100%)" },
+  { id:6, title:"Sandton Drive Digital Screen", city:"Johannesburg", country:"South Africa",
+    addr:"5th St & Sandton Drive, Sandton, JHB", format:"Digital LED",
+    size:"48'×14'", rate:520, minDays:7, dailyViews:72000, illuminated:true, facing:"NW",
+    desc:"Premium digital display at the gateway to Africa's richest square mile. Targets the highest income demographic in sub-Saharan Africa. Mandatory for luxury, finance, and automotive brands.",
+    audience:"High-net-worth individuals, financial executives, shoppers",
+    color:"linear-gradient(135deg,#0891B2 0%,#0E4B5E 100%)" },
+];
+
+const CAMPAIGNS = [
+  { id:1, name:"Q4 Brand Awareness — Nigeria",    status:"active",           budget:12500, spent:7800, startDate:"2026-10-01", endDate:"2026-12-31", billboards:3, impressions:1820000 },
+  { id:2, name:"Product Launch — Lagos Metro",    status:"pending_approval", budget:8000,  spent:0,    startDate:"2026-11-01", endDate:"2026-11-30", billboards:2, impressions:0 },
+  { id:3, name:"Holiday Season Push — East Africa", status:"draft",          budget:15000, spent:0,    startDate:null,         endDate:null,         billboards:0, impressions:0 },
+  { id:4, name:"Q3 Nairobi Market Blitz",         status:"completed",        budget:9500,  spent:9420, startDate:"2026-07-01", endDate:"2026-09-30", billboards:4, impressions:4320000 },
+];
+
+const NOTIFICATIONS = [
+  { id:1, type:"booking_approved", icon:"✅", bg:"#DCFCE7", title:"Booking approved", msg:"Your booking at Lekki-Epe Expressway Mega has been approved and is now live.", time:"2h ago", read:false },
+  { id:2, type:"payment",          icon:"💳", bg:"#DBEAFE", title:"Payment processed", msg:"$3,150 payment for Victoria Island Junction Gantry was successful.", time:"5h ago", read:false },
+  { id:3, type:"campaign",         icon:"📊", bg:"#EDE9FE", title:"Campaign milestone", msg:"Q4 Brand Awareness campaign reached 1M impressions today.", time:"1d ago", read:true },
+  { id:4, type:"artwork",          icon:"🖼️", bg:"#FEF3C7", title:"Artwork upload needed", msg:"Please upload artwork for CBD Roundabout Billboard — campaign starts in 3 days.", time:"2d ago", read:true },
+  { id:5, type:"system",           icon:"🔔", bg:"#F3F4F6", title:"New: Analytics export", msg:"You can now export campaign analytics as PDF from the Analytics tab.", time:"4d ago", read:true },
+];
+
+const OWNER = {
+  stats: { total:8, active:6, pending:3, monthlyNet:4250, occupancy:78 },
+  pendingBookings: [
+    { id:101, advertiser:"Kuna Advert Co.", billboard:"Lekki-Epe Expressway Mega",    start:"Nov 1",  end:"Nov 14", days:14, amount:6300,  type:"instant" },
+    { id:102, advertiser:"MarketPro Ltd",   billboard:"Victoria Island Junction Gantry", start:"Nov 8",  end:"Nov 14", days:7,  amount:3150,  type:"request" },
+    { id:103, advertiser:"BrandX Nigeria",  billboard:"Westlands Rooftop Sign",        start:"Nov 15", end:"Dec 14", days:30, amount:13500, type:"request" },
+  ],
+  earnings: { gross:5100, commission:850, net:4250, pending:1200, paid:3050 },
+};
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+const S = {
+  role:       null,       // 'advertiser' | 'owner'
+  view:       'browse',
+  detailId:   null,
+  bookingId:  null,
+  bStep:      1,          // 1 = dates, 2 = review, 3 = payment, 4 = success
+  bType:      'instant',
+  bStart:     null,
+  bEnd:       null,
+  bCalYear:   2026,
+  bCalMonth:  9,          // Oct (0-indexed)
+  formatFilter: 'all',
+  searchQ:    '',
+  campFilter: 'all',
+  notifs:     [...NOTIFICATIONS],
+  pending:    [...OWNER.pendingBookings],
+  chart:      null,
+};
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════ */
+const fmtMoney  = n => '$' + n.toLocaleString();
+const fmtNum    = n => n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? Math.round(n/1e3)+'K' : String(n);
+const padZero   = n => String(n).padStart(2,'0');
+const toDateStr = d => `${d.getFullYear()}-${padZero(d.getMonth()+1)}-${padZero(d.getDate())}`;
+const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function pillClass(status) {
+  return { active:'pill-active', pending_approval:'pill-pending', approved:'pill-approved',
+           rejected:'pill-rejected', completed:'pill-completed', draft:'pill-draft' }[status] || 'pill-pending';
+}
+function pillLabel(status) {
+  return { active:'Active', pending_approval:'Pending Approval', approved:'Approved',
+           rejected:'Rejected', completed:'Completed', draft:'Draft' }[status] || status;
+}
+
+const FORMATS = ['All','Standard','Digital LED','Gantry','Rooftop','Lamp Post'];
+const CAMP_FILTERS = ['All','Active','Pending Approval','Draft','Completed'];
+
+function filteredBillboards() {
+  return BILLBOARDS.filter(b => {
+    const matchFormat = S.formatFilter === 'all' || b.format.toLowerCase() === S.formatFilter.toLowerCase();
+    const matchSearch = !S.searchQ || b.title.toLowerCase().includes(S.searchQ.toLowerCase()) || b.city.toLowerCase().includes(S.searchQ.toLowerCase());
+    return matchFormat && matchSearch;
+  });
+}
+
+function filterByCamp(list) {
+  if (S.campFilter === 'all') return list;
+  return list.filter(c => c.status === S.campFilter.toLowerCase().replace(/ /g,'_'));
+}
+
+/* ═══════════════════════════════════════════════════════
+   SIDEBAR + TOPBAR
+═══════════════════════════════════════════════════════ */
+function renderSidebar() {
+  const isAdv = S.role === 'advertiser';
+  const navItems = isAdv ? [
+    { view:'browse',        icon:'map',           label:'Browse' },
+    { view:'campaigns',     icon:'bar-chart-2',   label:'Campaigns' },
+    { view:'analytics',     icon:'trending-up',   label:'Analytics' },
+    { view:'notifications', icon:'bell',          label:'Alerts',   badge: S.notifs.filter(n=>!n.read).length || 0 },
+    { view:'profile',       icon:'user',          label:'Profile' },
+  ] : [
+    { view:'dashboard',     icon:'grid',          label:'Dashboard' },
+    { view:'notifications', icon:'bell',          label:'Alerts',   badge: S.notifs.filter(n=>!n.read).length || 0 },
+    { view:'profile',       icon:'user',          label:'Profile' },
+  ];
+
+  const navHtml = navItems.map(item => `
+    <button class="nav-item ${S.view === item.view ? 'active' : ''}" data-action="nav" data-view="${item.view}">
+      <i data-feather="${item.icon}"></i> ${item.label}
+      ${item.badge ? `<span class="nav-badge">${item.badge}</span>` : ''}
+    </button>
+  `).join('');
+
+  return `
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-mark"><span>VB</span></div>
+        <span class="sidebar-logo-text">Vizta Board</span>
+        <span class="sidebar-role-badge">${isAdv ? 'Advertiser' : 'Owner'}</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        ${navHtml}
+      </nav>
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">KD</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">Kuna Doe</div>
+          <div class="sidebar-user-role">${isAdv ? 'Advertiser' : 'Billboard Owner'}</div>
+        </div>
+        <button class="sidebar-logout" data-action="logout" title="Sign out">
+          <i data-feather="log-out"></i>
+        </button>
+      </div>
+    </aside>
+  `;
+}
+
+function renderTopbar(title, actions='') {
+  return `
+    <div class="topbar">
+      <div class="topbar-title">${title}</div>
+      <div class="topbar-actions">${actions}</div>
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════
+   VIEW: BROWSE
+═══════════════════════════════════════════════════════ */
+function renderBrowse() {
+  const bbs = filteredBillboards();
+  const chips = FORMATS.map(f => `
+    <button class="chip ${S.formatFilter === (f === 'All' ? 'all' : f) ? 'active' : ''}"
+      data-action="format" data-val="${f === 'All' ? 'all' : f}">${f}</button>
+  `).join('');
+
+  const cards = bbs.length ? bbs.map(b => `
+    <div class="bb-card" data-action="open-detail" data-id="${b.id}">
+      <div class="bb-thumb" style="background:${b.color}">
+        <span class="bb-format-badge">${b.format}</span>
+        ${b.format === 'Digital LED' ? '<span class="bb-digital-badge">⚡ Digital</span>' : ''}
+      </div>
+      <div class="bb-body">
+        <div class="bb-title">${b.title}</div>
+        <div class="bb-loc">
+          <i data-feather="map-pin"></i> ${b.city}, ${b.country}
+        </div>
+        <div class="bb-specs">
+          <div class="bb-spec"><span class="bb-spec-label">Size</span><span class="bb-spec-val">${b.size}</span></div>
+          <div class="bb-spec"><span class="bb-spec-label">Daily Views</span><span class="bb-spec-val">${fmtNum(b.dailyViews)}</span></div>
+          <div class="bb-spec"><span class="bb-spec-label">Min. Days</span><span class="bb-spec-val">${b.minDays}d</span></div>
+        </div>
+        <div class="bb-footer">
+          <div class="bb-rate">${fmtMoney(b.rate)} <span>/ day</span></div>
+          <div class="bb-views"><i data-feather="eye"></i> ${fmtNum(b.dailyViews)} / day</div>
+        </div>
+      </div>
+    </div>
+  `).join('') : `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><div class="empty-title">No billboards found</div><div class="empty-sub">Try adjusting your search or filters</div></div>`;
+
+  return `
+    <div class="browse-toolbar">
+      <div class="search-bar">
+        <i data-feather="search"></i>
+        <input type="text" placeholder="Search by name or city…" id="searchInput" value="${S.searchQ}">
+      </div>
+      <div class="filter-chips">${chips}</div>
+    </div>
+    <div class="bb-grid">${cards}</div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════
+   DETAIL DRAWER
+═══════════════════════════════════════════════════════ */
+function renderDetailDrawer(id) {
+  const b = BILLBOARDS.find(x => x.id === id);
+  if (!b) return '';
+  return `
+    <div class="drawer-overlay" data-action="close-detail">
+      <div class="drawer" onclick="event.stopPropagation()">
+        <div class="drawer-hero" style="background:${b.color}">
+          <button class="drawer-close" data-action="close-detail"><i data-feather="x"></i></button>
+        </div>
+        <div class="drawer-body">
+          <div>
+            <div class="drawer-header">
+              <div>
+                <h2 class="drawer-title">${b.title}</h2>
+                <div class="drawer-loc"><i data-feather="map-pin"></i> ${b.addr}</div>
+              </div>
+              <span class="pill pill-active">Active</span>
+            </div>
+          </div>
+          <div class="specs-grid">
+            <div class="spec-box"><span class="label">Size</span><span class="val">${b.size}</span></div>
+            <div class="spec-box"><span class="label">Format</span><span class="val">${b.format}</span></div>
+            <div class="spec-box"><span class="label">Facing</span><span class="val">${b.facing}</span></div>
+            <div class="spec-box"><span class="label">Daily Views</span><span class="val">${fmtNum(b.dailyViews)}</span></div>
+            <div class="spec-box"><span class="label">Illuminated</span><span class="val">${b.illuminated ? 'Yes' : 'No'}</span></div>
+            <div class="spec-box"><span class="label">Min. Booking</span><span class="val">${b.minDays} days</span></div>
+          </div>
+          <div>
+            <div class="section-head"><h3>Description</h3></div>
+            <p class="drawer-desc">${b.desc}</p>
+          </div>
+          <div class="drawer-audience"><strong>Target audience:</strong> ${b.audience}</div>
+        </div>
+        <div class="drawer-footer">
+          <div>
+            <div class="drawer-rate">${fmtMoney(b.rate)} <span>/ day</span></div>
+            <div style="font-size:12px;color:var(--fg3)">Min. ${b.minDays} days booking</div>
+          </div>
+          <button class="btn btn-primary btn-lg" data-action="start-booking" data-id="${b.id}">
+            <i data-feather="calendar"></i> Book Now
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════
+   BOOKING OVERLAY
+═══════════════════════════════════════════════════════ */
+function renderCalendar() {
+  const { bCalYear:y, bCalMonth:m, bStart, bEnd } = S;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayStr = toDateStr(today);
+  const firstDow = new Date(y,m,1).getDay();
+  const daysInMonth = new Date(y,m+1,0).getDate();
+
+  let html = `<div class="cal-grid">`;
+  ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d => { html += `<div class="cal-hdr">${d}</div>`; });
+  for (let i = 0; i < firstDow; i++) html += `<div class="cal-day empty"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${y}-${padZero(m+1)}-${padZero(d)}`;
+    const isPast = dateStr < todayStr;
+    const isStart = dateStr === bStart;
+    const isEnd   = dateStr === bEnd;
+    const inRange = bStart && bEnd && dateStr > bStart && dateStr < bEnd;
+    let cls = 'cal-day';
+    if (isPast) cls += ' past';
+    if (inRange) cls += ' in-range';
+    if (isStart) cls += ' sel-start';
+    if (isEnd)   cls += ' sel-end';
+    const attrs = !isPast ? `data-action="pick-day" data-date="${dateStr}"` : '';
+    html += `<div class="${cls}" ${attrs}>${d}</div>`;
+  }
+  return html + '</div>';
+}
+
+function calcBookingCost(b) {
+  if (!S.bStart || !S.bEnd) return null;
+  const days = Math.round((new Date(S.bEnd) - new Date(S.bStart)) / 86400000) + 1;
+  const subtotal = days * b.rate;
+  const fee = Math.round(subtotal * 0.12);
+  return { days, subtotal, fee, total: subtotal + fee };
+}
+
+function renderBookingOverlay() {
+  const b = BILLBOARDS.find(x => x.id === S.bookingId);
+  if (!b) return '';
+  const cost = calcBookingCost(b);
+
+  const steps = [
+    { label:'Select Dates', num:1 },
+    { label:'Review',       num:2 },
+    { label:'Payment',      num:3 },
+  ];
+  const stepsHtml = steps.map((st, i) => {
+    const isDone   = S.bStep > st.num;
+    const isActive = S.bStep === st.num;
+    return `
+      ${i > 0 ? `<div class="step-connector ${S.bStep > st.num ? 'done' : ''}"></div>` : ''}
+      <div class="booking-step-item">
+        <div class="step-circle ${isDone ? 'done' : isActive ? 'active' : ''}">
+          ${isDone ? '<i data-feather="check" style="width:12px;height:12px"></i>' : st.num}
+        </div>
+        <span class="step-label ${isDone ? 'done' : isActive ? 'active' : ''}">${st.label}</span>
+      </div>
+    `;
+  }).join('');
+
+  let body = '';
+  if (S.bStep === 4) {
+    body = `
+      <div class="booking-success">
+        <div class="success-icon">✅</div>
+        <div class="success-title">${S.bType === 'instant' ? 'Booking Confirmed!' : 'Request Submitted!'}</div>
+        <p class="success-sub">${S.bType === 'instant'
+          ? `Your booking at <strong>${b.title}</strong> is confirmed. You'll receive a confirmation email shortly.`
+          : `Your booking request for <strong>${b.title}</strong> has been sent to the owner for approval.`}</p>
+        <div style="display:flex;gap:12px;margin-top:8px">
+          <button class="btn btn-outline" data-action="close-booking">View Campaigns</button>
+          <button class="btn btn-primary" data-action="close-booking">Browse More</button>
+        </div>
+      </div>
+    `;
+  } else if (S.bStep === 1) {
+    body = `
+      <div class="booking-left">
+        <div class="booking-type-toggle">
+          <button class="type-btn ${S.bType === 'instant' ? 'active' : ''}" data-action="btype" data-val="instant">
+            <h5>⚡ Instant Book</h5><p>Confirmed immediately, no owner approval needed</p>
+          </button>
+          <button class="type-btn ${S.bType === 'request' ? 'active' : ''}" data-action="btype" data-val="request">
+            <h5>📋 Request Booking</h5><p>Submit a request, owner has 48h to approve</p>
+          </button>
+        </div>
+        <div class="cal-month-nav">
+          <h4>${MONTHS[S.bCalMonth]} ${S.bCalYear}</h4>
+          <div style="display:flex;gap:6px">
+            <button class="cal-nav-btn" data-action="cal-prev"><i data-feather="chevron-left"></i></button>
+            <button class="cal-nav-btn" data-action="cal-next"><i data-feather="chevron-right"></i></button>
+          </div>
+        </div>
+        ${renderCalendar()}
+        ${S.bStart && S.bEnd && cost && cost.days < b.minDays
+          ? `<div class="callout" style="background:var(--warn-bg);border:1px solid var(--warn);border-radius:9px;padding:10px 14px;margin-top:12px;font-size:13px;color:var(--warn)">⚠️ Minimum booking is <strong>${b.minDays} days</strong>. You selected ${cost.days} days.</div>`
+          : ''}
+        ${S.bStart && !S.bEnd ? `<p style="font-size:13px;color:var(--fg3);margin-top:12px">Click a second date to set the end of your booking period.</p>` : ''}
+      </div>
+      <div class="booking-right">
+        <div class="summary-card">
+          <h4>${b.title}</h4>
+          <div class="summary-row"><span class="summary-label">Location</span><span class="summary-val">${b.city}, ${b.country}</span></div>
+          <div class="summary-row"><span class="summary-label">Rate</span><span class="summary-val">${fmtMoney(b.rate)}/day</span></div>
+          ${S.bStart ? `<div class="summary-row"><span class="summary-label">Start</span><span class="summary-val">${S.bStart}</span></div>` : ''}
+          ${S.bEnd   ? `<div class="summary-row"><span class="summary-label">End</span><span class="summary-val">${S.bEnd}</span></div>` : ''}
+          ${cost ? `
+            <div class="summary-row"><span class="summary-label">Duration</span><span class="summary-val">${cost.days} days</span></div>
+            <div class="summary-row"><span class="summary-label">Subtotal</span><span class="summary-val">${fmtMoney(cost.subtotal)}</span></div>
+            <div class="summary-row"><span class="summary-label">Platform fee (12%)</span><span class="summary-val">${fmtMoney(cost.fee)}</span></div>
+            <div class="summary-row total"><span class="summary-label">Total</span><span class="summary-val val" style="color:var(--green);font-family:var(--font-d);font-size:20px;font-weight:900">${fmtMoney(cost.total)}</span></div>
+          ` : `<div style="padding:20px 0;text-align:center;color:var(--fg3);font-size:13px">Select dates to see pricing</div>`}
+        </div>
+      </div>
+    `;
+  } else if (S.bStep === 2) {
+    const cost2 = calcBookingCost(b);
+    body = `
+      <div class="booking-left" style="max-width:540px">
+        <h3 style="font-family:var(--font-d);font-size:18px;font-weight:800;margin:0 0 20px">Confirm your booking</h3>
+        <div class="summary-card" style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+            <div style="width:60px;height:44px;border-radius:8px;background:${b.color};flex-shrink:0"></div>
+            <div><div style="font-weight:700;font-size:14px">${b.title}</div><div style="font-size:12px;color:var(--fg3)">${b.city}, ${b.country}</div></div>
+          </div>
+          <div class="summary-row"><span class="summary-label">Booking type</span><span class="summary-val">${S.bType === 'instant' ? '⚡ Instant Book' : '📋 Request'}</span></div>
+          <div class="summary-row"><span class="summary-label">Period</span><span class="summary-val">${S.bStart} → ${S.bEnd}</span></div>
+          <div class="summary-row"><span class="summary-label">Duration</span><span class="summary-val">${cost2.days} days</span></div>
+          <div class="summary-row"><span class="summary-label">Subtotal</span><span class="summary-val">${fmtMoney(cost2.subtotal)}</span></div>
+          <div class="summary-row"><span class="summary-label">Platform fee (12%)</span><span class="summary-val">${fmtMoney(cost2.fee)}</span></div>
+          <div class="summary-row total"><span class="summary-label">Total</span><span class="summary-val" style="color:var(--green);font-family:var(--font-d);font-size:20px;font-weight:900">${fmtMoney(cost2.total)}</span></div>
+        </div>
+        <p style="font-size:13px;color:var(--fg3)">By proceeding, you agree to Vizta Board's <a href="#">Terms of Service</a> and <a href="#">Booking Policy</a>. Artwork upload will be required after booking is confirmed.</p>
+      </div>
+    `;
+  } else if (S.bStep === 3) {
+    const cost3 = calcBookingCost(b);
+    body = `
+      <div class="booking-left" style="max-width:480px">
+        <h3 style="font-family:var(--font-d);font-size:18px;font-weight:800;margin:0 0 6px">Payment</h3>
+        <p style="font-size:13px;color:var(--fg3);margin:0 0 24px">Your card will be charged ${fmtMoney(cost3.total)}</p>
+        <div class="payment-form">
+          <div class="form-group">
+            <label class="form-label">Cardholder name</label>
+            <input class="form-input" type="text" placeholder="Kuna Doe" value="Kuna Doe">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Card number</label>
+            <input class="form-input" type="text" placeholder="4242 4242 4242 4242" value="4242 4242 4242 4242" style="font-family:monospace;letter-spacing:2px">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Expiry date</label>
+              <input class="form-input" type="text" placeholder="MM / YY" value="12 / 29">
+            </div>
+            <div class="form-group">
+              <label class="form-label">CVC</label>
+              <input class="form-input" type="text" placeholder="•••" value="123">
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;margin-top:20px;font-size:13px;color:var(--fg3);display:flex;align-items:center;gap:10px">
+          <span style="font-size:18px">🔒</span>
+          Payments are processed securely via Stripe. Vizta Board does not store your card details.
+        </div>
+      </div>
+    `;
+  }
+
+  const canNext = S.bStep === 1 ? (S.bStart && S.bEnd && (!calcBookingCost(b) || calcBookingCost(b).days >= b.minDays)) : S.bStep < 4;
+  const nextLabel = S.bStep === 1 ? 'Review Booking' : S.bStep === 2 ? 'Proceed to Payment' : `Pay ${cost ? fmtMoney(cost.total) : ''}`;
+
+  return `
+    <div class="booking-overlay">
+      <div class="booking-header">
+        ${S.bStep < 4 ? `<button class="booking-back" data-action="booking-back"><i data-feather="arrow-left"></i> ${S.bStep === 1 ? 'Back to listing' : 'Back'}</button>` : ''}
+        <span class="booking-title">Book: ${b.title}</span>
+        ${S.bStep < 4 ? `<div class="booking-steps-bar">${stepsHtml}</div>` : ''}
+      </div>
+      ${S.bStep < 4 ? `<div class="booking-body">${body}</div>` : body}
+      ${S.bStep < 4 ? `
+        <div class="booking-footer">
+          <span style="font-size:13px;color:var(--fg3)">
+            ${S.bStep === 1 && S.bStart && S.bEnd && cost ? `${cost.days} days · ${fmtMoney(cost.total)} total` : ''}
+          </span>
+          <button class="btn btn-primary btn-lg" data-action="booking-next" ${!canNext ? 'disabled style="opacity:.45;cursor:not-allowed"' : ''}>
+            ${nextLabel} <i data-feather="arrow-right"></i>
+          </button>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════
+   VIEW: CAMPAIGNS
+═══════════════════════════════════════════════════════ */
+function renderCampaigns() {
+  const chips = CAMP_FILTERS.map(f => `
+    <button class="chip ${S.campFilter === (f==='All'?'all':f) ? 'active' : ''}"
+      data-action="camp-filter" data-val="${f==='All'?'all':f}">${f}</button>
+  `).join('');
+
+  const list = filterByCamp(CAMPAIGNS);
+  const cards = list.length ? list.map(c => {
+    const pct = c.budget ? Math.round(c.spent / c.budget * 100) : 0;
+    const dates = c.startDate ? `${c.startDate} → ${c.endDate}` : 'Dates TBD';
+    return `
+      <div class="campaign-card">
+        <div class="campaign-top">
+          <div>
+            <div class="campaign-name">${c.name}</div>
+            <div class="campaign-meta">
+              <span><i data-feather="calendar"></i> ${dates}</span>
+              <span><i data-feather="map-pin"></i> ${c.billboards} billboard${c.billboards !== 1 ? 's' : ''}</span>
+              ${c.impressions ? `<span><i data-feather="eye"></i> ${fmtNum(c.impressions)} impressions</span>` : ''}
+            </div>
+          </div>
+          <span class="pill ${pillClass(c.status)}">${pillLabel(c.status)}</span>
+        </div>
+        <div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        </div>
+        <div class="campaign-footer">
+          <span>${fmtMoney(c.spent)} of ${fmtMoney(c.budget)} spent</span>
+          <span>${pct}% budget used</span>
+        </div>
+      </div>
+    `;
+  }).join('') : `<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">No campaigns</div><div class="empty-sub">Start a booking from the Browse tab to create your first campaign</div></div>`;
+
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div class="filter-chips">${chips}</div>
+      <button class="btn btn-primary btn-sm"><i data-feather="plus"></i> New Campaign</button>
+    </div>
+    <div class="campaign-list">${cards}</div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════
+   VIEW: ANALYTICS
+═══════════════════════════════════════════════════════ */
+function renderAnalytics() {
+  const campChips = CAMPAIGNS.filter(c => c.status === 'active' || c.status === 'completed').map(c => `
+    <button class="chip ${S.analyticsId === c.id ? 'active' : ''}" data-action="analytics-camp" data-id="${c.id}">${c.name}</button>
+  `).join('');
+
+  const camp = CAMPAIGNS.find(c => c.id === S.analyticsId) || CAMPAIGNS[0];
+
+  return `
+    <div class="analytics-layout">
+      <div class="filter-chips">${campChips}</div>
+      <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="kpi-tile"><div class="kpi-label">Total Impressions</div><div class="kpi-value kpi-accent">${fmtNum(camp.impressions)}</div><div class="kpi-sub">Campaign total</div></div>
+        <div class="kpi-tile"><div class="kpi-label">Avg. Daily Reach</div><div class="kpi-value">${fmtNum(Math.round(camp.impressions / 90))}</div><div class="kpi-sub">Unique viewers est.</div></div>
+        <div class="kpi-tile"><div class="kpi-label">Billboards</div><div class="kpi-value">${camp.billboards}</div><div class="kpi-sub">Active sites</div></div>
+        <div class="kpi-tile"><div class="kpi-label">Budget Spent</div><div class="kpi-value">${fmtMoney(camp.spent)}</div><div class="kpi-sub">of ${fmtMoney(camp.budget)}</div></div>
+      </div>
+      <div class="chart-card">
+        <h4>Daily Impressions — Last 30 days</h4>
+        <div class="chart-wrap"><canvas id="analyticsChart"></canvas></div>
+      </div>
+    </div>
+  `;
+}
+
+function initChart() {
+  if (S.chart) { S.chart.destroy(); S.chart = null; }
+  const canvas = document.getElementById('analyticsChart');
+  if (!canvas) return;
+  const camp = CAMPAIGNS.find(c => c.id === S.analyticsId) || CAMPAIGNS[0];
+  const labels = Array.from({length:30},(_,i) => { const d = new Date('2026-09-14'); d.setDate(d.getDate()+i); return `${d.getMonth()+1}/${d.getDate()}`; });
+  const base = Math.round(camp.impressions / 30);
+  const data  = labels.map(() => Math.max(0, base + Math.round((Math.random()-.45) * base * .6)));
+  const isDark = document.documentElement.dataset.theme === 'dark' || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const gridColor = isDark ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.06)';
+  const textColor = isDark ? '#7DA690' : '#6B6B6B';
+  S.chart = new Chart(canvas, {
+    type: 'bar',
+    data: { labels, datasets: [{ label:'Impressions', data, backgroundColor:'rgba(27,122,62,.7)', borderRadius:4 }] },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label: ctx => ' '+fmtNum(ctx.raw)+' impressions' } } },
+      scales: {
+        x:{ ticks:{ color:textColor, font:{size:11}, maxTicksLimit:10 }, grid:{ color:gridColor } },
+        y:{ ticks:{ color:textColor, font:{size:11}, callback: v => fmtNum(v) }, grid:{ color:gridColor } }
+      }
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   VIEW: NOTIFICATIONS
+═══════════════════════════════════════════════════════ */
+function renderNotifications() {
+  const unreadCount = S.notifs.filter(n => !n.read).length;
+  const list = S.notifs.map(n => `
+    <div class="notif-item ${n.read ? '' : 'unread'}" data-action="mark-read" data-id="${n.id}">
+      <div class="notif-icon" style="background:${n.bg}">${n.icon}</div>
+      <div class="notif-body">
+        <div class="notif-title">${n.title}</div>
+        <div class="notif-msg">${n.msg}</div>
+        <div class="notif-time">${n.time}</div>
+      </div>
+      ${!n.read ? '<div class="notif-dot"></div>' : ''}
+    </div>
+  `).join('');
+
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="font-size:13px;color:var(--fg3)">${unreadCount} unread</div>
+      ${unreadCount > 0 ? `<button class="btn btn-ghost btn-sm" data-action="mark-all-read">Mark all read</button>` : ''}
+    </div>
+    <div class="notif-list">${list}</div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════
+   VIEW: PROFILE
+═══════════════════════════════════════════════════════ */
+function renderProfile() {
+  const isAdv = S.role === 'advertiser';
+  return `
+    <div class="profile-layout">
+      <div class="profile-card">
+        <div class="profile-avatar">KD</div>
+        <div class="profile-name">Kuna Doe</div>
+        <div class="profile-email">kuna.doe@viztaboard.com</div>
+        <span class="pill ${isAdv ? 'pill-active' : 'pill-approved'}" style="margin-bottom:16px">${isAdv ? 'Advertiser' : 'Billboard Owner'}</span>
+        <button class="btn btn-outline btn-sm" style="width:100%;margin-bottom:8px"><i data-feather="edit-2"></i> Edit Profile</button>
+        <button class="btn btn-danger btn-sm" style="width:100%" data-action="logout">Sign Out</button>
+      </div>
+      <div>
+        <div class="menu-group">
+          <div class="menu-group-label">Account</div>
+          <div class="menu-row"><i data-feather="user"></i><span class="menu-row-label">Personal Information</span><span class="menu-row-arrow"><i data-feather="chevron-right"></i></span></div>
+          <div class="menu-row"><i data-feather="lock"></i><span class="menu-row-label">Change Password</span><span class="menu-row-arrow"><i data-feather="chevron-right"></i></span></div>
+          <div class="menu-row"><i data-feather="shield"></i><span class="menu-row-label">Two-Factor Authentication</span><span class="menu-row-arrow"><i data-feather="chevron-right"></i></span></div>
+        </div>
+        <div class="menu-group">
+          <div class="menu-group-label">Billing</div>
+          <div class="menu-row"><i data-feather="credit-card"></i><span class="menu-row-label">Payment Methods</span><span class="menu-row-arrow"><i data-feather="chevron-right"></i></span></div>
+          <div class="menu-row"><i data-feather="file-text"></i><span class="menu-row-label">Invoices &amp; Receipts</span><span class="menu-row-arrow"><i data-feather="chevron-right"></i></span></div>
+        </div>
+        <div class="menu-group">
+          <div class="menu-group-label">Support</div>
+          <div class="menu-row"><i data-feather="help-circle"></i><span class="menu-row-label">Help Center</span><span class="menu-row-arrow"><i data-feather="chevron-right"></i></span></div>
+          <div class="menu-row"><i data-feather="message-circle"></i><span class="menu-row-label">Contact Support</span><span class="menu-row-arrow"><i data-feather="chevron-right"></i></span></div>
+        </div>
+        <div style="font-size:12px;color:var(--fg3);text-align:center;margin-top:20px">Vizta Board v1.0.0 · Africa's Billboard Marketplace</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════
+   VIEW: OWNER DASHBOARD
+═══════════════════════════════════════════════════════ */
+function renderOwnerDashboard() {
+  const st = OWNER.stats;
+  const kpis = `
+    <div class="kpi-row" style="grid-template-columns:repeat(5,1fr);margin-bottom:28px">
+      <div class="kpi-tile"><div class="kpi-label">Total Billboards</div><div class="kpi-value">${st.total}</div><div class="kpi-sub">${st.active} active</div></div>
+      <div class="kpi-tile"><div class="kpi-label">Pending Approval</div><div class="kpi-value kpi-warn">${S.pending.length}</div><div class="kpi-sub">Awaiting action</div></div>
+      <div class="kpi-tile"><div class="kpi-label">Oct Net Earnings</div><div class="kpi-value kpi-accent">${fmtMoney(st.monthlyNet)}</div><div class="kpi-sub">After 12% commission</div></div>
+      <div class="kpi-tile"><div class="kpi-label">Occupancy</div><div class="kpi-value">${st.occupancy}%</div><div class="kpi-sub">Active boards</div></div>
+      <div class="kpi-tile"><div class="kpi-label">Paid Out</div><div class="kpi-value">${fmtMoney(OWNER.earnings.paid)}</div><div class="kpi-sub">This month</div></div>
+    </div>
+  `;
+
+  const pendingHtml = S.pending.length ? S.pending.map(p => `
+    <div class="pending-card" id="pending-${p.id}">
+      <div class="pending-info">
+        <div class="pending-advertiser">${p.advertiser} · <span class="pill ${p.type==='instant'?'pill-active':'pill-pending'}" style="font-size:10px">${p.type==='instant'?'Instant':'Request'}</span></div>
+        <div class="pending-billboard">${p.billboard}</div>
+        <div class="pending-dates">
+          <span><i data-feather="calendar"></i> ${p.start} – ${p.end}</span>
+          <span><i data-feather="clock"></i> ${p.days} days</span>
+        </div>
+      </div>
+      <div class="pending-amount">${fmtMoney(p.amount)}<span>gross</span></div>
+      <div class="pending-actions">
+        <button class="btn btn-success btn-sm" data-action="approve-booking" data-id="${p.id}"><i data-feather="check"></i> Approve</button>
+        <button class="btn btn-danger btn-sm"  data-action="reject-booking"  data-id="${p.id}"><i data-feather="x"></i> Reject</button>
+      </div>
+    </div>
+  `).join('') : `<div class="empty-state"><div class="empty-icon">🎉</div><div class="empty-title">All caught up!</div><div class="empty-sub">No pending booking requests right now</div></div>`;
+
+  const earn = OWNER.earnings;
+  const earningsHtml = `
+    <div class="earnings-breakdown">
+      <div class="earnings-row"><span class="earnings-label">Gross revenue</span><span class="earnings-val">${fmtMoney(earn.gross)}</span></div>
+      <div class="earnings-row"><span class="earnings-label">Platform commission (12%)</span><span class="earnings-val earnings-neg">− ${fmtMoney(earn.commission)}</span></div>
+      <div class="earnings-row"><span class="earnings-label">Net earnings</span><span class="earnings-val earnings-pos">${fmtMoney(earn.net)}</span></div>
+      <div class="earnings-row"><span class="earnings-label">Pending payout</span><span class="earnings-val">${fmtMoney(earn.pending)}</span></div>
+      <div class="earnings-row"><span class="earnings-label">Paid out (Oct)</span><span class="earnings-val earnings-pos">${fmtMoney(earn.paid)}</span></div>
+    </div>
+  `;
+
+  return `
+    ${kpis}
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start">
+      <div>
+        <div class="section-head"><h3>Pending Bookings (${S.pending.length})</h3></div>
+        <div class="pending-list">${pendingHtml}</div>
+      </div>
+      <div>
+        <div class="section-head"><h3>October Earnings</h3></div>
+        ${earningsHtml}
+      </div>
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ROLE SELECTOR
+═══════════════════════════════════════════════════════ */
+function renderRoleSelector() {
+  return `
+    <div class="role-screen">
+      <div class="role-card">
+        <div class="role-logo">
+          <div class="role-logo-mark"><span>VB</span></div>
+          <span class="role-logo-text">Vizta Board</span>
+        </div>
+        <p class="role-tagline">Africa's Billboard Marketplace</p>
+        <h2 class="role-heading">Continue as…</h2>
+        <p class="role-sub">Select your role to enter the platform</p>
+        <div class="role-options">
+          <div class="role-option" data-action="set-role" data-role="advertiser">
+            <div class="role-option-icon" style="background:#DCFCE7">📣</div>
+            <div class="role-option-name">Advertiser</div>
+            <div class="role-option-desc">Browse &amp; book billboard spaces for your campaigns</div>
+          </div>
+          <div class="role-option" data-action="set-role" data-role="owner">
+            <div class="role-option-icon" style="background:#D6EFE0">🏢</div>
+            <div class="role-option-name">Billboard Owner</div>
+            <div class="role-option-desc">Manage your inventory and approve bookings</div>
+          </div>
+        </div>
+        <p class="role-footer">Demo mode — no authentication required</p>
+      </div>
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════
+   MASTER RENDER
+═══════════════════════════════════════════════════════ */
+const PAGE_TITLES = {
+  browse:'Browse Billboards', campaigns:'Campaigns', analytics:'Analytics',
+  notifications:'Notifications', profile:'Profile', dashboard:'Dashboard',
+};
+
+function render() {
+  const root = document.getElementById('root');
+
+  if (!S.role) {
+    root.innerHTML = renderRoleSelector();
+    feather.replace();
+    bindEvents();
+    return;
+  }
+
+  // Booking overlay takes full screen
+  if (S.bookingId !== null) {
+    root.innerHTML = renderBookingOverlay();
+    feather.replace();
+    bindEvents();
+    return;
+  }
+
+  const title = PAGE_TITLES[S.view] || '';
+  const extraActions = S.view === 'browse' ? `
+    <button class="btn btn-ghost btn-sm"><i data-feather="sliders"></i> Filters</button>
+  ` : S.view === 'analytics' ? `
+    <button class="btn btn-outline btn-sm"><i data-feather="download"></i> Export PDF</button>
+  ` : '';
+
+  let viewHtml = '';
+  switch (S.view) {
+    case 'browse':        viewHtml = renderBrowse(); break;
+    case 'campaigns':     viewHtml = renderCampaigns(); break;
+    case 'analytics':     viewHtml = renderAnalytics(); break;
+    case 'notifications': viewHtml = renderNotifications(); break;
+    case 'profile':       viewHtml = renderProfile(); break;
+    case 'dashboard':     viewHtml = renderOwnerDashboard(); break;
+    default:              viewHtml = renderBrowse();
+  }
+
+  root.innerHTML = `
+    ${renderSidebar()}
+    <div class="main">
+      ${renderTopbar(title, extraActions)}
+      <div class="content">${viewHtml}</div>
+    </div>
+    ${S.detailId !== null ? renderDetailDrawer(S.detailId) : ''}
+  `;
+
+  feather.replace();
+  if (S.view === 'analytics') requestAnimationFrame(initChart);
+  bindEvents();
+}
+
+/* ═══════════════════════════════════════════════════════
+   EVENTS
+═══════════════════════════════════════════════════════ */
+function bindEvents() {
+  const root = document.getElementById('root');
+  root.removeEventListener('click', handleClick);
+  root.addEventListener('click', handleClick);
+
+  const si = document.getElementById('searchInput');
+  if (si) {
+    si.removeEventListener('input', handleSearch);
+    si.addEventListener('input', handleSearch);
+  }
+}
+
+function handleSearch(e) {
+  S.searchQ = e.target.value;
+  const grid = document.querySelector('.bb-grid');
+  if (grid) {
+    grid.innerHTML = renderBrowse().match(/<div class="bb-grid">([\s\S]*)<\/div>$/)?.[1] || '';
+    // Simple approach: just re-render the whole content area
+    document.querySelector('.content').innerHTML = renderBrowse();
+    feather.replace();
+    const si = document.getElementById('searchInput');
+    if (si) { si.focus(); si.setSelectionRange(si.value.length, si.value.length); si.addEventListener('input', handleSearch); }
+  }
+}
+
+function handleClick(e) {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const action = el.dataset.action;
+  const id     = el.dataset.id ? Number(el.dataset.id) : null;
+  const val    = el.dataset.val;
+  const view   = el.dataset.view;
+  const role   = el.dataset.role;
+  const date   = el.dataset.date;
+
+  switch (action) {
+    case 'set-role':
+      S.role = role;
+      S.view = role === 'advertiser' ? 'browse' : 'dashboard';
+      render(); break;
+
+    case 'logout':
+      S.role = null; S.detailId = null; S.bookingId = null;
+      render(); break;
+
+    case 'nav':
+      S.view = view;
+      if (S.view !== 'analytics' && S.chart) { S.chart.destroy(); S.chart = null; }
+      render(); break;
+
+    case 'open-detail':
+      S.detailId = id; render(); break;
+
+    case 'close-detail':
+      S.detailId = null; render(); break;
+
+    case 'start-booking':
+      S.bookingId = id; S.bStep = 1; S.bStart = null; S.bEnd = null; S.bType = 'instant';
+      S.detailId = null;
+      render(); break;
+
+    case 'close-booking':
+      S.bookingId = null; S.bStep = 1;
+      S.view = S.bStep === 4 ? 'campaigns' : S.view;
+      render(); break;
+
+    case 'booking-back':
+      if (S.bStep === 1) { S.bookingId = null; S.detailId = S.bookingId; render(); }
+      else { S.bStep--; render(); }
+      break;
+
+    case 'booking-next':
+      S.bStep = Math.min(4, S.bStep + 1);
+      if (S.bStep === 4) toast('Booking submitted!', 'success');
+      render(); break;
+
+    case 'btype':
+      S.bType = val; render(); break;
+
+    case 'cal-prev':
+      S.bCalMonth--; if (S.bCalMonth < 0) { S.bCalMonth = 11; S.bCalYear--; }
+      render(); break;
+
+    case 'cal-next':
+      S.bCalMonth++; if (S.bCalMonth > 11) { S.bCalMonth = 0; S.bCalYear++; }
+      render(); break;
+
+    case 'pick-day':
+      if (!S.bStart || (S.bStart && S.bEnd)) {
+        S.bStart = date; S.bEnd = null;
+      } else if (date > S.bStart) {
+        S.bEnd = date;
+      } else {
+        S.bStart = date; S.bEnd = null;
+      }
+      render(); break;
+
+    case 'format':
+      S.formatFilter = val; render(); break;
+
+    case 'camp-filter':
+      S.campFilter = val; render(); break;
+
+    case 'analytics-camp':
+      S.analyticsId = id;
+      if (S.chart) { S.chart.destroy(); S.chart = null; }
+      render(); break;
+
+    case 'mark-read':
+      S.notifs = S.notifs.map(n => n.id === id ? {...n, read:true} : n);
+      render(); break;
+
+    case 'mark-all-read':
+      S.notifs = S.notifs.map(n => ({...n, read:true}));
+      render(); break;
+
+    case 'approve-booking':
+      S.pending = S.pending.filter(p => p.id !== id);
+      toast('Booking approved — advertiser notified ✓', 'success');
+      render(); break;
+
+    case 'reject-booking':
+      S.pending = S.pending.filter(p => p.id !== id);
+      toast('Booking rejected and removed', 'error');
+      render(); break;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════ */
+function toast(msg, type='') {
+  const c = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = `toast ${type === 'success' ? 'toast-success' : type === 'error' ? 'toast-error' : ''}`;
+  t.innerHTML = `<i data-feather="${type==='success'?'check-circle':type==='error'?'x-circle':'info'}"></i> ${msg}`;
+  c.appendChild(t);
+  feather.replace();
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(()=>t.remove(), 300); }, 3000);
+}
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+render();
+</script>
+
+</body></html>

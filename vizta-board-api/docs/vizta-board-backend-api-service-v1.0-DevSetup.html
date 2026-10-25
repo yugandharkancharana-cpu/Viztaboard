@@ -1,0 +1,889 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>VS Code Dev Setup — Vizta Board API</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f8f8f6;
+    --surface: #ffffff;
+    --surface2: #f2f2ef;
+    --border: #e2e2de;
+    --fg: #1a1a18;
+    --fg2: #6b6b66;
+    --fg3: #9a9a94;
+    --accent: #1d6f42;
+    --accent-bg: #eaf4ee;
+    --accent2: #5b5bd6;
+    --accent2-bg: #eeeeff;
+    --warn: #9a5700;
+    --warn-bg: #fff4e6;
+    --tag-bg: #e8e8e4;
+    --code-bg: #1e1e2e;
+    --code-fg: #cdd6f4;
+    --code-keyword: #cba6f7;
+    --code-string: #a6e3a1;
+    --code-comment: #6c7086;
+    --code-value: #fab387;
+    --code-key: #89b4fa;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+    --radius: 8px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #13131a;
+      --surface: #1e1e2e;
+      --surface2: #181825;
+      --border: #2a2a3e;
+      --fg: #cdd6f4;
+      --fg2: #a6adc8;
+      --fg3: #6c7086;
+      --accent: #a6e3a1;
+      --accent-bg: #1a2a1f;
+      --accent2: #89b4fa;
+      --accent2-bg: #1a2035;
+      --warn: #fab387;
+      --warn-bg: #2a1f15;
+      --tag-bg: #2a2a3e;
+      --code-bg: #11111b;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #13131a; --surface: #1e1e2e; --surface2: #181825;
+    --border: #2a2a3e; --fg: #cdd6f4; --fg2: #a6adc8; --fg3: #6c7086;
+    --accent: #a6e3a1; --accent-bg: #1a2a1f; --accent2: #89b4fa; --accent2-bg: #1a2035;
+    --warn: #fab387; --warn-bg: #2a1f15; --tag-bg: #2a2a3e;
+    --code-bg: #11111b; --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.4); color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    background: var(--bg);
+    color: var(--fg);
+    padding: 0;
+    min-height: 100%;
+  }
+
+  /* ── Layout ── */
+  .page { max-width: 900px; margin: 0 auto; padding: 32px 20px 64px; }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-icon {
+    width: 48px; height: 48px; border-radius: 10px;
+    background: var(--accent-bg); border: 1.5px solid var(--accent);
+    display: grid; place-items: center; flex-shrink: 0;
+    font-size: 22px;
+  }
+  .header-text h1 {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.3px;
+    color: var(--fg);
+  }
+  .header-text p { color: var(--fg2); margin-top: 4px; }
+  .header-meta { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+    background: var(--tag-bg); color: var(--fg2);
+    white-space: nowrap;
+  }
+  .badge.green { background: var(--accent-bg); color: var(--accent); }
+  .theme-toggle {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--fg2); border-radius: 6px; padding: 5px 10px;
+    cursor: pointer; font-size: 12px; font-family: inherit;
+  }
+  .theme-toggle:hover { color: var(--fg); }
+
+  /* ── Tabs ── */
+  .tabs { display: flex; gap: 2px; margin-bottom: 24px; flex-wrap: wrap; }
+  .tab {
+    padding: 8px 16px; border-radius: 6px; cursor: pointer;
+    font-size: 13px; font-weight: 500; color: var(--fg2);
+    background: transparent; border: none; font-family: inherit;
+    transition: color 0.15s, background 0.15s;
+  }
+  .tab:hover { background: var(--surface2); color: var(--fg); }
+  .tab.active { background: var(--surface); color: var(--fg); box-shadow: var(--shadow); }
+
+  /* ── Panels ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── Section headings ── */
+  .section { margin-bottom: 28px; }
+  .section-title {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.4px;
+    text-transform: uppercase; color: var(--fg3);
+    margin-bottom: 12px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px;
+    box-shadow: var(--shadow); margin-bottom: 12px;
+  }
+  .card-title { font-weight: 600; color: var(--fg); margin-bottom: 4px; }
+  .card-sub { font-size: 12px; color: var(--fg2); }
+
+  /* ── Extension list ── */
+  .ext-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+  }
+  .ext-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 14px;
+    box-shadow: var(--shadow); display: flex; gap: 10px; align-items: flex-start;
+  }
+  .ext-icon {
+    font-size: 20px; flex-shrink: 0; width: 32px; height: 32px;
+    display: grid; place-items: center;
+    background: var(--surface2); border-radius: 6px;
+  }
+  .ext-name { font-weight: 600; font-size: 13px; color: var(--fg); }
+  .ext-id { font-size: 11px; color: var(--fg3); font-family: 'JetBrains Mono', monospace; margin-top: 1px; }
+  .ext-desc { font-size: 12px; color: var(--fg2); margin-top: 3px; }
+  .ext-tag {
+    display: inline-block; padding: 1px 7px; border-radius: 4px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
+    margin-top: 5px; background: var(--tag-bg); color: var(--fg3);
+  }
+  .ext-tag.required { background: var(--accent-bg); color: var(--accent); }
+
+  /* ── Code blocks ── */
+  .code-block {
+    background: var(--code-bg); border-radius: var(--radius);
+    padding: 16px 20px; margin: 10px 0;
+    overflow-x: auto; position: relative;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .code-block pre {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 12.5px; line-height: 1.65; color: var(--code-fg);
+    white-space: pre; margin: 0;
+  }
+  .code-label {
+    font-size: 11px; font-weight: 600; color: var(--fg3);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 6px; letter-spacing: 0.5px;
+  }
+  .copy-btn {
+    position: absolute; top: 10px; right: 10px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+    color: var(--code-fg); border-radius: 5px; padding: 4px 10px;
+    font-size: 11px; cursor: pointer; font-family: inherit;
+    transition: background 0.15s;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,0.15); }
+
+  /* Syntax tokens */
+  .k { color: var(--code-keyword); }   /* keyword */
+  .s { color: var(--code-string); }    /* string */
+  .c { color: var(--code-comment); }   /* comment */
+  .n { color: var(--code-value); }     /* number / value */
+  .p { color: var(--code-key); }       /* key */
+  .fg { color: var(--code-fg); }       /* plain text */
+
+  /* ── Step list ── */
+  .steps { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .step { display: flex; gap: 14px; }
+  .step-num {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent-bg); border: 1.5px solid var(--accent);
+    color: var(--accent); font-size: 12px; font-weight: 700;
+    display: grid; place-items: center;
+  }
+  .step-body { flex: 1; padding-top: 2px; }
+  .step-title { font-weight: 600; margin-bottom: 4px; }
+  .step-desc { color: var(--fg2); font-size: 13px; }
+
+  /* ── Shortcut table ── */
+  .shortcuts { width: 100%; border-collapse: collapse; }
+  .shortcuts th {
+    text-align: left; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.4px; text-transform: uppercase; color: var(--fg3);
+    padding: 0 12px 10px 0;
+  }
+  .shortcuts td {
+    padding: 9px 12px 9px 0; font-size: 13px;
+    border-top: 1px solid var(--border); color: var(--fg);
+  }
+  .shortcuts td:first-child { color: var(--fg2); }
+  kbd {
+    display: inline-block; padding: 2px 7px; border-radius: 4px;
+    background: var(--surface2); border: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--fg); box-shadow: 0 1px 0 var(--border);
+  }
+
+  /* ── Debug table ── */
+  .debug-cards { display: flex; flex-direction: column; gap: 10px; }
+  .debug-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    display: flex; gap: 14px; align-items: flex-start;
+    box-shadow: var(--shadow);
+  }
+  .debug-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .debug-name { font-weight: 600; font-size: 13px; }
+  .debug-desc { font-size: 12px; color: var(--fg2); margin-top: 2px; }
+  .debug-cmd {
+    margin-top: 8px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--accent2); background: var(--accent2-bg);
+    padding: 4px 10px; border-radius: 5px; display: inline-block;
+  }
+
+  /* ── Callout ── */
+  .callout {
+    border-radius: var(--radius); padding: 12px 16px;
+    border-left: 3px solid; margin: 14px 0;
+    font-size: 13px;
+  }
+  .callout.info { background: var(--accent-bg); border-color: var(--accent); color: var(--fg); }
+  .callout.warn { background: var(--warn-bg); border-color: var(--warn); color: var(--fg); }
+  .callout strong { font-weight: 600; }
+
+  /* ── Tasks table ── */
+  .task-list { display: flex; flex-direction: column; gap: 8px; }
+  .task-row {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 14px;
+    display: grid; grid-template-columns: 200px 1fr;
+    gap: 12px; align-items: center; box-shadow: var(--shadow);
+  }
+  .task-label { font-weight: 600; font-size: 13px; }
+  .task-cmd {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--fg2);
+  }
+
+  @media (max-width: 500px) {
+    .ext-grid { grid-template-columns: 1fr; }
+    .task-row { grid-template-columns: 1fr; gap: 4px; }
+    .header { flex-wrap: wrap; }
+    .header-meta { margin-left: 0; flex-direction: row; flex-wrap: wrap; }
+    .shortcuts th, .shortcuts td { font-size: 12px; }
+  }
+</style>
+
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-icon">🛠️</div>
+    <div class="header-text">
+      <h1>VS Code Dev Setup</h1>
+      <p>Vizta Board API — Django 5 + DRF backend</p>
+    </div>
+    <div class="header-meta">
+      <button class="theme-toggle" onclick="toggleTheme()">Toggle theme</button>
+      <span class="badge green">✓ Python 3.12</span>
+      <span class="badge">Django 5.0.9</span>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" role="tablist">
+    <button class="tab active" onclick="showTab('start')" role="tab">Quick start</button>
+    <button class="tab" onclick="showTab('extensions')" role="tab">Extensions</button>
+    <button class="tab" onclick="showTab('settings')" role="tab">Settings</button>
+    <button class="tab" onclick="showTab('debug')" role="tab">Debug</button>
+    <button class="tab" onclick="showTab('tasks')" role="tab">Tasks</button>
+    <button class="tab" onclick="showTab('tips')" role="tab">Tips &amp; shortcuts</button>
+  </div>
+
+  <!-- ── QUICK START ── -->
+  <div class="panel active" id="panel-start">
+    <div class="section">
+      <div class="section-title">Get running in 5 steps</div>
+      <ol class="steps">
+        <li class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Open the project</div>
+            <div class="step-desc">Open the <code>vizta-board-api</code> folder in VS Code. When prompted, click <strong>Install All</strong> to install the recommended extensions.</div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Create the virtual environment</div>
+            <div class="code-label">Terminal</div>
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="n">python</span> <span class="k">-m</span> venv .venv
+<span class="n">source</span> .venv/bin/activate          <span class="c"># macOS / Linux</span>
+<span class="c"># .venv\Scripts\activate            # Windows</span>
+<span class="n">pip</span> install <span class="k">-r</span> requirements.txt <span class="k">-r</span> requirements.dev.txt</pre>
+            </div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Select the interpreter</div>
+            <div class="step-desc">Press <kbd>⌘ Shift P</kbd> → <strong>Python: Select Interpreter</strong> → choose <code>.venv/bin/python</code>.</div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">Start infra &amp; migrate</div>
+            <div class="code-label">Terminal</div>
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="n">cp</span> .env.example .env       <span class="c"># fill in secrets</span>
+<span class="n">docker</span> compose up db redis <span class="k">-d</span>
+<span class="n">python</span> manage.py migrate
+<span class="n">python</span> manage.py createsuperuser</pre>
+            </div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-title">Launch the API</div>
+            <div class="step-desc">Press <kbd>F5</kbd> and choose <strong>Django: runserver</strong>. The API starts at <code>http://localhost:8000/v1/</code> with the debugger attached.</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <div class="section-title">What's already configured</div>
+      <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:10px;">
+        <div class="card">
+          <div class="card-title">🧹 Ruff auto-fix</div>
+          <div class="card-sub">Linting + import sorting + formatting on every save. Zero config needed.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🐛 Django debugger</div>
+          <div class="card-sub">Breakpoints work in views, serializers, tasks and middleware.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🧪 Pytest UI</div>
+          <div class="card-sub">Tests visible in the Testing sidebar. Run or debug single tests by clicking.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🐳 Docker tasks</div>
+          <div class="card-sub">Spin up or tear down infra from the Command Palette without leaving VS Code.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EXTENSIONS ── -->
+  <div class="panel" id="panel-extensions">
+    <div class="callout info">
+      <strong>Auto-install:</strong> VS Code reads <code>.vscode/extensions.json</code> and shows a prompt to install all recommended extensions the first time the folder is opened.
+    </div>
+
+    <div class="section">
+      <div class="section-title">Python core — required</div>
+      <div class="ext-grid">
+        <div class="ext-card">
+          <div class="ext-icon">🐍</div>
+          <div>
+            <div class="ext-name">Python</div>
+            <div class="ext-id">ms-python.python</div>
+            <div class="ext-desc">IntelliSense, interpreter management, test runner integration.</div>
+            <span class="ext-tag required">Required</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon">🔷</div>
+          <div>
+            <div class="ext-name">Pylance</div>
+            <div class="ext-id">ms-python.vscode-pylance</div>
+            <div class="ext-desc">Fast, feature-rich language support. Powers auto-imports and hover docs.</div>
+            <span class="ext-tag required">Required</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon">🐞</div>
+          <div>
+            <div class="ext-name">Debugpy</div>
+            <div class="ext-id">ms-python.debugpy</div>
+            <div class="ext-desc">Django-aware debugger. Breakpoints inside views &amp; tasks.</div>
+            <span class="ext-tag required">Required</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon">⚡</div>
+          <div>
+            <div class="ext-name">Ruff</div>
+            <div class="ext-id">charliermarsh.ruff</div>
+            <div class="ext-desc">Replaces pylint + isort + black. Fixes on save via <code>settings.json</code>.</div>
+            <span class="ext-tag required">Required</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon">🔍</div>
+          <div>
+            <div class="ext-name">Mypy</div>
+            <div class="ext-id">ms-python.mypy-type-checker</div>
+            <div class="ext-desc">Inline type errors. Runs in a daemon so it stays fast.</div>
+            <span class="ext-tag required">Required</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon">🦄</div>
+          <div>
+            <div class="ext-name">Django</div>
+            <div class="ext-id">batisteo.vscode-django</div>
+            <div class="ext-desc">Template syntax highlighting, snippets for models/views/urls.</div>
+            <span class="ext-tag required">Required</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Testing &amp; API</div>
+      <div class="ext-grid">
+        <div class="ext-card">
+          <div class="ext-icon">🧪</div>
+          <div>
+            <div class="ext-name">Python Test Adapter</div>
+            <div class="ext-id">littlefoxteam.vscode-python-test-adapter</div>
+            <div class="ext-desc">Renders pytest results in the Testing sidebar.</div>
+            <span class="ext-tag">Recommended</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon">🌐</div>
+          <div>
+            <div class="ext-name">REST Client</div>
+            <div class="ext-id">humao.rest-client</div>
+            <div class="ext-desc">Send HTTP requests from <code>.http</code> files — great for testing endpoints.</div>
+            <span class="ext-tag">Recommended</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Infrastructure &amp; DB</div>
+      <div class="ext-grid">
+        <div class="ext-card">
+          <div class="ext-icon">🐳</div>
+          <div>
+            <div class="ext-name">Docker</div>
+            <div class="ext-id">ms-azuretools.vscode-docker</div>
+            <div class="ext-desc">Compose UI, container logs, image explorer.</div>
+            <span class="ext-tag">Recommended</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon">🗄️</div>
+          <div>
+            <div class="ext-name">PostgreSQL Client</div>
+            <div class="ext-id">cweijan.vscode-postgresql-client2</div>
+            <div class="ext-desc">Query the local DB without leaving VS Code.</div>
+            <span class="ext-tag">Recommended</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon">📦</div>
+          <div>
+            <div class="ext-name">Remote Containers</div>
+            <div class="ext-id">ms-vscode-remote.remote-containers</div>
+            <div class="ext-desc">Optional: develop fully inside Docker.</div>
+            <span class="ext-tag">Optional</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Git &amp; editor quality</div>
+      <div class="ext-grid">
+        <div class="ext-card">
+          <div class="ext-icon">🔮</div>
+          <div>
+            <div class="ext-name">GitLens</div>
+            <div class="ext-id">eamodio.gitlens</div>
+            <div class="ext-desc">Inline blame, rich history, interactive rebase.</div>
+            <span class="ext-tag">Recommended</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon">📊</div>
+          <div>
+            <div class="ext-name">Git Graph</div>
+            <div class="ext-id">mhutchie.git-graph</div>
+            <div class="ext-desc">Visual branch graph. Great for spotting merge issues.</div>
+            <span class="ext-tag">Recommended</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon">🌿</div>
+          <div>
+            <div class="ext-name">Even Better TOML</div>
+            <div class="ext-id">tamasfe.even-better-toml</div>
+            <div class="ext-desc">Schema-validated <code>ruff.toml</code> editing.</div>
+            <span class="ext-tag">Recommended</span>
+          </div>
+        </div>
+        <div class="ext-card">
+          <div class="ext-icon">🔑</div>
+          <div>
+            <div class="ext-name">DotENV</div>
+            <div class="ext-id">mikestead.dotenv</div>
+            <div class="ext-desc">Syntax highlighting for <code>.env</code> files.</div>
+            <span class="ext-tag">Recommended</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SETTINGS ── -->
+  <div class="panel" id="panel-settings">
+    <div class="callout info">
+      <strong>All settings are pre-written</strong> to <code>.vscode/settings.json</code> in the project. No manual configuration needed — just open the folder.
+    </div>
+
+    <div class="section">
+      <div class="section-title">Format on save (Ruff)</div>
+      <div class="code-label">.vscode/settings.json — key entries</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="s">"[python]"</span><span class="fg">: {</span>
+  <span class="p">"editor.defaultFormatter"</span><span class="fg">:</span> <span class="s">"charliermarsh.ruff"</span><span class="fg">,</span>
+  <span class="p">"editor.formatOnSave"</span><span class="fg">:</span> <span class="n">true</span>
+<span class="fg">},</span>
+<span class="p">"editor.codeActionsOnSave"</span><span class="fg">: {</span>
+  <span class="p">"source.fixAll.ruff"</span><span class="fg">:</span> <span class="s">"explicit"</span><span class="fg">,</span>    <span class="c">// auto-fix lint issues</span>
+  <span class="p">"source.organizeImports.ruff"</span><span class="fg">:</span> <span class="s">"explicit"</span>  <span class="c">// isort on save</span>
+<span class="fg">},</span>
+<span class="p">"editor.rulers"</span><span class="fg">: [</span><span class="n">100</span><span class="fg">]</span>               <span class="c">// matches ruff.toml line-length</span></pre>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Django settings module (env auto-set)</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="p">"python.envFile"</span><span class="fg">:</span> <span class="s">"${workspaceFolder}/.env"</span><span class="fg">,</span>
+<span class="p">"terminal.integrated.env.osx"</span><span class="fg">: {</span>
+  <span class="p">"DJANGO_SETTINGS_MODULE"</span><span class="fg">:</span> <span class="s">"config.settings.development"</span>
+<span class="fg">}</span></pre>
+      </div>
+      <div class="callout warn">
+        <strong>Important:</strong> Copy <code>.env.example → .env</code> and fill in your secrets before running anything. VS Code reads this file automatically for interpreter and terminal sessions.
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Type checking (Pylance + mypy)</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="p">"python.analysis.typeCheckingMode"</span><span class="fg">:</span> <span class="s">"basic"</span><span class="fg">,</span>
+<span class="p">"python.analysis.extraPaths"</span><span class="fg">: [</span><span class="s">"${workspaceFolder}"</span><span class="fg">],</span>
+<span class="p">"mypy-type-checker.args"</span><span class="fg">: [</span>
+  <span class="s">"--ignore-missing-imports"</span><span class="fg">,</span>
+  <span class="s">"--follow-imports=silent"</span><span class="fg">,</span>
+  <span class="s">"--strict-optional"</span>
+<span class="fg">]</span></pre>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Test discovery (pytest)</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="p">"python.testing.pytestEnabled"</span><span class="fg">:</span> <span class="n">true</span><span class="fg">,</span>
+<span class="p">"python.testing.pytestArgs"</span><span class="fg">: [</span><span class="s">"--no-header"</span><span class="fg">,</span> <span class="s">"-rN"</span><span class="fg">],</span>
+<span class="p">"python.testing.autoTestDiscoverOnSaveEnabled"</span><span class="fg">:</span> <span class="n">true</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DEBUG ── -->
+  <div class="panel" id="panel-debug">
+    <div class="callout info">
+      Press <kbd>F5</kbd> or open <strong>Run &amp; Debug</strong> (<kbd>⌘ Shift D</kbd>) and choose a configuration.
+    </div>
+
+    <div class="section">
+      <div class="section-title">Available launch configurations</div>
+      <div class="debug-cards">
+        <div class="debug-card">
+          <div class="debug-icon">🚀</div>
+          <div>
+            <div class="debug-name">Django: runserver</div>
+            <div class="debug-desc">Starts the API on port 8000 with the debugger attached. Uses <code>--noreload</code> so breakpoints work correctly.</div>
+            <div class="debug-cmd">http://localhost:8000/v1/</div>
+          </div>
+        </div>
+        <div class="debug-card">
+          <div class="debug-icon">⚙️</div>
+          <div>
+            <div class="debug-name">Celery: worker</div>
+            <div class="debug-desc">Runs a Celery worker with <code>--pool=solo</code> so you can step through tasks with breakpoints.</div>
+            <div class="debug-cmd">celery -A config worker --pool=solo</div>
+          </div>
+        </div>
+        <div class="debug-card">
+          <div class="debug-icon">🕐</div>
+          <div>
+            <div class="debug-name">Celery: beat</div>
+            <div class="debug-desc">Starts the periodic task scheduler using <code>DatabaseScheduler</code>.</div>
+            <div class="debug-cmd">celery -A config beat --scheduler DatabaseScheduler</div>
+          </div>
+        </div>
+        <div class="debug-card">
+          <div class="debug-icon">🐚</div>
+          <div>
+            <div class="debug-name">Django: shell</div>
+            <div class="debug-desc">Opens <code>manage.py shell</code> in the integrated terminal, with the debugger attached.</div>
+            <div class="debug-cmd">python manage.py shell</div>
+          </div>
+        </div>
+        <div class="debug-card">
+          <div class="debug-icon">🧪</div>
+          <div>
+            <div class="debug-name">pytest: current file</div>
+            <div class="debug-desc">Runs pytest on the file currently open in the editor with <code>-s</code> so prints show through.</div>
+            <div class="debug-cmd">pytest ${file} -v -s</div>
+          </div>
+        </div>
+        <div class="debug-card">
+          <div class="debug-icon">🔗</div>
+          <div>
+            <div class="debug-name">Compound: API + Worker</div>
+            <div class="debug-desc">Launches Django runserver and Celery worker simultaneously in two debug sessions.</div>
+            <div class="debug-cmd">Full stack: API + Worker</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Attach to Docker container</div>
+      <div class="step-desc" style="margin-bottom: 10px; color: var(--fg2);">Useful when running inside Docker Compose. Add this to the API service in <code>docker-compose.yml</code>:</div>
+      <div class="code-label">docker-compose.yml — api service command override</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="k">command</span><span class="fg">: </span><span class="s">python -m debugpy --listen 0.0.0.0:5678
+         --wait-for-client manage.py runserver 0.0.0.0:8000 --noreload</span>
+<span class="k">ports</span><span class="fg">:</span>
+  <span class="fg">- </span><span class="s">"8000:8000"</span>
+  <span class="fg">- </span><span class="s">"5678:5678"</span>  <span class="c"># debugpy port</span></pre>
+      </div>
+      <div class="step-desc" style="color: var(--fg2); font-size: 13px;">Then use the <strong>Python: attach</strong> launch configuration (maps local code to <code>/app</code> in the container).</div>
+    </div>
+  </div>
+
+  <!-- ── TASKS ── -->
+  <div class="panel" id="panel-tasks">
+    <div class="callout info">
+      All tasks run via <kbd>⌘ Shift P</kbd> → <strong>Tasks: Run Task</strong>. The default build task (<kbd>⌘ Shift B</kbd>) runs <strong>ci: lint + test</strong>.
+    </div>
+
+    <div class="section">
+      <div class="section-title">Setup</div>
+      <div class="task-list">
+        <div class="task-row">
+          <div class="task-label">setup: create venv</div>
+          <div class="task-cmd">python -m venv .venv &amp;&amp; pip install -r requirements*.txt</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Django management</div>
+      <div class="task-list">
+        <div class="task-row"><div class="task-label">django: migrate</div><div class="task-cmd">python manage.py migrate</div></div>
+        <div class="task-row"><div class="task-label">django: makemigrations</div><div class="task-cmd">python manage.py makemigrations</div></div>
+        <div class="task-row"><div class="task-label">django: createsuperuser</div><div class="task-cmd">python manage.py createsuperuser</div></div>
+        <div class="task-row"><div class="task-label">django: collectstatic</div><div class="task-cmd">python manage.py collectstatic --noinput</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Linting &amp; type checking</div>
+      <div class="task-list">
+        <div class="task-row"><div class="task-label">ruff: check</div><div class="task-cmd">ruff check . (with inline problem markers)</div></div>
+        <div class="task-row"><div class="task-label">ruff: fix</div><div class="task-cmd">ruff check . --fix &amp;&amp; ruff format .</div></div>
+        <div class="task-row"><div class="task-label">mypy: check</div><div class="task-cmd">mypy apps/ core/ config/ --ignore-missing-imports</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Testing</div>
+      <div class="task-list">
+        <div class="task-row"><div class="task-label">pytest: all</div><div class="task-cmd">pytest --cov=apps --cov-report=term-missing -v</div></div>
+        <div class="task-row"><div class="task-label">pytest: unit only</div><div class="task-cmd">pytest -m unit -v</div></div>
+        <div class="task-row"><div class="task-label">pytest: coverage html</div><div class="task-cmd">pytest --cov=apps --cov-report=html (opens htmlcov/)</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Docker</div>
+      <div class="task-list">
+        <div class="task-row"><div class="task-label">docker: up (infra only)</div><div class="task-cmd">docker compose up db redis -d</div></div>
+        <div class="task-row"><div class="task-label">docker: up (full stack)</div><div class="task-cmd">docker compose up --build</div></div>
+        <div class="task-row"><div class="task-label">docker: down</div><div class="task-cmd">docker compose down</div></div>
+        <div class="task-row"><div class="task-label">docker: logs (api)</div><div class="task-cmd">docker compose logs -f api</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">CI simulation (composite)</div>
+      <div class="task-list">
+        <div class="task-row">
+          <div class="task-label">ci: lint + test</div>
+          <div class="task-cmd">ruff check → mypy check → pytest all (in sequence)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TIPS ── -->
+  <div class="panel" id="panel-tips">
+    <div class="section">
+      <div class="section-title">Keyboard shortcuts</div>
+      <table class="shortcuts">
+        <thead>
+          <tr><th>Action</th><th>Shortcut</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Run debugger</td><td><kbd>F5</kbd></td></tr>
+          <tr><td>Stop debugger</td><td><kbd>Shift F5</kbd></td></tr>
+          <tr><td>Run Task</td><td><kbd>⌘ Shift B</kbd></td></tr>
+          <tr><td>Command Palette</td><td><kbd>⌘ Shift P</kbd></td></tr>
+          <tr><td>Go to symbol</td><td><kbd>⌘ T</kbd></td></tr>
+          <tr><td>Go to file</td><td><kbd>⌘ P</kbd></td></tr>
+          <tr><td>Format document</td><td><kbd>⌘ Shift F</kbd></td></tr>
+          <tr><td>Open terminal</td><td><kbd>⌃ `</kbd></td></tr>
+          <tr><td>Toggle Testing panel</td><td><kbd>⌘ Shift T</kbd></td></tr>
+          <tr><td>Run &amp; Debug panel</td><td><kbd>⌘ Shift D</kbd></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">REST Client — quick API test</div>
+      <div class="step-desc" style="color:var(--fg2); margin-bottom: 8px;">Create an <code>api.http</code> file to test endpoints from inside VS Code:</div>
+      <div class="code-label">api.http</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="p">@baseUrl</span> <span class="fg">= http://localhost:8000/v1</span>
+<span class="p">@token</span> <span class="fg">= &lt;clerk-jwt-here&gt;</span>
+
+<span class="c">### List billboards</span>
+<span class="k">GET</span> <span class="fg">{{baseUrl}}/billboards/</span>
+<span class="p">Authorization:</span> <span class="s">Bearer {{token}}</span>
+
+<span class="c">### Create booking</span>
+<span class="k">POST</span> <span class="fg">{{baseUrl}}/bookings/</span>
+<span class="p">Authorization:</span> <span class="s">Bearer {{token}}</span>
+<span class="p">Content-Type:</span> <span class="s">application/json</span>
+
+<span class="fg">{</span>
+  <span class="p">"billboard"</span><span class="fg">:</span> <span class="s">"&lt;uuid&gt;"</span><span class="fg">,</span>
+  <span class="p">"start_date"</span><span class="fg">:</span> <span class="s">"2026-11-01"</span><span class="fg">,</span>
+  <span class="p">"end_date"</span><span class="fg">:</span> <span class="s">"2026-11-14"</span>
+<span class="fg">}</span></pre>
+      </div>
+      <div class="step-desc" style="color:var(--fg2);">Click <strong>Send Request</strong> above each block — the response appears in a split panel.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">PostgreSQL connection (VS Code DB client)</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="p">Host:</span>     <span class="n">localhost</span>
+<span class="p">Port:</span>     <span class="n">5432</span>
+<span class="p">Database:</span> <span class="n">vizta_board</span>
+<span class="p">User:</span>     <span class="n">vizta</span>
+<span class="p">Password:</span> <span class="n">vizta_secret</span></pre>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Common workflows</div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="card">
+          <div class="card-title">Adding a new app</div>
+          <div class="card-sub">
+            <code>python manage.py startapp &lt;name&gt; apps/&lt;name&gt;</code><br>
+            Then add <code>'apps.&lt;name&gt;'</code> to <code>INSTALLED_APPS</code> in <code>config/settings/base.py</code> and wire URLs in <code>config/urls.py</code>.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Debugging a Celery task</div>
+          <div class="card-sub">
+            Use the <strong>Celery: worker</strong> launch config with <code>--pool=solo</code>. Set a breakpoint inside the task function. Call the task with <code>.delay()</code> from the Django shell or a view.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Checking migration state</div>
+          <div class="card-sub">
+            <code>python manage.py showmigrations</code> — lists applied (✓) and pending migrations per app. Run the <em>django: migrate</em> task to apply them.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Opening Swagger docs</div>
+          <div class="card-sub">
+            Navigate to <code>http://localhost:8000/docs/</code> for Swagger UI or <code>/redoc/</code> for ReDoc. The schema is auto-generated from DRF viewsets via <code>drf-spectacular</code>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+
+  function toggleTheme() {
+    const root = document.documentElement;
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  }
+
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = orig, 1800);
+    }).catch(() => {
+      const range = document.createRange();
+      range.selectNode(pre);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+    });
+  }
+</script>
+
+</body></html>

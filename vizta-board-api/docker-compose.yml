@@ -1,0 +1,112 @@
+version: "3.9"
+
+services:
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vizta_board
+      POSTGRES_USER: vizta
+      POSTGRES_PASSWORD: vizta_secret
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vizta -d vizta_board"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ───────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Django API ──────────────────────────────────────────────────────────────
+  api:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      DATABASE_URL: postgres://vizta:vizta_secret@db:5432/vizta_board
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput --clear &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --reload --workers 2 --log-level debug"
+
+  # ── Celery Worker ───────────────────────────────────────────────────────────
+  worker:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      DATABASE_URL: postgres://vizta:vizta_secret@db:5432/vizta_board
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: celery -A config worker --loglevel=info --concurrency=4 -Q celery
+
+  # ── Celery Beat (scheduler) ─────────────────────────────────────────────────
+  beat:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      DATABASE_URL: postgres://vizta:vizta_secret@db:5432/vizta_board
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: celery -A config beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+
+  # ── Flower (Celery UI) ──────────────────────────────────────────────────────
+  flower:
+    image: mher/flower:2.0
+    restart: unless-stopped
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/1
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+
+volumes:
+  pg_data:
+  redis_data:

@@ -1,0 +1,1328 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!— Vizta Board Dev Setup Guide -->
+<title>Vizta Board Dev Setup</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout: fixed left rail + scrollable main */
+  --bg:       #F4F7F5;
+  --surface:  #FFFFFF;
+  --card:     #EEF3F0;
+  --rail:     #0F3D20;
+  --fg:       #111827;
+  --muted:    #6B7280;
+  --border:   #D1D9D5;
+  --accent:   #1B7A3E;
+  --accent-d: #145E30;
+  --accent-lt:#D6EFE0;
+  --code-bg:  #0D1117;
+  --code-fg:  #E6EDF3;
+  --tag-bg:   #D6EFE0;
+  --tag-fg:   #145E30;
+  --warn-bg:  #FFFBEB;
+  --warn-bd:  #F59E0B;
+  --warn-fg:  #92400E;
+  --tip-bg:   #EFF6FF;
+  --tip-bd:   #3B82F6;
+  --tip-fg:   #1E40AF;
+  --ok-bg:    #ECFDF5;
+  --ok-bd:    #10B981;
+  --ok-fg:    #065F46;
+  --r:8px;
+  --rail-w:228px;
+  --font-h:'Nunito',sans-serif;
+  --font-b:'Inter',system-ui,sans-serif;
+  --font-c:'JetBrains Mono','Fira Code',monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1117; --surface:#161B22; --card:#1C2128;
+  --fg:#E6EDF3; --muted:#8B949E; --border:#30363D;
+  --accent:#2EA055; --accent-d:#1B7A3E; --accent-lt:#0D2818;
+  --code-bg:#010409; --tag-bg:#0D2818; --tag-fg:#4ADE80;
+  --warn-bg:#271A00; --warn-bd:#D97706; --warn-fg:#FCD34D;
+  --tip-bg:#0D1F3F; --tip-bd:#3B82F6; --tip-fg:#93C5FD;
+  --ok-bg:#022C22; --ok-bd:#10B981; --ok-fg:#6EE7B7;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0D1117; --surface:#161B22; --card:#1C2128;
+  --fg:#E6EDF3; --muted:#8B949E; --border:#30363D;
+  --accent:#2EA055; --accent-d:#1B7A3E; --accent-lt:#0D2818;
+  --code-bg:#010409; --tag-bg:#0D2818; --tag-fg:#4ADE80;
+  --warn-bg:#271A00; --warn-bd:#D97706; --warn-fg:#FCD34D;
+  --tip-bg:#0D1F3F; --tip-bd:#3B82F6; --tip-fg:#93C5FD;
+  --ok-bg:#022C22; --ok-bd:#10B981; --ok-fg:#6EE7B7;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-b);background:var(--bg);color:var(--fg);min-height:100%;display:flex;flex-direction:column}
+html,body{height:100%}
+
+/* ── Shell ─────────────────────────────────────────── */
+.shell{display:flex;flex:1;min-height:0}
+
+/* ── Rail ──────────────────────────────────────────── */
+.rail{
+  width:var(--rail-w);background:var(--rail);flex-shrink:0;
+  display:flex;flex-direction:column;
+  position:sticky;top:env(safe-area-inset-top,0px);
+  height:100vh;overflow-y:auto;
+}
+.rail::-webkit-scrollbar{width:4px}
+.rail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+
+.rail-brand{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.brand-row{display:flex;align-items:center;gap:10px}
+.brand-icon{
+  width:34px;height:34px;border-radius:8px;
+  background:rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0
+}
+.brand-name{font-family:var(--font-h);font-weight:800;font-size:.95rem;color:#fff;line-height:1.1}
+.brand-sub{font-size:.63rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-top:2px}
+
+.rail-nav{padding:10px 10px 0;flex:1}
+.nav-group{margin-bottom:4px}
+.nav-group-label{
+  font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);padding:12px 8px 4px
+}
+.nav-btn{
+  display:flex;align-items:center;gap:10px;padding:8px 10px;
+  border-radius:6px;cursor:pointer;color:rgba(255,255,255,.65);
+  font-size:.8rem;font-weight:500;transition:all .15s;
+  border:none;background:none;width:100%;text-align:left;
+  font-family:var(--font-b)
+}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-btn.active{background:rgba(255,255,255,.14);color:#fff;font-weight:600}
+.nav-num{
+  width:19px;height:19px;border-radius:50%;
+  background:rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.62rem;font-weight:700;flex-shrink:0;
+  font-variant-numeric:tabular-nums;transition:background .15s
+}
+.nav-btn.active .nav-num{background:var(--accent)}
+.nav-btn.done .nav-num{background:rgba(46,160,85,.5)}
+.nav-btn.done .nav-num::after{content:'✓';font-size:.65rem}
+.nav-btn.done .nav-num span{display:none}
+
+.rail-footer{padding:14px 10px 20px;border-top:1px solid rgba(255,255,255,.08)}
+.progress-block{background:rgba(255,255,255,.05);border-radius:6px;padding:10px 12px;margin-bottom:10px}
+.progress-lbl{font-size:.62rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:7px}
+.progress-track{height:4px;background:rgba(255,255,255,.1);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:100px;transition:width .4s ease;width:0%}
+.progress-pct{font-size:.68rem;color:rgba(255,255,255,.4);text-align:right;margin-top:5px;font-variant-numeric:tabular-nums}
+.theme-btn{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;
+  border-radius:6px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);
+  font-size:.75rem;font-weight:500;cursor:pointer;width:100%;
+  font-family:var(--font-b);transition:all .15s
+}
+.theme-btn:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.9)}
+
+/* ── Mobile tab bar ────────────────────────────────── */
+.mobile-tabs{
+  display:none;overflow-x:auto;background:var(--rail);
+  padding:10px 16px;gap:6px;
+  scrollbar-width:none;-ms-overflow-style:none;
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:10
+}
+.mobile-tabs::-webkit-scrollbar{display:none}
+.mobile-tab{
+  flex-shrink:0;padding:6px 14px;border-radius:100px;
+  font-size:.72rem;font-weight:600;color:rgba(255,255,255,.6);
+  cursor:pointer;border:1px solid rgba(255,255,255,.1);
+  background:transparent;white-space:nowrap;transition:all .15s;
+  font-family:var(--font-b)
+}
+.mobile-tab.active{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.2)}
+
+/* ── Content ───────────────────────────────────────── */
+.content{flex:1;min-width:0;padding:44px 52px 80px;max-width:880px}
+.section{display:none}
+.section.active{display:block}
+
+/* ── Section header ────────────────────────────────── */
+.sec-eye{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.sec-title{font-family:var(--font-h);font-size:1.75rem;font-weight:900;color:var(--fg);text-wrap:balance;line-height:1.2;margin-bottom:10px}
+.sec-desc{color:var(--muted);font-size:.9rem;line-height:1.65;max-width:680px}
+.sec-hdr{margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+
+/* ── Steps ─────────────────────────────────────────── */
+.step{margin-bottom:30px}
+.step-hdr{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px}
+.step-dot{
+  width:27px;height:27px;border-radius:50%;
+  background:var(--accent);color:#fff;
+  font-size:.72rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;font-variant-numeric:tabular-nums
+}
+.step-label{font-size:.97rem;font-weight:700;color:var(--fg);line-height:1.4}
+.step-body{padding-left:41px}
+.step-body p{font-size:.875rem;line-height:1.7;color:var(--muted);margin-bottom:10px}
+.step-body p:last-child{margin-bottom:0}
+.step-body p strong{color:var(--fg);font-weight:600}
+.step-body ul,.step-body ol{font-size:.875rem;line-height:1.7;color:var(--muted);padding-left:18px;margin-bottom:10px}
+.step-body li{margin-bottom:4px}
+.step-body li strong{color:var(--fg);font-weight:600}
+
+/* ── Code blocks ───────────────────────────────────── */
+.cb{border-radius:var(--r);overflow:hidden;border:1px solid var(--border);margin:12px 0}
+.cb-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 12px;background:var(--code-bg);
+  border-bottom:1px solid rgba(255,255,255,.06)
+}
+.cb-lang{font-family:var(--font-c);font-size:.6rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em}
+.copy{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.5);padding:3px 9px;border-radius:4px;
+  font-size:.68rem;font-family:var(--font-b);font-weight:500;cursor:pointer;transition:all .15s
+}
+.copy:hover{background:rgba(255,255,255,.13);color:rgba(255,255,255,.85)}
+.copy.ok{background:rgba(46,160,85,.2);border-color:rgba(46,160,85,.4);color:#4ADE80}
+pre{background:var(--code-bg);color:var(--code-fg);padding:15px 16px;overflow-x:auto;font-family:var(--font-c);font-size:.78rem;line-height:1.65;margin:0}
+code:not(pre code){background:var(--card);color:var(--accent);font-family:var(--font-c);font-size:.8em;padding:2px 6px;border-radius:4px;border:1px solid var(--border)}
+
+/* ── Alert boxes ───────────────────────────────────── */
+.alert{border-radius:var(--r);padding:12px 16px;font-size:.84rem;line-height:1.6;margin:12px 0;display:flex;gap:10px;align-items:flex-start}
+.alert-warn{background:var(--warn-bg);border:1px solid var(--warn-bd);color:var(--warn-fg)}
+.alert-tip{background:var(--tip-bg);border:1px solid var(--tip-bd);color:var(--tip-fg)}
+.alert-ok{background:var(--ok-bg);border:1px solid var(--ok-bd);color:var(--ok-fg)}
+.alert-ico{font-size:1rem;flex-shrink:0;margin-top:1px}
+.alert a{color:inherit;font-weight:600}
+.alert strong{font-weight:600}
+
+/* ── Grid layouts ──────────────────────────────────── */
+.ext-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:12px 0}
+.ext-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
+.ext-ico{width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;background:var(--surface)}
+.ext-name{font-size:.8rem;font-weight:700;color:var(--fg);margin-bottom:1px}
+.ext-pub{font-size:.68rem;color:var(--muted);margin-bottom:4px}
+.ext-desc{font-size:.72rem;color:var(--muted);line-height:1.45}
+
+.port-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:14px 0}
+.port-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.port-num{font-family:var(--font-c);font-size:1.1rem;font-weight:600;color:var(--accent);margin-bottom:4px}
+.port-svc{font-size:.8rem;font-weight:700;color:var(--fg);margin-bottom:2px}
+.port-desc{font-size:.72rem;color:var(--muted)}
+
+/* ── Tables ────────────────────────────────────────── */
+.tbl-wrap{overflow-x:auto;margin:12px 0;border-radius:var(--r);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:0}
+th{text-align:left;padding:9px 14px;background:var(--card);font-weight:600;font-size:.76rem;color:var(--fg);border-bottom:1px solid var(--border)}
+td{padding:8px 14px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td:first-child{font-family:var(--font-c);font-size:.74rem;color:var(--accent);white-space:nowrap;background:var(--card)}
+td code{font-size:.72rem}
+
+/* ── Tags ──────────────────────────────────────────── */
+.tag{display:inline-flex;align-items:center;background:var(--tag-bg);color:var(--tag-fg);font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:100px;letter-spacing:.04em}
+
+/* ── Tree ──────────────────────────────────────────── */
+.tree{background:var(--code-bg);color:var(--code-fg);font-family:var(--font-c);font-size:.76rem;line-height:1.85;padding:16px;border-radius:var(--r);border:1px solid var(--border);overflow-x:auto;margin:12px 0}
+.t-d{color:#79B8FF}.t-c{color:#6A9955}.t-e{color:#CE9178}
+
+/* ── Divider ───────────────────────────────────────── */
+hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+
+/* ── Checklist ─────────────────────────────────────── */
+.checklist{list-style:none;margin:12px 0}
+.cl-item{
+  display:flex;align-items:flex-start;gap:10px;padding:9px 13px;
+  border-radius:7px;border:1px solid var(--border);margin-bottom:6px;
+  background:var(--surface);font-size:.84rem;color:var(--fg);
+  cursor:pointer;transition:all .15s
+}
+.cl-item:hover{border-color:var(--accent)}
+.cl-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent);flex-shrink:0;margin-top:2px;cursor:pointer}
+.cl-item.checked{background:var(--accent-lt);border-color:transparent;color:var(--muted)}
+.cl-item.checked span{text-decoration:line-through}
+
+/* ── Inline section sub-heading ────────────────────── */
+h3{font-size:.95rem;font-weight:700;color:var(--fg);margin:22px 0 8px}
+h3:first-child{margin-top:0}
+
+/* ── Responsive ────────────────────────────────────── */
+@media(max-width:700px){
+  .rail{display:none}
+  .mobile-tabs{display:flex}
+  .content{padding:24px 18px 60px}
+  .sec-title{font-size:1.4rem}
+  .ext-grid{grid-template-columns:1fr}
+  .port-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:420px){
+  .port-grid{grid-template-columns:1fr}
+}
+</style>
+
+<!-- Mobile tabs -->
+<div class="mobile-tabs" id="mtabs">
+  <button class="mobile-tab active" data-sec="s0">Overview</button>
+  <button class="mobile-tab" data-sec="s1">Prerequisites</button>
+  <button class="mobile-tab" data-sec="s2">VS Code</button>
+  <button class="mobile-tab" data-sec="s3">Backend</button>
+  <button class="mobile-tab" data-sec="s4">Mobile</button>
+  <button class="mobile-tab" data-sec="s5">Web</button>
+  <button class="mobile-tab" data-sec="s6">Run All</button>
+  <button class="mobile-tab" data-sec="s7">Git</button>
+</div>
+
+<div class="shell">
+  <!-- Rail -->
+  <nav class="rail">
+    <div class="rail-brand">
+      <div class="brand-row">
+        <div class="brand-icon">🟢</div>
+        <div>
+          <div class="brand-name">Vizta Board</div>
+          <div class="brand-sub">Developer Setup</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rail-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Start Here</div>
+        <button class="nav-btn active" data-sec="s0"><span class="nav-num"><span>0</span></span>Overview</button>
+        <button class="nav-btn" data-sec="s1"><span class="nav-num"><span>1</span></span>Prerequisites</button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Editor</div>
+        <button class="nav-btn" data-sec="s2"><span class="nav-num"><span>2</span></span>VS Code Setup</button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Services</div>
+        <button class="nav-btn" data-sec="s3"><span class="nav-num"><span>3</span></span>Django Backend</button>
+        <button class="nav-btn" data-sec="s4"><span class="nav-num"><span>4</span></span>Mobile (Expo)</button>
+        <button class="nav-btn" data-sec="s5"><span class="nav-num"><span>5</span></span>Web Frontend</button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Workflow</div>
+        <button class="nav-btn" data-sec="s6"><span class="nav-num"><span>6</span></span>Run Everything</button>
+        <button class="nav-btn" data-sec="s7"><span class="nav-num"><span>7</span></span>Git Workflow</button>
+      </div>
+    </div>
+
+    <div class="rail-footer">
+      <div class="progress-block">
+        <div class="progress-lbl">Setup Progress</div>
+        <div class="progress-track"><div class="progress-fill" id="prog"></div></div>
+        <div class="progress-pct" id="prog-pct">0 / 20 steps</div>
+      </div>
+      <button class="theme-btn" id="theme-btn">☀️ Toggle theme</button>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="content">
+
+    <!-- ░░ 0. OVERVIEW ░░ -->
+    <div class="section active" id="s0">
+      <div class="sec-hdr">
+        <div class="sec-eye">Section 0</div>
+        <div class="sec-title">Project Overview</div>
+        <div class="sec-desc">Vizta Board is a full-stack SaaS billboard booking marketplace for African outdoor advertising. This guide gets a developer from zero to a fully running local environment covering all three layers of the platform.</div>
+      </div>
+
+      <h3>Platform Architecture</h3>
+      <div class="tree">
+<span class="t-d">vizta-board/</span>
+├── <span class="t-d">backend/</span>            <span class="t-c"># Django REST Framework API (Python 3.12)</span>
+│   ├── <span class="t-d">apps/</span>              <span class="t-c"># billboards, bookings, campaigns, payments, users</span>
+│   ├── <span class="t-d">config/</span>            <span class="t-c"># settings, urls, celery</span>
+│   ├── <span class="t-d">docker-compose.yml</span> <span class="t-c"># PostgreSQL 16 + Redis 7</span>
+│   ├── manage.py
+│   └── requirements.txt
+│
+├── <span class="t-d">mobile/</span>             <span class="t-c"># Expo SDK 51 · React Native 0.74 · TypeScript</span>
+│   ├── <span class="t-d">src/</span>
+│   │   ├── <span class="t-d">screens/</span>       <span class="t-c"># Advertiser + Owner screen sets</span>
+│   │   ├── <span class="t-d">components/</span>
+│   │   ├── <span class="t-d">navigation/</span>
+│   │   ├── <span class="t-d">services/</span>      <span class="t-c"># Axios API client</span>
+│   │   ├── <span class="t-d">hooks/</span>         <span class="t-c"># useAuth (Clerk), useApi</span>
+│   │   └── <span class="t-d">constants/</span>     <span class="t-c"># design tokens</span>
+│   ├── App.tsx
+│   └── package.json
+│
+├── <span class="t-d">web/</span>                <span class="t-c"># Vanilla JS desktop SPA (no build step)</span>
+│   └── index.html
+│
+└── <span class="t-d">docs/</span>               <span class="t-c"># TDD, ADRs, API reference</span>
+      </div>
+
+      <h3>Technology Stack</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Layer</th><th>Technology</th><th>Version</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>API</td><td>Django + DRF</td><td>5.0 / 3.15</td><td>REST endpoints, business logic, Celery tasks</td></tr>
+            <tr><td>Auth</td><td>Clerk</td><td>Latest</td><td>Email + Google OAuth + TOTP MFA for all roles</td></tr>
+            <tr><td>Payments</td><td>Stripe</td><td>Latest</td><td>Advertiser billing, 12 % commission flow</td></tr>
+            <tr><td>DB</td><td>PostgreSQL</td><td>16</td><td>Primary relational store</td></tr>
+            <tr><td>Cache / Queue</td><td>Redis + Celery</td><td>7 / 5</td><td>Task queue, caching, real-time updates</td></tr>
+            <tr><td>Storage</td><td>AWS S3</td><td>—</td><td>Billboard image uploads</td></tr>
+            <tr><td>Mobile</td><td>Expo · React Native</td><td>SDK 51 / 0.74</td><td>iOS + Android app</td></tr>
+            <tr><td>Web</td><td>Vanilla HTML/CSS/JS</td><td>—</td><td>Advertiser + Owner desktop portal</td></tr>
+            <tr><td>Infra</td><td>AWS (EC2, RDS, S3, CF)</td><td>—</td><td>Production cloud hosting</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="alert alert-tip">
+        <span class="alert-ico">💡</span>
+        <div>Each layer can be developed independently. If you only work on the web frontend, you only need <strong>Node.js + VS Code</strong>. Backend work needs Python + Docker. Mobile needs Android Studio additionally.</div>
+      </div>
+
+      <h3>Setup Checklist</h3>
+      <ul class="checklist" id="main-checklist">
+        <li class="cl-item" data-idx="0"><input type="checkbox"><span>Git installed and configured</span></li>
+        <li class="cl-item" data-idx="1"><input type="checkbox"><span>Node.js v20 LTS installed via nvm</span></li>
+        <li class="cl-item" data-idx="2"><input type="checkbox"><span>Python 3.12 installed</span></li>
+        <li class="cl-item" data-idx="3"><input type="checkbox"><span>Docker & Docker Compose installed</span></li>
+        <li class="cl-item" data-idx="4"><input type="checkbox"><span>VS Code installed with all extensions</span></li>
+        <li class="cl-item" data-idx="5"><input type="checkbox"><span>Backend .env file configured</span></li>
+        <li class="cl-item" data-idx="6"><input type="checkbox"><span>Django database migrated</span></li>
+        <li class="cl-item" data-idx="7"><input type="checkbox"><span>Mobile npm packages installed</span></li>
+        <li class="cl-item" data-idx="8"><input type="checkbox"><span>Android Studio and AVD configured</span></li>
+        <li class="cl-item" data-idx="9"><input type="checkbox"><span>Web frontend running on Live Server</span></li>
+        <li class="cl-item" data-idx="10"><input type="checkbox"><span>All services running simultaneously</span></li>
+        <li class="cl-item" data-idx="11"><input type="checkbox"><span>Git pre-commit hooks installed</span></li>
+      </ul>
+    </div>
+
+    <!-- ░░ 1. PREREQUISITES ░░ -->
+    <div class="section" id="s1">
+      <div class="sec-hdr">
+        <div class="sec-eye">Section 1</div>
+        <div class="sec-title">System Prerequisites</div>
+        <div class="sec-desc">Install the core system tools before setting up the individual project layers. Commands below target Ubuntu 22.04 LTS — adjust the package manager for other distros.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">1</div><div class="step-label">Install Git and configure identity</div></div>
+        <div class="step-body">
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre>sudo apt update && sudo apt install -y git
+
+# Configure your identity (used in all commits)
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+git config --global core.editor "code --wait"
+git config --global init.defaultBranch main</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">2</div><div class="step-label">Install Node.js v20 LTS via nvm</div></div>
+        <div class="step-body">
+          <p><strong>nvm</strong> lets you switch Node versions per project. The mobile app and web dev server both need Node 20.</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># Install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# Reload shell, then install Node 20
+source ~/.bashrc
+nvm install 20
+nvm use 20
+nvm alias default 20
+
+# Verify
+node --version   # v20.x.x
+npm --version    # 10.x.x</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">3</div><div class="step-label">Install Python 3.12 via pyenv</div></div>
+        <div class="step-body">
+          <p><strong>pyenv</strong> manages Python versions cleanly, avoiding conflicts with the system Python.</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># Install build dependencies
+sudo apt install -y build-essential libssl-dev libffi-dev \
+  python3-dev zlib1g-dev libbz2-dev libreadline-dev \
+  libsqlite3-dev curl git
+
+# Install pyenv
+curl https://pyenv.run | bash
+
+# Add to ~/.bashrc
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+source ~/.bashrc
+
+# Install Python 3.12
+pyenv install 3.12.4
+pyenv global 3.12.4
+
+# Verify
+python --version   # Python 3.12.4</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">4</div><div class="step-label">Install Docker and Docker Compose</div></div>
+        <div class="step-body">
+          <p>Docker runs PostgreSQL and Redis locally, matching the production environment.</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># Remove old versions
+sudo apt remove -y docker docker-engine docker.io containerd runc
+
+# Install via official script (simplest)
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+
+# Compose v2 is bundled with Docker Desktop; verify:
+docker compose version   # Docker Compose version v2.x.x
+
+# Log out and back in for group membership to apply, then verify:
+docker run hello-world</pre></div>
+          <div class="alert alert-warn">
+            <span class="alert-ico">⚠️</span>
+            <div>You must <strong>log out and log back in</strong> after adding yourself to the <code>docker</code> group, otherwise every <code>docker</code> command requires <code>sudo</code>.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">5</div><div class="step-label">Install Java 17 and Android Studio (mobile developers only)</div></div>
+        <div class="step-body">
+          <p>Skip this step if you are only developing the backend or web frontend.</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># Java 17 (required by Android build tools)
+sudo apt install -y openjdk-17-jdk
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> ~/.bashrc</pre></div>
+          <p>Download <strong>Android Studio</strong> from <a href="https://developer.android.com/studio" target="_blank">developer.android.com/studio</a>, extract it, and run <code>studio.sh</code>. Inside Android Studio:</p>
+          <ul>
+            <li>Go to <strong>SDK Manager → SDK Platforms</strong> → install <strong>API 34</strong></li>
+            <li>Go to <strong>SDK Tools</strong> → install <strong>Android SDK Build-Tools 34</strong>, <strong>Platform-Tools</strong>, <strong>Emulator</strong></li>
+            <li>Create a <strong>Virtual Device</strong> (AVD): Pixel 8 Pro · API 34 · x86_64</li>
+          </ul>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># Add SDK paths to ~/.bashrc
+echo 'export ANDROID_HOME=$HOME/Android/Sdk' >> ~/.bashrc
+echo 'export PATH=$PATH:$ANDROID_HOME/emulator' >> ~/.bashrc
+echo 'export PATH=$PATH:$ANDROID_HOME/platform-tools' >> ~/.bashrc
+source ~/.bashrc
+
+# Verify ADB can see the emulator (start the AVD first from Android Studio)
+adb devices</pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ░░ 2. VS CODE ░░ -->
+    <div class="section" id="s2">
+      <div class="sec-hdr">
+        <div class="sec-eye">Section 2</div>
+        <div class="sec-title">VS Code Setup</div>
+        <div class="sec-desc">Install VS Code and configure it with the extensions and workspace settings that make working across all three project layers efficient.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">1</div><div class="step-label">Install VS Code</div></div>
+        <div class="step-body">
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># Ubuntu / Debian — official Microsoft repo
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
+sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" \
+  > /etc/apt/sources.list.d/vscode.list'
+
+sudo apt update && sudo apt install -y code</pre></div>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># Fedora / RHEL / Rocky Linux
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+sudo sh -c 'printf "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc\n" > /etc/yum.repos.d/vscode.repo'
+sudo dnf install -y code</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">2</div><div class="step-label">Install required extensions</div></div>
+        <div class="step-body">
+          <p>Run this block to install all extensions at once via the CLI.</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre>code --install-extension ms-python.python \
+     --install-extension ms-python.pylance \
+     --install-extension batisteo.vscode-django \
+     --install-extension esbenp.prettier-vscode \
+     --install-extension dbaeumer.vscode-eslint \
+     --install-extension ms-vscode.vscode-typescript-next \
+     --install-extension msjsdiag.vscode-react-native \
+     --install-extension ritwickdey.LiveServer \
+     --install-extension eamodio.gitlens \
+     --install-extension rangav.vscode-thunder-client \
+     --install-extension ms-azuretools.vscode-docker \
+     --install-extension mtxr.sqltools \
+     --install-extension mtxr.sqltools-driver-pg \
+     --install-extension PKief.material-icon-theme \
+     --install-extension streetsidesoftware.code-spell-checker</pre></div>
+
+          <div class="ext-grid">
+            <div class="ext-card"><div class="ext-ico">🐍</div><div><div class="ext-name">Python + Pylance</div><div class="ext-pub">Microsoft</div><div class="ext-desc">IntelliSense, type checking, and import resolution for the Django backend</div></div></div>
+            <div class="ext-card"><div class="ext-ico">🔺</div><div><div class="ext-name">Django</div><div class="ext-pub">batisteo</div><div class="ext-desc">Template snippets, URL path completions, and Django-aware settings</div></div></div>
+            <div class="ext-card"><div class="ext-ico">✨</div><div><div class="ext-name">Prettier</div><div class="ext-pub">Prettier</div><div class="ext-desc">Format-on-save for JS, TS, HTML, and CSS in the web and mobile apps</div></div></div>
+            <div class="ext-card"><div class="ext-ico">🔍</div><div><div class="ext-name">ESLint</div><div class="ext-pub">Microsoft</div><div class="ext-desc">Inline lint errors and warnings for TypeScript in the mobile codebase</div></div></div>
+            <div class="ext-card"><div class="ext-ico">📱</div><div><div class="ext-name">React Native Tools</div><div class="ext-pub">Microsoft</div><div class="ext-desc">Debug React Native directly from VS Code with full breakpoint support</div></div></div>
+            <div class="ext-card"><div class="ext-ico">🟢</div><div><div class="ext-name">Live Server</div><div class="ext-pub">Ritwick Dey</div><div class="ext-desc">Serves the web frontend with auto-reload on every file save</div></div></div>
+            <div class="ext-card"><div class="ext-ico">⚡</div><div><div class="ext-name">Thunder Client</div><div class="ext-pub">Ranga</div><div class="ext-desc">Lightweight REST client built into VS Code — test Django API endpoints</div></div></div>
+            <div class="ext-card"><div class="ext-ico">🐋</div><div><div class="ext-name">Docker</div><div class="ext-pub">Microsoft</div><div class="ext-desc">Manage PostgreSQL and Redis containers without leaving VS Code</div></div></div>
+            <div class="ext-card"><div class="ext-ico">🗄️</div><div><div class="ext-name">SQLTools + PG Driver</div><div class="ext-pub">Matheus Teixeira</div><div class="ext-desc">Query the local PostgreSQL database and browse schema from the sidebar</div></div></div>
+            <div class="ext-card"><div class="ext-ico">🔭</div><div><div class="ext-name">GitLens</div><div class="ext-pub">GitKraken</div><div class="ext-desc">Inline blame, commit history, and visual diff for every file</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">3</div><div class="step-label">Create workspace settings file</div></div>
+        <div class="step-body">
+          <p>Create <code>.vscode/settings.json</code> at the repository root. This configures format-on-save, Python path, and Live Server root for the project.</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">json  .vscode/settings.json</span><button class="copy">Copy</button></div><pre>{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  "editor.rulers": [100],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.tabSize": 4
+  },
+  "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": true,
+
+  "typescript.tsdk": "mobile/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  "liveServer.settings.root": "/web",
+  "liveServer.settings.port": 3000,
+  "liveServer.settings.donotShowInfoMsg": true,
+
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/node_modules": true,
+    "**/.expo": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.venv": true,
+    "**/migrations": true
+  },
+  "emmet.includeLanguages": {
+    "django-html": "html"
+  },
+  "files.associations": {
+    "**/*.html": "django-html"
+  }
+}</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">4</div><div class="step-label">Create launch configurations for debugging</div></div>
+        <div class="step-body">
+          <p>Create <code>.vscode/launch.json</code> to debug the Django server and React Native app directly from VS Code's Run panel (<strong>F5</strong>).</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">json  .vscode/launch.json</span><button class="copy">Copy</button></div><pre>{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Django: Run Server",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["runserver", "0.0.0.0:8000"],
+      "django": true,
+      "envFile": "${workspaceFolder}/backend/.env",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "Django: Run Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["test", "--verbosity=2"],
+      "django": true,
+      "envFile": "${workspaceFolder}/backend/.env",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Expo: Debug Android",
+      "type": "reactnativedirect",
+      "request": "launch",
+      "platform": "android",
+      "cwd": "${workspaceFolder}/mobile"
+    }
+  ]
+}</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">5</div><div class="step-label">Create extensions recommendations file</div></div>
+        <div class="step-body">
+          <p>This file prompts any new contributor to install the team's extensions when they open the workspace.</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">json  .vscode/extensions.json</span><button class="copy">Copy</button></div><pre>{
+  "recommendations": [
+    "ms-python.python",
+    "ms-python.pylance",
+    "batisteo.vscode-django",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "ms-vscode.vscode-typescript-next",
+    "msjsdiag.vscode-react-native",
+    "ritwickdey.LiveServer",
+    "eamodio.gitlens",
+    "rangav.vscode-thunder-client",
+    "ms-azuretools.vscode-docker",
+    "mtxr.sqltools",
+    "mtxr.sqltools-driver-pg",
+    "PKief.material-icon-theme"
+  ]
+}</pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ░░ 3. BACKEND ░░ -->
+    <div class="section" id="s3">
+      <div class="sec-hdr">
+        <div class="sec-eye">Section 3</div>
+        <div class="sec-title">Django Backend</div>
+        <div class="sec-desc">Set up the REST API, spin up PostgreSQL and Redis with Docker, run migrations, and start the development server.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">1</div><div class="step-label">Clone the repository</div></div>
+        <div class="step-body">
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre>git clone https://github.com/skaah-it/vizta-board.git
+cd vizta-board</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">2</div><div class="step-label">Create and activate a Python virtual environment</div></div>
+        <div class="step-body">
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre>cd backend
+
+# Create venv (Python 3.12 via pyenv is the default)
+python -m venv .venv
+
+# Activate it
+source .venv/bin/activate
+# Prompt becomes (.venv) — required for every backend terminal session
+
+# Install all dependencies
+pip install -r requirements.txt
+
+# Optional: install dev extras (testing, linting)
+pip install -r requirements-dev.txt</pre></div>
+          <div class="alert alert-tip">
+            <span class="alert-ico">💡</span>
+            <div>VS Code auto-detects <code>.venv</code> inside the workspace folder. Click the Python version in the status bar and select <code>backend/.venv/bin/python</code> if it is not already chosen.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">3</div><div class="step-label">Start PostgreSQL and Redis with Docker Compose</div></div>
+        <div class="step-body">
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># From the backend/ directory
+docker compose up -d postgres redis
+
+# Verify they are running
+docker compose ps</pre></div>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">yaml  backend/docker-compose.yml</span><button class="copy">Copy</button></div><pre>version: "3.9"
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: vizta_board_dev
+      POSTGRES_USER: vizta
+      POSTGRES_PASSWORD: vizta_dev_secret
+    ports: ["5432:5432"]
+    volumes: [postgres_data:/var/lib/postgresql/data]
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+
+volumes:
+  postgres_data:</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">4</div><div class="step-label">Create the .env file</div></div>
+        <div class="step-body">
+          <p>Copy the template and fill in your own keys. <strong>Never commit this file.</strong></p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre>cp .env.example .env
+code .env</pre></div>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">env  backend/.env</span><button class="copy">Copy</button></div><pre># Django
+SECRET_KEY=your-django-secret-key-here
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1,10.0.2.2
+
+# Database
+DATABASE_URL=postgres://vizta:vizta_dev_secret@localhost:5432/vizta_board_dev
+
+# Redis / Celery
+REDIS_URL=redis://localhost:6379/0
+CELERY_BROKER_URL=redis://localhost:6379/1
+
+# Clerk (Auth) — get from clerk.com dashboard
+CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxx
+CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxx
+CLERK_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxx
+
+# Stripe — get from dashboard.stripe.com
+STRIPE_SECRET_KEY=sk_test_xxxxxxxxxxxxx
+STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxx
+STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxx
+
+# AWS S3 (billboard images)
+AWS_ACCESS_KEY_ID=AKIAxxxxxxxxxxxxxxxx
+AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+AWS_STORAGE_BUCKET_NAME=vizta-board-dev
+AWS_S3_REGION_NAME=af-south-1
+
+# Platform commission (12%)
+PLATFORM_COMMISSION_RATE=0.12</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">5</div><div class="step-label">Run database migrations and create a superuser</div></div>
+        <div class="step-body">
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># Make sure (.venv) is active and docker compose services are running
+python manage.py migrate
+
+# Seed development data
+python manage.py loaddata fixtures/dev_billboards.json
+python manage.py loaddata fixtures/dev_users.json
+
+# Create an admin account
+python manage.py createsuperuser
+# Prompts for username, email, and password</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">6</div><div class="step-label">Start the Django development server</div></div>
+        <div class="step-body">
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre>python manage.py runserver 0.0.0.0:8000</pre></div>
+          <p>Open <strong>http://localhost:8000/admin/</strong> to confirm the Django admin loads. The REST API base is at <strong>http://localhost:8000/api/v1/</strong>.</p>
+          <p>To start the Celery worker in a second terminal (needed for async tasks like payment webhooks):</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># Second terminal, same backend/ directory with .venv activated
+celery -A config worker -l info -c 4</pre></div>
+        </div>
+      </div>
+
+      <hr>
+      <h3>Key Django apps at a glance</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>App</th><th>Responsibilities</th></tr></thead>
+          <tbody>
+            <tr><td>users</td><td>Clerk JWT verification, role assignment (Advertiser / Owner), profile CRUD</td></tr>
+            <tr><td>billboards</td><td>Billboard listings, image uploads to S3, availability calendar</td></tr>
+            <tr><td>bookings</td><td>Booking lifecycle (draft → pending_approval → confirmed → live → completed), dispute flow</td></tr>
+            <tr><td>campaigns</td><td>Campaign grouping of multiple bookings, analytics aggregation</td></tr>
+            <tr><td>payments</td><td>Stripe PaymentIntent creation, 12 % commission split, payout scheduling</td></tr>
+            <tr><td>notifications</td><td>In-app notifications via DB, Celery-driven email delivery</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ░░ 4. MOBILE ░░ -->
+    <div class="section" id="s4">
+      <div class="sec-hdr">
+        <div class="sec-eye">Section 4</div>
+        <div class="sec-title">Mobile App (Expo)</div>
+        <div class="sec-desc">Get the React Native / Expo app running on an Android emulator or a physical device. iOS requires a Mac with Xcode.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">1</div><div class="step-label">Install npm dependencies</div></div>
+        <div class="step-body">
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre>cd mobile
+npm install
+
+# Check for peer dependency issues
+npx expo install --check</pre></div>
+          <p>Key packages installed:</p>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Package</th><th>Version</th><th>Role</th></tr></thead>
+              <tbody>
+                <tr><td>expo</td><td>~51.0.28</td><td>SDK + dev server</td></tr>
+                <tr><td>@clerk/clerk-expo</td><td>^1.3.0</td><td>Auth — email, Google OAuth, TOTP MFA</td></tr>
+                <tr><td>@stripe/stripe-react-native</td><td>0.37.2</td><td>Payment sheet</td></tr>
+                <tr><td>zustand</td><td>^4.5.4</td><td>Auth + UI global state</td></tr>
+                <tr><td>axios</td><td>^1.7.4</td><td>REST calls to Django API</td></tr>
+                <tr><td>date-fns</td><td>^3.6.0</td><td>Booking calendar date math</td></tr>
+                <tr><td>@react-navigation/native-stack</td><td>^6.9.26</td><td>Stack navigation</td></tr>
+                <tr><td>@react-navigation/bottom-tabs</td><td>^6.5.20</td><td>Tab navigation</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">2</div><div class="step-label">Configure environment variables</div></div>
+        <div class="step-body">
+          <p>Expo reads vars prefixed with <code>EXPO_PUBLIC_</code> from a <code>.env</code> file at the <code>mobile/</code> root.</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre>cp .env.example .env
+code .env</pre></div>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">env  mobile/.env</span><button class="copy">Copy</button></div><pre># Django API — 10.0.2.2 is the Android emulator's alias for localhost
+EXPO_PUBLIC_API_URL=http://10.0.2.2:8000/api/v1
+
+# Clerk publishable key (safe to expose in client)
+EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxx
+
+# Stripe publishable key (safe to expose in client)
+EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxx</pre></div>
+          <div class="alert alert-warn">
+            <span class="alert-ico">⚠️</span>
+            <div>On a <strong>physical Android device</strong> connected via USB, replace <code>10.0.2.2</code> with your development machine's local IP address (e.g. <code>192.168.1.10</code>). Run <code>ip addr show</code> to find it.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">3</div><div class="step-label">Start an Android emulator</div></div>
+        <div class="step-body">
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># List available emulators
+$ANDROID_HOME/emulator/emulator -list-avds
+
+# Start the one you created (e.g. Pixel_8_Pro_API_34)
+$ANDROID_HOME/emulator/emulator -avd Pixel_8_Pro_API_34 &</pre></div>
+          <p>Wait for the emulator to fully boot (Android home screen visible) before launching Expo.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">4</div><div class="step-label">Start the Expo development server</div></div>
+        <div class="step-body">
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre>cd mobile
+npx expo start
+
+# Press 'a' to open on the Android emulator that is already running
+# Press 'w' to open in a web browser (for quick layout checks)
+# Press 'r' to reload the app
+# Press 'j' to open the Chrome debugger</pre></div>
+          <div class="alert alert-ok">
+            <span class="alert-ico">✅</span>
+            <div>The Expo dev client supports <strong>Fast Refresh</strong> — saving any TypeScript file reflects the change in under a second without losing app state.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">5</div><div class="step-label">Debug in VS Code with breakpoints</div></div>
+        <div class="step-body">
+          <p>Open the <strong>Run &amp; Debug</strong> panel (<kbd>Ctrl+Shift+D</kbd>), select <strong>"Expo: Debug Android"</strong>, and press <strong>F5</strong>. Set breakpoints anywhere in <code>src/</code> — VS Code pauses execution on the device and shows the call stack.</p>
+          <div class="alert alert-tip">
+            <span class="alert-ico">💡</span>
+            <div>The <strong>Hermes debugger</strong> is enabled by default in SDK 51. Use Chrome DevTools for console inspection: in Expo Go, shake the device → "Open JS Debugger".</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ░░ 5. WEB ░░ -->
+    <div class="section" id="s5">
+      <div class="sec-hdr">
+        <div class="sec-eye">Section 5</div>
+        <div class="sec-title">Web Frontend</div>
+        <div class="sec-desc">The desktop web portal is a single self-contained HTML file — no build step, no bundler. Development is as simple as opening it with Live Server.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">1</div><div class="step-label">Open with VS Code Live Server (recommended)</div></div>
+        <div class="step-body">
+          <p>With the Live Server extension installed (Section 2), right-click <code>web/index.html</code> in the Explorer and choose <strong>"Open with Live Server"</strong>. The browser opens at <code>http://localhost:3000</code> and reloads on every file save.</p>
+          <div class="alert alert-tip">
+            <span class="alert-ico">💡</span>
+            <div>The <code>.vscode/settings.json</code> from Section 2 already sets <code>"liveServer.settings.root": "/web"</code> and port 3000, so the server always starts from the correct directory.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">2</div><div class="step-label">Alternative: Python simple server</div></div>
+        <div class="step-body">
+          <p>If you prefer not to use the extension, Python's built-in server works with no installation:</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre>python3 -m http.server 3000 --directory web/
+# Open: http://localhost:3000</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">3</div><div class="step-label">Connect the web frontend to the local Django API</div></div>
+        <div class="step-body">
+          <p>Open <code>web/index.html</code> and locate the <code>CONFIG</code> block near the top of the <code>&lt;script&gt;</code> section. Update the API base URL:</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">javascript</span><button class="copy">Copy</button></div><pre>const CONFIG = {
+  API_BASE: 'http://localhost:8000/api/v1',
+  CLERK_PUBLISHABLE_KEY: 'pk_test_xxxxxxxxxxxxx',
+  STRIPE_PUBLISHABLE_KEY: 'pk_test_xxxxxxxxxxxxx',
+};</pre></div>
+          <div class="alert alert-warn">
+            <span class="alert-ico">⚠️</span>
+            <div>The Django server must be running and CORS must be configured. Add <code>http://localhost:3000</code> to <code>CORS_ALLOWED_ORIGINS</code> in <code>backend/config/settings/local.py</code>.</div>
+          </div>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">python  backend/config/settings/local.py</span><button class="copy">Copy</button></div><pre>CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",   # Web frontend
+    "http://localhost:8081",   # Expo web
+    "http://10.0.2.2:8081",   # Expo from Android emulator
+]</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">4</div><div class="step-label">File structure and where to make changes</div></div>
+        <div class="step-body">
+          <p>Everything lives inside <code>web/index.html</code>. The file is structured as:</p>
+          <div class="tree">
+index.html
+├── &lt;<span class="t-e">style</span>&gt;                  <span class="t-c">-- CSS custom properties (design tokens)</span>
+│   ├── :root {}             <span class="t-c">-- all color/type/layout tokens</span>
+│   ├── @media dark {}       <span class="t-c">-- dark mode token overrides</span>
+│   └── component styles     <span class="t-c">-- sidebar, cards, calendar, etc.</span>
+│
+├── &lt;<span class="t-e">div</span> id="root"&gt;         <span class="t-c">-- render target</span>
+│
+└── &lt;<span class="t-e">script</span>&gt;
+    ├── CONFIG {}            <span class="t-c">-- API base + keys</span>
+    ├── Mock data            <span class="t-c">-- BILLBOARDS, CAMPAIGNS, OWNER</span>
+    ├── S = { ... }          <span class="t-c">-- application state object</span>
+    ├── render()             <span class="t-c">-- master orchestrator</span>
+    ├── renderSidebar()      <span class="t-c">-- dark green 240 px rail</span>
+    ├── renderBrowse()       <span class="t-c">-- billboard grid with search</span>
+    ├── renderDetailDrawer() <span class="t-c">-- right-side slide-in</span>
+    ├── renderBookingOverlay()<span class="t-c">-- 4-step booking flow</span>
+    ├── renderCampaigns()    <span class="t-c">-- filterable campaign list</span>
+    ├── renderAnalytics()    <span class="t-c">-- Chart.js 30-day chart</span>
+    ├── renderOwnerDashboard()<span class="t-c">-- KPI tiles + approve/reject</span>
+    └── handleClick()        <span class="t-c">-- event delegation on #root</span>
+          </div>
+          <p>To replace mock data with live API calls, search for <code>const BILLBOARDS</code> and swap the hard-coded array with a <code>fetch(CONFIG.API_BASE + '/billboards/')</code> call.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ░░ 6. RUN EVERYTHING ░░ -->
+    <div class="section" id="s6">
+      <div class="sec-hdr">
+        <div class="sec-eye">Section 6</div>
+        <div class="sec-title">Running Everything</div>
+        <div class="sec-desc">The recommended start order and the ports each service occupies in the local development environment.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">1</div><div class="step-label">Start services in the correct order</div></div>
+        <div class="step-body">
+          <p>Use <strong>four terminal tabs</strong> inside VS Code (<kbd>Ctrl+Shift+`</kbd> opens a new one). Each tab stays open for the life of the dev session.</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash  Tab 1 — Docker (databases)</span><button class="copy">Copy</button></div><pre>cd backend
+docker compose up -d postgres redis
+docker compose logs -f     # optional: tail logs</pre></div>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash  Tab 2 — Django API</span><button class="copy">Copy</button></div><pre>cd backend
+source .venv/bin/activate
+python manage.py runserver 0.0.0.0:8000</pre></div>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash  Tab 3 — Celery worker (async tasks)</span><button class="copy">Copy</button></div><pre>cd backend
+source .venv/bin/activate
+celery -A config worker -l info -c 4</pre></div>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash  Tab 4 — Expo mobile</span><button class="copy">Copy</button></div><pre>cd mobile
+npx expo start     # press 'a' for Android emulator</pre></div>
+          <p>For the <strong>web frontend</strong>, right-click <code>web/index.html</code> in the VS Code Explorer → <strong>Open with Live Server</strong>. This does not need its own terminal.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">2</div><div class="step-label">Local service map</div></div>
+        <div class="step-body">
+          <div class="port-grid">
+            <div class="port-card"><div class="port-num">:8000</div><div class="port-svc">Django API</div><div class="port-desc">REST endpoints + admin</div></div>
+            <div class="port-card"><div class="port-num">:5432</div><div class="port-svc">PostgreSQL</div><div class="port-desc">Primary database (Docker)</div></div>
+            <div class="port-card"><div class="port-num">:6379</div><div class="port-svc">Redis</div><div class="port-desc">Queue + cache (Docker)</div></div>
+            <div class="port-card"><div class="port-num">:8081</div><div class="port-svc">Expo Metro</div><div class="port-desc">Mobile dev server</div></div>
+            <div class="port-card"><div class="port-num">:3000</div><div class="port-svc">Web Frontend</div><div class="port-desc">Live Server HTML</div></div>
+            <div class="port-card"><div class="port-num">:19000</div><div class="port-svc">Expo DevTools</div><div class="port-desc">QR code + logs</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">3</div><div class="step-label">Test the full stack with Thunder Client</div></div>
+        <div class="step-body">
+          <p>Open Thunder Client from the VS Code sidebar (<code>Ctrl+Shift+P → Thunder Client: New Request</code>) and confirm the API responds.</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">http</span><button class="copy">Copy</button></div><pre>GET http://localhost:8000/api/v1/billboards/
+Accept: application/json</pre></div>
+          <p>Expected: <code>200 OK</code> with a JSON array of billboard objects.</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">http</span><button class="copy">Copy</button></div><pre>GET http://localhost:8000/api/v1/health/
+Accept: application/json
+
+# Expected response
+{
+  "status": "ok",
+  "database": "connected",
+  "redis": "connected",
+  "version": "1.0.0"
+}</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">4</div><div class="step-label">Shut down cleanly</div></div>
+        <div class="step-body">
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># Stop Django and Celery: Ctrl+C in their terminals
+
+# Stop Expo: Ctrl+C in the Expo terminal
+
+# Stop Docker services (data is preserved in volumes)
+cd backend && docker compose stop
+
+# Full teardown (destroys database volumes — use with care)
+docker compose down -v</pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ░░ 7. GIT ░░ -->
+    <div class="section" id="s7">
+      <div class="sec-hdr">
+        <div class="sec-eye">Section 7</div>
+        <div class="sec-title">Git Workflow</div>
+        <div class="sec-desc">Branch naming conventions, commit message format, pre-commit hooks, and the PR process used across the Vizta Board codebase.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">1</div><div class="step-label">Install pre-commit hooks</div></div>
+        <div class="step-body">
+          <p>Pre-commit runs Black, isort, ESLint, and Prettier automatically on every commit, so nothing broken reaches the remote.</p>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre>pip install pre-commit
+pre-commit install</pre></div>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">yaml  .pre-commit-config.yaml</span><button class="copy">Copy</button></div><pre>repos:
+  - repo: https://github.com/psf/black
+    rev: 24.3.0
+    hooks:
+      - id: black
+        args: ["--line-length=100"]
+        files: ^backend/
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile=black"]
+        files: ^backend/
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-json
+      - id: check-yaml</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">2</div><div class="step-label">Branch naming convention</div></div>
+        <div class="step-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Prefix</th><th>When to use</th><th>Example</th></tr></thead>
+              <tbody>
+                <tr><td>feature/</td><td>New functionality</td><td><code>feature/booking-calendar-ui</code></td></tr>
+                <tr><td>fix/</td><td>Bug fix</td><td><code>fix/stripe-webhook-signature</code></td></tr>
+                <tr><td>chore/</td><td>Tooling, deps, config</td><td><code>chore/upgrade-expo-sdk-51</code></td></tr>
+                <tr><td>docs/</td><td>Documentation only</td><td><code>docs/api-endpoint-reference</code></td></tr>
+                <tr><td>refactor/</td><td>No behavior change</td><td><code>refactor/booking-service-split</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># Create and switch to a new branch
+git checkout -b feature/owner-earnings-report
+
+# Push to remote and set upstream
+git push -u origin feature/owner-earnings-report</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">3</div><div class="step-label">Commit message format</div></div>
+        <div class="step-body">
+          <p>Follow the Conventional Commits spec: <code>type(scope): short description</code></p>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Type</th><th>When to use</th></tr></thead>
+              <tbody>
+                <tr><td>feat</td><td>New feature visible to users</td></tr>
+                <tr><td>fix</td><td>Bug fix</td></tr>
+                <tr><td>chore</td><td>Build, config, dependency changes</td></tr>
+                <tr><td>refactor</td><td>Code change with no user-visible effect</td></tr>
+                <tr><td>test</td><td>Adding or updating tests</td></tr>
+                <tr><td>docs</td><td>Documentation only</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre># Good commit messages
+git commit -m "feat(bookings): add instant vs request booking toggle"
+git commit -m "fix(payments): guard against duplicate Stripe webhook events"
+git commit -m "chore(deps): bump stripe-react-native to 0.37.2"
+
+# How to write a multi-line commit
+git commit -m "feat(owner): add earnings breakdown by currency
+
+Splits the gross earnings tile into three rows:
+gross amount, 12% platform commission deducted,
+and net payout pending or paid.
+
+Fixes #42"</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">4</div><div class="step-label">Pull request checklist</div></div>
+        <div class="step-body">
+          <p>Before opening a PR, confirm all of the following:</p>
+          <ul class="checklist" id="pr-checklist">
+            <li class="cl-item"><input type="checkbox"><span>Branch is up to date with <code>main</code> — run <code>git fetch origin && git rebase origin/main</code></span></li>
+            <li class="cl-item"><input type="checkbox"><span>All tests pass: <code>cd backend && python manage.py test</code></span></li>
+            <li class="cl-item"><input type="checkbox"><span>No linting errors: <code>cd mobile && npx eslint src/</code></span></li>
+            <li class="cl-item"><input type="checkbox"><span>No new migrations left un-committed</span></li>
+            <li class="cl-item"><input type="checkbox"><span>PR description references the issue number and describes the change</span></li>
+            <li class="cl-item"><input type="checkbox"><span>Screenshots or screen recording attached if UI changed</span></li>
+            <li class="cl-item"><input type="checkbox"><span>.env.example updated if new environment variables were added</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-hdr"><div class="step-dot">5</div><div class="step-label">Running the backend test suite</div></div>
+        <div class="step-body">
+          <div class="cb"><div class="cb-bar"><span class="cb-lang">bash</span><button class="copy">Copy</button></div><pre>cd backend
+source .venv/bin/activate
+
+# Run all tests
+python manage.py test
+
+# Run a specific app
+python manage.py test apps.bookings
+
+# With coverage report
+pip install coverage
+coverage run manage.py test
+coverage report --omit="*/migrations/*,*/tests/*"
+coverage html   # open htmlcov/index.html in VS Code Live Server</pre></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── Navigation ─────────────────────────────────────
+const sections = document.querySelectorAll('.section');
+const navBtns  = document.querySelectorAll('.nav-btn');
+const mTabs    = document.querySelectorAll('.mobile-tab');
+
+function showSection(id) {
+  sections.forEach(s => s.classList.toggle('active', s.id === id));
+  navBtns.forEach(b  => b.classList.toggle('active', b.dataset.sec === id));
+  mTabs.forEach(t    => t.classList.toggle('active', t.dataset.sec === id));
+}
+
+navBtns.forEach(b => b.addEventListener('click', () => showSection(b.dataset.sec)));
+mTabs.forEach(t   => t.addEventListener('click', () => showSection(t.dataset.sec)));
+
+// ── Copy buttons ────────────────────────────────────
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.copy');
+  if (!btn) return;
+  const code = btn.closest('.cb').querySelector('pre').textContent;
+  navigator.clipboard.writeText(code.trim()).then(() => {
+    btn.textContent = '✓ Copied';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 2000);
+  }).catch(() => {
+    // fallback: select the text
+    const range = document.createRange();
+    range.selectNodeContents(btn.closest('.cb').querySelector('pre'));
+    const sel = window.getSelection();
+    sel.removeAllRanges(); sel.addRange(range);
+  });
+});
+
+// ── Theme toggle ────────────────────────────────────
+const themeBtn = document.getElementById('theme-btn');
+let dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+function applyTheme() {
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  themeBtn.textContent = dark ? '☀️ Light mode' : '🌙 Dark mode';
+}
+themeBtn.addEventListener('click', () => { dark = !dark; applyTheme(); try { localStorage.setItem('vb-theme', dark ? 'dark' : 'light'); } catch(e){} });
+try { const saved = localStorage.getItem('vb-theme'); if (saved) { dark = saved === 'dark'; } } catch(e){}
+applyTheme();
+
+// ── Checklist + Progress ─────────────────────────────
+const allCheckboxes = document.querySelectorAll('.cl-item input[type=checkbox]');
+const progBar = document.getElementById('prog');
+const progPct = document.getElementById('prog-pct');
+
+function updateProgress() {
+  const done  = document.querySelectorAll('.cl-item input:checked').length;
+  const total = allCheckboxes.length;
+  const pct   = total ? Math.round(done / total * 100) : 0;
+  if (progBar) progBar.style.width = pct + '%';
+  if (progPct) progPct.textContent = done + ' / ' + total + ' steps';
+
+  // Mark nav items done when their local checklist is complete
+  // (simplified: just use main checklist items 0-11 mapped to nav)
+}
+
+function loadChecks() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('vb-checks') || '{}');
+    document.querySelectorAll('.cl-item').forEach(li => {
+      const idx = li.dataset.idx;
+      if (idx && saved[idx]) {
+        li.querySelector('input').checked = true;
+        li.classList.add('checked');
+      }
+    });
+  } catch(e){}
+  updateProgress();
+}
+
+document.addEventListener('change', e => {
+  const cb = e.target;
+  if (cb.type !== 'checkbox') return;
+  const li = cb.closest('.cl-item');
+  if (!li) return;
+  li.classList.toggle('checked', cb.checked);
+  // persist
+  try {
+    const saved = JSON.parse(localStorage.getItem('vb-checks') || '{}');
+    const idx = li.dataset.idx;
+    if (idx) { if (cb.checked) saved[idx] = true; else delete saved[idx]; }
+    localStorage.setItem('vb-checks', JSON.stringify(saved));
+  } catch(e) {}
+  updateProgress();
+});
+
+loadChecks();
+</script>
+
+</body></html>

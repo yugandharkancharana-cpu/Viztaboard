@@ -1,0 +1,1281 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Vizta Board Wireframes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* ── LAYOUT: phone mockup centred on a green-tinted canvas ── */
+:root {
+  --g:    #1B7A3E;
+  --g-dk: #145E30;
+  --g-lt: #D6EFE0;
+  --g-xlt:#F1F8F4;
+  --dark: #1A1A1A;
+  --mid:  #3D3D3D;
+  --muted:#6B6B6B;
+  --bdr:  #E5E7EB;
+  --bg-p: #E2F0E9;
+  --bg-c: #FFFFFF;
+  --fg:   #1A1A1A;
+  --fg2:  #6B6B6B;
+  --r-sm: 8px;  --r-md: 14px;  --r-lg: 20px;  --r-xl: 28px;  --r-pill: 100px;
+  --ff-d: 'Nunito', sans-serif;
+  --ff-b: 'Inter', sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg-p:#0B1C10; --bg-c:#162419; --fg:#ECF7F0; --fg2:#7BAA8A; --bdr:#2A4035;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg-p:#0B1C10; --bg-c:#162419; --fg:#ECF7F0; --fg2:#7BAA8A; --bdr:#2A4035;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:var(--ff-b);
+  background:var(--bg-p);
+  color:var(--fg);
+  min-height:100%;
+  display:flex; flex-direction:column; align-items:center;
+  padding:24px 16px 40px;
+}
+
+/* ── PAGE HEADER ── */
+.pg-head{text-align:center;margin-bottom:20px;}
+.pg-head h1{font-family:var(--ff-d);font-weight:900;font-size:1.6rem;color:var(--g);letter-spacing:-0.02em;}
+.pg-head p{font-size:0.8rem;color:var(--fg2);margin-top:4px;}
+
+/* ── ROLE TOGGLE ── */
+.role-toggle{
+  display:flex; gap:0; background:var(--bg-c); border-radius:var(--r-pill);
+  padding:3px; margin-bottom:18px;
+  border:1.5px solid var(--bdr); box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.role-btn{
+  padding:7px 20px; border-radius:var(--r-pill); font-size:0.8rem; font-weight:700;
+  cursor:pointer; border:none; background:transparent; color:var(--fg2);
+  font-family:var(--ff-b); transition:all .15s;
+}
+.role-btn.on{background:var(--g);color:#fff;}
+
+/* ── SCREEN SELECTOR ── */
+.scr-nav{
+  display:flex; gap:6px; flex-wrap:wrap; justify-content:center;
+  max-width:640px; margin-bottom:22px;
+}
+.scr-btn{
+  padding:5px 13px; border-radius:var(--r-pill); border:1.5px solid var(--bdr);
+  background:var(--bg-c); color:var(--fg2); font-size:0.72rem; font-weight:600;
+  cursor:pointer; font-family:var(--ff-b); transition:all .15s;
+}
+.scr-btn.on{background:var(--g);border-color:var(--g);color:#fff;}
+.scr-btn:hover:not(.on){border-color:var(--g);color:var(--g);}
+
+/* ── PHONE FRAME ── */
+.phone-wrap{position:relative;}
+.phone{
+  width:375px; height:812px; max-width:calc(100vw - 32px);
+  background:#111; border-radius:48px; padding:14px;
+  box-shadow:
+    0 0 0 1.5px #2a2a2a,
+    0 40px 80px rgba(0,0,0,.55),
+    inset 0 0 0 1px #444;
+  position:relative;
+}
+/* Dynamic island */
+.phone::after{
+  content:''; position:absolute; top:20px; left:50%; transform:translateX(-50%);
+  width:110px; height:32px; background:#111;
+  border-radius:0 0 20px 20px; z-index:50;
+}
+.screen-port{
+  width:100%; height:100%; border-radius:36px; overflow:hidden;
+  background:#F5F7FA; position:relative;
+}
+
+/* ── STATUS BAR ── */
+.sbar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:16px 22px 6px; position:relative; z-index:5;
+  background:inherit;
+}
+.sbar-time{font-weight:800;font-size:.82rem;font-family:var(--ff-d);}
+.sbar-icons{display:flex;gap:5px;align-items:center;font-size:.7rem;}
+
+/* ── SCREENS ── */
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden;}
+.screen.on{display:flex;}
+.scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.scroll-body::-webkit-scrollbar{display:none;}
+
+/* ── BOTTOM NAV ── */
+.bnav{
+  display:flex; justify-content:space-around; align-items:center;
+  background:#fff; border-top:1px solid #F0F0F0;
+  padding:8px 4px 18px;
+  box-shadow:0 -4px 20px rgba(0,0,0,.06);
+}
+[data-theme="dark"] .bnav,[prefers-color-scheme:dark] .bnav{background:var(--bg-c);}
+.bnav-i{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  cursor:pointer;padding:4px 10px;border-radius:10px;
+}
+.bnav-i.on{background:var(--g-xlt);}
+.bnav-ico{font-size:1.25rem;}
+.bnav-lbl{font-size:.6rem;font-weight:700;color:var(--fg2);}
+.bnav-i.on .bnav-lbl{color:var(--g);}
+
+/* ── REUSABLE ── */
+.hdr-grn{
+  background:var(--g); border-radius:0 0 var(--r-xl) var(--r-xl);
+  padding:46px 20px 22px;
+}
+.hdr-grn h2{font-family:var(--ff-d);font-weight:900;color:#fff;font-size:1.25rem;}
+.hdr-grn p{color:rgba(255,255,255,.72);font-size:.8rem;margin-top:2px;}
+
+.card{
+  background:#fff;border-radius:var(--r-lg);
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+}
+
+.btn-prim{
+  width:100%;background:var(--g);color:#fff;border:none;
+  border-radius:var(--r-pill);padding:14px;
+  font-weight:800;font-size:.95rem;font-family:var(--ff-d);cursor:pointer;
+}
+.btn-out{
+  width:100%;background:transparent;color:var(--g);
+  border:2px solid var(--g);border-radius:var(--r-pill);padding:12px;
+  font-weight:700;font-size:.88rem;font-family:var(--ff-d);cursor:pointer;
+}
+.inp{
+  width:100%;border:1.5px solid var(--bdr);border-radius:var(--r-md);
+  padding:12px 14px;font-size:.88rem;font-family:var(--ff-b);
+  background:#F9FAFB;color:var(--fg);outline:none;
+}
+.lbl{font-size:.7rem;font-weight:700;color:var(--fg2);letter-spacing:.04em;
+     text-transform:uppercase;display:block;margin-bottom:5px;}
+
+.section-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.sec-title{font-family:var(--ff-d);font-weight:800;font-size:.95rem;}
+.see-all{font-size:.75rem;color:var(--g);font-weight:700;}
+
+.chip{
+  padding:5px 13px;border-radius:var(--r-pill);font-size:.72rem;font-weight:700;
+  white-space:nowrap;cursor:pointer;border:1.5px solid var(--bdr);
+  background:#fff;color:var(--fg2);
+}
+.chip.on{background:var(--g);border-color:var(--g);color:#fff;}
+
+.status-pill{border-radius:100px;padding:3px 9px;font-size:.68rem;font-weight:800;}
+.sp-green{background:#D1FAE5;color:#065F46;}
+.sp-yellow{background:#FEF3C7;color:#92400E;}
+.sp-gray{background:#F3F4F6;color:#6B7280;}
+.sp-blue{background:#DBEAFE;color:#1E40AF;}
+.sp-red{background:#FEE2E2;color:#991B1B;}
+
+/* ── SCREEN 1: SPLASH ── */
+.s-splash{
+  background:linear-gradient(160deg,#0D4D26 0%,#1B7A3E 55%,#2E9D5E 100%);
+  align-items:center;justify-content:center;gap:0;
+}
+.splash-logo{
+  width:86px;height:86px;background:rgba(255,255,255,.14);
+  border-radius:22px;display:flex;align-items:center;justify-content:center;
+  font-size:3rem;border:2px solid rgba(255,255,255,.28);margin-bottom:22px;
+}
+.splash-t{font-family:var(--ff-d);font-weight:900;font-size:2.2rem;color:#fff;letter-spacing:-.03em;}
+.splash-s{color:rgba(255,255,255,.65);font-size:.85rem;margin-top:8px;text-align:center;max-width:220px;line-height:1.5;}
+.splash-dots{display:flex;gap:8px;margin:44px 0 32px;}
+.sd{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);}
+.sd.on{background:#fff;width:26px;border-radius:4px;}
+.splash-cta{background:#fff;color:var(--g);border:none;border-radius:var(--r-pill);
+  padding:16px 52px;font-weight:900;font-size:1rem;font-family:var(--ff-d);cursor:pointer;
+  box-shadow:0 10px 30px rgba(0,0,0,.22);}
+.splash-alt{color:rgba(255,255,255,.6);font-size:.8rem;margin-top:14px;cursor:pointer;}
+.splash-alt span{color:#fff;font-weight:700;}
+
+/* ── SCREEN 2: LOGIN ── */
+.s-login{background:#fff;}
+.login-top{background:var(--g);padding:46px 24px 36px;border-radius:0 0 32px 32px;}
+.login-top h2{font-family:var(--ff-d);font-weight:900;color:#fff;font-size:1.5rem;}
+.login-top p{color:rgba(255,255,255,.7);font-size:.82rem;margin-top:4px;}
+.login-body{padding:24px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;}
+.divdr{display:flex;align-items:center;gap:10px;color:#bbb;font-size:.75rem;}
+.divdr::before,.divdr::after{content:'';flex:1;height:1px;background:var(--bdr);}
+.btn-goog{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;border:1.5px solid var(--bdr);border-radius:var(--r-pill);
+  padding:13px;background:#fff;font-size:.88rem;font-weight:600;
+  font-family:var(--ff-b);cursor:pointer;color:var(--mid);
+}
+.mfa-note{
+  display:flex;align-items:center;gap:8px;background:var(--g-xlt);
+  border-radius:var(--r-md);padding:12px;font-size:.75rem;color:var(--g-dk);
+  border-left:3px solid var(--g);
+}
+
+/* ── SCREEN 3: HOME/BROWSE ── */
+.s-home{background:#F5F7FA;}
+.home-hdr{background:var(--g);padding:46px 20px 18px;border-radius:0 0 var(--r-xl) var(--r-xl);}
+.home-gr{color:rgba(255,255,255,.75);font-size:.78rem;}
+.home-nm{font-family:var(--ff-d);font-weight:900;font-size:1.3rem;color:#fff;margin-top:1px;}
+.srch{
+  display:flex;align-items:center;gap:10px;background:#fff;
+  border-radius:var(--r-pill);padding:11px 16px;margin-top:14px;
+  box-shadow:0 4px 18px rgba(0,0,0,.12);
+}
+.srch span{color:#9CA3AF;font-size:.85rem;flex:1;}
+.srch-ico{color:var(--g);font-size:1.1rem;}
+.filter-ico{
+  width:36px;height:36px;background:var(--g-dk);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;color:#fff;
+}
+.home-body{padding:14px;}
+.chip-row{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin-bottom:14px;padding-bottom:2px;}
+
+.bb-card{background:#fff;border-radius:var(--r-lg);overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:14px;}
+.bb-img{
+  height:138px;background:linear-gradient(135deg,var(--g-dk),#2E9D5E);
+  display:flex;align-items:center;justify-content:center;font-size:2.8rem;
+  position:relative;
+}
+.bb-img.v2{background:linear-gradient(135deg,#1E5799,#207AC5);}
+.bb-img.v3{background:linear-gradient(135deg,#6B21A8,#9333EA);}
+.bb-bdg{
+  position:absolute;top:10px;left:10px;background:rgba(0,0,0,.45);
+  color:#fff;border-radius:6px;padding:3px 8px;font-size:.68rem;font-weight:700;
+}
+.bb-fav{
+  position:absolute;top:10px;right:10px;background:rgba(255,255,255,.9);
+  border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;
+}
+.bb-inf{padding:13px;}
+.bb-nm{font-weight:800;font-size:.92rem;}
+.bb-lc{color:var(--fg2);font-size:.76rem;margin-top:2px;display:flex;align-items:center;gap:3px;}
+.bb-row{display:flex;justify-content:space-between;align-items:center;margin-top:9px;}
+.bb-pr{font-weight:800;color:var(--g);font-size:.92rem;}
+.bb-pr span{font-size:.72rem;font-weight:500;color:var(--fg2);}
+.bb-rat{font-size:.76rem;color:var(--fg2);display:flex;align-items:center;gap:3px;}
+.bb-rat .star{color:#F59E0B;}
+
+/* ── SCREEN 4: BILLBOARD DETAIL ── */
+.s-detail{background:#fff;}
+.det-img{
+  height:230px;background:linear-gradient(145deg,var(--g-dk) 0%,#2E9D5E 70%,#56C887 100%);
+  display:flex;align-items:center;justify-content:center;font-size:4.5rem;
+  position:relative;
+}
+.back-b,.share-b{
+  position:absolute;top:50px;width:36px;height:36px;
+  background:rgba(255,255,255,.9);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;z-index:5;
+}
+.back-b{left:16px;} .share-b{right:16px;}
+.det-body{padding:18px;overflow-y:auto;}
+.det-nm{font-family:var(--ff-d);font-weight:900;font-size:1.3rem;}
+.det-lc{color:var(--fg2);font-size:.82rem;margin-top:3px;display:flex;align-items:center;gap:4px;}
+.det-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;}
+.dtag{background:var(--g-xlt);color:var(--g-dk);border-radius:6px;padding:3px 10px;font-size:.72rem;font-weight:700;}
+.det-pricing{display:flex;gap:8px;margin-top:18px;}
+.pr-card{
+  flex:1;border:1.5px solid var(--bdr);border-radius:var(--r-md);
+  padding:11px;text-align:center;cursor:pointer;
+}
+.pr-card.on{border-color:var(--g);background:var(--g-xlt);}
+.pr-period{font-size:.65rem;color:var(--fg2);text-transform:uppercase;letter-spacing:.06em;}
+.pr-val{font-family:var(--ff-d);font-weight:900;font-size:1.1rem;color:var(--g);margin-top:3px;}
+.det-sec{margin-top:18px;}
+.det-sec h4{font-weight:800;font-size:.88rem;margin-bottom:10px;}
+.specs-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.spec{background:#F9FAFB;border-radius:var(--r-sm);padding:10px 12px;}
+.spec-l{font-size:.67rem;color:var(--fg2);}
+.spec-v{font-weight:700;font-size:.82rem;margin-top:2px;}
+.det-foot{
+  padding:14px 18px 22px;background:#fff;border-top:1px solid #F0F0F0;
+  display:flex;gap:12px;align-items:center;
+}
+.det-foot-pr{flex:1;}
+.det-foot-from{font-size:.67rem;color:var(--fg2);}
+.det-foot-val{font-family:var(--ff-d);font-weight:900;font-size:1.35rem;color:var(--g);}
+.btn-book{
+  background:var(--g);color:#fff;border:none;border-radius:var(--r-pill);
+  padding:14px 28px;font-weight:800;font-size:.9rem;font-family:var(--ff-d);cursor:pointer;
+}
+
+/* ── SCREEN 5: BOOKING ── */
+.s-book{background:#fff;}
+.book-body{padding:18px;overflow-y:auto;}
+.btype{
+  display:flex;background:#F3F4F6;border-radius:var(--r-md);padding:3px;margin-bottom:18px;
+}
+.bt{
+  flex:1;text-align:center;padding:8px;font-size:.8rem;font-weight:700;
+  border-radius:10px;cursor:pointer;color:var(--fg2);
+}
+.bt.on{background:#fff;color:var(--g);box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.cal-wrap{margin-bottom:18px;}
+.cal-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.cal-mo{font-weight:800;font-size:.9rem;}
+.cal-arr{font-size:1.1rem;cursor:pointer;color:var(--fg2);}
+.cal-dh{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;margin-bottom:5px;}
+.cdh{font-size:.65rem;font-weight:700;color:var(--fg2);padding:3px 0;}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cc{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;border-radius:50%;cursor:pointer;font-weight:500;
+}
+.cc.today{font-weight:900;color:var(--g);}
+.cc.sel{background:var(--g);color:#fff;font-weight:800;}
+.cc.rng{background:var(--g-lt);color:var(--g-dk);}
+.cc.unav{color:#D1D5DB;cursor:not-allowed;}
+.cc.om{color:#D1D5DB;}
+.bsum{background:var(--g-xlt);border-radius:var(--r-md);padding:14px;border-left:3px solid var(--g);}
+.bsr{display:flex;justify-content:space-between;font-size:.82rem;padding:4px 0;color:var(--mid);}
+.bsr.tot{font-weight:800;font-size:.9rem;color:var(--g-dk);border-top:1px solid var(--g-lt);margin-top:7px;padding-top:9px;}
+.book-foot{padding:14px 18px 22px;border-top:1px solid #F0F0F0;}
+
+/* ── SCREEN 6: PAYMENT ── */
+.s-pay{background:#F5F7FA;}
+.pay-hdr{background:#fff;padding:46px 20px 18px;border-bottom:1px solid #F0F0F0;}
+.pay-hdr h2{font-family:var(--ff-d);font-weight:900;font-size:1.25rem;}
+.pay-body{padding:16px;overflow-y:auto;}
+.ord-card{background:#fff;border-radius:var(--r-lg);padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.ord-t{font-weight:800;font-size:.92rem;}
+.ord-sub{color:var(--fg2);font-size:.78rem;margin-top:2px;}
+.ord-pr{font-family:var(--ff-d);font-weight:900;font-size:1.6rem;color:var(--g);margin-top:8px;}
+.pay-sec{margin-bottom:14px;}
+.pay-sec-t{font-weight:800;font-size:.88rem;margin-bottom:10px;}
+.pm-tabs{display:flex;gap:8px;margin-bottom:12px;}
+.pm-tab{
+  flex:1;border:1.5px solid var(--bdr);border-radius:var(--r-md);
+  padding:9px;text-align:center;font-size:.75rem;font-weight:700;cursor:pointer;color:var(--fg2);
+}
+.pm-tab.on{border-color:var(--g);color:var(--g);background:var(--g-xlt);}
+.cn-inp{
+  background:#fff;border:1.5px solid var(--bdr);border-radius:var(--r-md);
+  padding:13px 15px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;
+}
+.cn-txt{font-size:.85rem;color:#9CA3AF;font-family:monospace;letter-spacing:2px;}
+.cn-brand{font-size:1.3rem;}
+.cn-row{display:flex;gap:8px;}
+.cn-half{
+  flex:1;background:#fff;border:1.5px solid var(--bdr);
+  border-radius:var(--r-md);padding:13px 15px;
+}
+.cn-hl{font-size:.65rem;color:var(--fg2);}
+.cn-hv{font-size:.85rem;color:#9CA3AF;margin-top:2px;}
+.sec-badge{
+  display:flex;align-items:center;gap:6px;justify-content:center;
+  font-size:.72rem;color:var(--fg2);margin-top:12px;
+}
+.sec-badge span{color:var(--g);}
+.pay-foot{padding:14px 16px 22px;border-top:1px solid #F0F0F0;background:#F5F7FA;}
+
+/* ── SCREEN 7: MY CAMPAIGNS ── */
+.s-camp{background:#F5F7FA;}
+.stab-row{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:13px 16px 4px;}
+.stab{
+  padding:6px 15px;border-radius:var(--r-pill);font-size:.75rem;font-weight:700;
+  white-space:nowrap;cursor:pointer;border:1.5px solid var(--bdr);background:#fff;color:var(--fg2);
+}
+.stab.on{background:var(--g);border-color:var(--g);color:#fff;}
+.camp-list{padding:0 14px;overflow-y:auto;}
+.camp-card{background:#fff;border-radius:var(--r-lg);padding:15px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.cc-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.cc-nm{font-weight:800;font-size:.9rem;}
+.cc-lc{color:var(--fg2);font-size:.75rem;margin-top:2px;}
+.cc-bar{height:4px;background:#E5E7EB;border-radius:2px;margin:11px 0 7px;overflow:hidden;}
+.cc-fill{height:100%;background:var(--g);border-radius:2px;}
+.cc-dates{font-size:.72rem;color:var(--fg2);display:flex;gap:4px;}
+.cc-stats{display:flex;gap:16px;margin-top:11px;padding-top:11px;border-top:1px solid #F5F7FA;}
+.cs{font-size:.72rem;color:var(--fg2);}
+.cs strong{display:block;font-size:.88rem;color:var(--dark);font-weight:800;margin-bottom:1px;}
+.camp-body{flex:1;overflow-y:auto;}
+
+/* ── SCREEN 8: ANALYTICS ── */
+.s-ana{background:#F5F7FA;}
+.ana-body{padding:14px;overflow-y:auto;}
+.kpi-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.kpi{background:#fff;border-radius:var(--r-md);padding:13px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.kpi-l{font-size:.65rem;color:var(--fg2);text-transform:uppercase;letter-spacing:.04em;}
+.kpi-v{font-family:var(--ff-d);font-weight:900;font-size:1.45rem;color:var(--dark);margin-top:3px;}
+.kpi-ch{font-size:.68rem;font-weight:700;margin-top:3px;display:flex;align-items:center;gap:2px;}
+.up{color:#16A34A;} .dn{color:#DC2626;}
+.chart-c{background:#fff;border-radius:var(--r-lg);padding:15px;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:12px;}
+.chart-c h4{font-weight:800;font-size:.85rem;margin-bottom:14px;}
+.bar-ch{display:flex;align-items:flex-end;gap:7px;height:80px;}
+.bg-c{display:flex;flex-direction:column;align-items:center;flex:1;gap:3px;}
+.bbar{width:100%;background:var(--g-lt);border-radius:3px 3px 0 0;}
+.bbar.hl{background:var(--g);}
+.blbl{font-size:.58rem;color:var(--fg2);white-space:nowrap;}
+.occ-list{display:flex;flex-direction:column;gap:8px;}
+.occ-row{display:flex;align-items:center;gap:10px;}
+.occ-nm{font-size:.78rem;flex:1;font-weight:600;}
+.occ-bar-bg{flex:2;height:6px;background:#E5E7EB;border-radius:3px;overflow:hidden;}
+.occ-bar-fill{height:100%;background:var(--g);border-radius:3px;}
+.occ-pct{font-size:.75rem;font-weight:800;color:var(--g);width:36px;text-align:right;}
+
+/* ── SCREEN 9: NOTIFICATIONS ── */
+.s-notif{background:#F5F7FA;}
+.notif-hdr{display:flex;justify-content:space-between;align-items:flex-end;}
+.notif-hdr .mr{color:rgba(255,255,255,.7);font-size:.75rem;}
+.notif-list{padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;}
+.ni{
+  background:#fff;border-radius:var(--r-md);padding:13px;
+  display:flex;gap:11px;box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.ni.unrd{border-left:3px solid var(--g);}
+.ni-ico{
+  width:40px;height:40px;border-radius:11px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.05rem;
+}
+.ico-pay{background:#D1FAE5;} .ico-book{background:#DBEAFE;}
+.ico-alert{background:#FEE2E2;} .ico-info{background:var(--g-xlt);}
+.ni-txt{flex:1;}
+.ni-t{font-weight:700;font-size:.83rem;}
+.ni-b{color:var(--fg2);font-size:.75rem;margin-top:2px;line-height:1.4;}
+.ni-tm{font-size:.67rem;color:var(--fg2);margin-top:3px;}
+.unrd-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--g);
+  flex-shrink:0;margin-top:4px;
+}
+
+/* ── SCREEN 10: PROFILE ── */
+.s-prof{background:#F5F7FA;}
+.prof-hdr{
+  background:var(--g);padding:46px 20px 28px;border-radius:0 0 32px 32px;
+  display:flex;flex-direction:column;align-items:center;
+}
+.avatar{
+  width:72px;height:72px;border-radius:50%;border:3px solid rgba(255,255,255,.45);
+  background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;
+  font-size:2rem;margin-bottom:12px;
+}
+.prof-nm{font-family:var(--ff-d);font-weight:900;color:#fff;font-size:1.2rem;}
+.prof-role{color:rgba(255,255,255,.65);font-size:.76rem;margin-top:2px;}
+.prof-stats{display:flex;gap:28px;margin-top:16px;}
+.ps{text-align:center;color:#fff;}
+.ps-v{font-family:var(--ff-d);font-weight:900;font-size:1.3rem;}
+.ps-l{font-size:.67rem;opacity:.65;}
+.prof-body{padding:14px;overflow-y:auto;}
+.prof-sec-t{font-size:.68rem;font-weight:800;color:var(--fg2);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 7px;}
+.pmenu{background:#fff;border-radius:var(--r-lg);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.pmi{
+  display:flex;align-items:center;gap:11px;padding:13px 15px;
+  border-bottom:1px solid #F5F7FA;cursor:pointer;
+}
+.pmi:last-child{border-bottom:none;}
+.pmi-ico{font-size:1.15rem;width:34px;text-align:center;}
+.pmi-txt{flex:1;font-size:.85rem;font-weight:600;}
+.pmi-arr{color:var(--fg2);font-size:.9rem;}
+.pmi.logout{color:#DC2626;}
+.pmi-badge{background:#DC2626;color:#fff;border-radius:100px;padding:1px 6px;font-size:.65rem;font-weight:800;}
+
+/* ── SCREEN 11: OWNER DASHBOARD ── */
+.s-owner{background:#F5F7FA;}
+.earn-card{
+  background:linear-gradient(135deg,var(--g),var(--g-dk));
+  border-radius:var(--r-lg);padding:18px;color:#fff;margin-bottom:14px;
+  box-shadow:0 8px 28px rgba(27,122,62,.35);
+}
+.earn-l{font-size:.75rem;opacity:.8;}
+.earn-v{font-family:var(--ff-d);font-weight:900;font-size:2.1rem;margin-top:3px;}
+.earn-row{display:flex;gap:24px;margin-top:12px;}
+.earn-sub-l{font-size:.68rem;opacity:.65;}
+.earn-sub-v{font-weight:800;font-size:.88rem;margin-top:1px;}
+.pend-alert{
+  background:#FEF3C7;border:1.5px solid #FDE68A;border-radius:var(--r-md);
+  padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:14px;
+}
+.pend-alert p{font-size:.8rem;color:#92400E;flex:1;font-weight:500;}
+.pend-alert p strong{color:#78350F;}
+.pend-btn{
+  background:#F59E0B;color:#fff;border:none;border-radius:8px;
+  padding:6px 11px;font-size:.72rem;font-weight:800;cursor:pointer;white-space:nowrap;
+}
+.bb-own-list{display:flex;flex-direction:column;gap:10px;}
+.bbown{
+  background:#fff;border-radius:var(--r-md);padding:13px;
+  display:flex;gap:11px;box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.bb-th{
+  width:54px;height:54px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--g),#2E9D5E);
+  display:flex;align-items:center;justify-content:center;font-size:1.5rem;
+}
+.bbown-inf{flex:1;}
+.bbown-nm{font-weight:800;font-size:.88rem;}
+.bbown-lc{color:var(--fg2);font-size:.73rem;margin-top:1px;}
+.bbown-r{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+.occ-occ{font-size:.72rem;color:var(--fg2);}
+.occ-occ strong{color:var(--dark);font-weight:800;}
+
+/* ── DOTS INDICATOR ── */
+.pg-dots{display:flex;gap:6px;justify-content:center;margin-top:16px;}
+.pd{width:7px;height:7px;border-radius:50%;background:rgba(27,122,62,.2);transition:all .2s;}
+.pd.on{background:var(--g);width:22px;border-radius:3.5px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:440px){
+  .phone{width:min(340px,100%);height:680px;}
+  .scr-btn{font-size:.65rem;padding:4px 10px;}
+}
+</style>
+
+<div class="pg-head">
+  <h1>📱 Vizta Board</h1>
+  <p>Mobile App Wireframes · 11 Screens · Advertiser &amp; Owner Views</p>
+</div>
+
+<div class="role-toggle">
+  <button class="role-btn on" onclick="setRole('adv',this)">Advertiser</button>
+  <button class="role-btn" onclick="setRole('own',this)">Billboard Owner</button>
+</div>
+
+<div class="scr-nav" id="scr-nav"></div>
+
+<div class="phone-wrap">
+  <div class="phone">
+    <div class="screen-port" id="screen-port">
+
+      <!-- STATUS BAR (shared) -->
+      <div class="sbar" id="sbar">
+        <span class="sbar-time">9:41</span>
+        <div class="sbar-icons">📶 🛜 🔋</div>
+      </div>
+
+      <!-- ── S1: SPLASH ── -->
+      <div class="screen s-splash on" id="sc-splash" style="position:absolute;inset:0;z-index:2;">
+        <div class="splash-logo">🪧</div>
+        <div class="splash-t">Vizta Board</div>
+        <div class="splash-s">Africa's billboard booking marketplace — discover, book, launch.</div>
+        <div class="splash-dots"><div class="sd on"></div><div class="sd"></div><div class="sd"></div></div>
+        <button class="splash-cta">Get Started</button>
+        <div class="splash-alt">Already have an account? <span>Sign in</span></div>
+      </div>
+
+      <!-- ── S2: LOGIN ── -->
+      <div class="screen s-login" id="sc-login">
+        <div class="login-top">
+          <h2>Welcome back 👋</h2>
+          <p>Sign in to manage your campaigns</p>
+        </div>
+        <div class="login-body">
+          <div>
+            <label class="lbl">Email address</label>
+            <input class="inp" type="email" placeholder="you@example.com" value="kuna@skaahit.com">
+          </div>
+          <div>
+            <label class="lbl">Password</label>
+            <input class="inp" type="password" placeholder="••••••••" value="••••••••••">
+          </div>
+          <div style="text-align:right;margin-top:-6px;">
+            <span style="font-size:.75rem;color:var(--g);font-weight:700;cursor:pointer;">Forgot password?</span>
+          </div>
+          <button class="btn-prim">Sign In</button>
+          <div class="divdr">or</div>
+          <button class="btn-goog"><span>G</span> Continue with Google</button>
+          <div class="mfa-note">🔐 MFA via TOTP authenticator app is required for all accounts.</div>
+          <p style="text-align:center;font-size:.76rem;color:var(--fg2);margin-top:4px;">
+            New advertiser? <span style="color:var(--g);font-weight:700;">Create account</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- ── S3: HOME / BROWSE ── -->
+      <div class="screen s-home" id="sc-home">
+        <div class="home-hdr">
+          <div class="home-gr">Good morning,</div>
+          <div class="home-nm">Kuna Ade 👋</div>
+          <div class="srch">
+            <span class="srch-ico">🔍</span>
+            <span>Search city, area or landmark…</span>
+            <div class="filter-ico">⚙️</div>
+          </div>
+        </div>
+        <div class="scroll-body home-body">
+          <div class="chip-row">
+            <div class="chip on">All</div>
+            <div class="chip">Lagos</div>
+            <div class="chip">Nairobi</div>
+            <div class="chip">Accra</div>
+            <div class="chip">Digital</div>
+            <div class="chip">Static</div>
+          </div>
+          <div class="section-row">
+            <span class="sec-title">Featured Billboards</span>
+            <span class="see-all">See all →</span>
+          </div>
+          <div class="bb-cards">
+            <div class="bb-card">
+              <div class="bb-img"><div class="bb-bdg">🔴 Digital</div><div class="bb-fav">🤍</div>🪧</div>
+              <div class="bb-inf">
+                <div class="bb-nm">Eko Bridge Mega LED</div>
+                <div class="bb-lc">📍 Lagos Island, Lagos</div>
+                <div class="bb-row">
+                  <div class="bb-pr">₦180,000 <span>/day</span></div>
+                  <div class="bb-rat"><span class="star">★</span> 4.9 · 48 reviews</div>
+                </div>
+              </div>
+            </div>
+            <div class="bb-card">
+              <div class="bb-img v2"><div class="bb-bdg">⬜ Static</div><div class="bb-fav">❤️</div>🏙️</div>
+              <div class="bb-inf">
+                <div class="bb-nm">Nairobi CBD Rooftop</div>
+                <div class="bb-lc">📍 Central Business District, Nairobi</div>
+                <div class="bb-row">
+                  <div class="bb-pr">KSh 95,000 <span>/week</span></div>
+                  <div class="bb-rat"><span class="star">★</span> 4.7 · 32 reviews</div>
+                </div>
+              </div>
+            </div>
+            <div class="bb-card">
+              <div class="bb-img v3"><div class="bb-bdg">🔴 Digital</div><div class="bb-fav">🤍</div>🌃</div>
+              <div class="bb-inf">
+                <div class="bb-nm">Accra Ring Road Billboard</div>
+                <div class="bb-lc">📍 Ring Road West, Accra</div>
+                <div class="bb-row">
+                  <div class="bb-pr">GHS 8,500 <span>/week</span></div>
+                  <div class="bb-rat"><span class="star">★</span> 4.8 · 19 reviews</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bnav">
+          <div class="bnav-i on"><div class="bnav-ico">🏠</div><div class="bnav-lbl">Home</div></div>
+          <div class="bnav-i"><div class="bnav-ico">🔍</div><div class="bnav-lbl">Search</div></div>
+          <div class="bnav-i"><div class="bnav-ico">📋</div><div class="bnav-lbl">Campaigns</div></div>
+          <div class="bnav-i"><div class="bnav-ico">📊</div><div class="bnav-lbl">Analytics</div></div>
+          <div class="bnav-i"><div class="bnav-ico">👤</div><div class="bnav-lbl">Profile</div></div>
+        </div>
+      </div>
+
+      <!-- ── S4: BILLBOARD DETAIL ── -->
+      <div class="screen s-detail" id="sc-detail">
+        <div class="det-img">
+          <div class="back-b">←</div>
+          <div class="share-b">↗</div>
+          🪧
+        </div>
+        <div class="scroll-body det-body">
+          <div class="det-nm">Eko Bridge Mega LED</div>
+          <div class="det-lc">📍 Lagos Island, Lagos · 2 km from city centre</div>
+          <div class="det-tags">
+            <span class="dtag">Digital LED</span>
+            <span class="dtag">48×16 ft</span>
+            <span class="dtag">90,000 daily impressions</span>
+            <span class="dtag">Instant Book</span>
+            <span class="dtag">Lit 24/7</span>
+          </div>
+          <div class="det-pricing">
+            <div class="pr-card on"><div class="pr-period">Daily</div><div class="pr-val">₦180K</div></div>
+            <div class="pr-card"><div class="pr-period">Weekly</div><div class="pr-val">₦950K</div></div>
+            <div class="pr-card"><div class="pr-period">Monthly</div><div class="pr-val">₦3.2M</div></div>
+          </div>
+          <div class="det-sec">
+            <h4>Specifications</h4>
+            <div class="specs-g">
+              <div class="spec"><div class="spec-l">Dimensions</div><div class="spec-v">48 × 16 ft</div></div>
+              <div class="spec"><div class="spec-l">Type</div><div class="spec-v">Digital LED</div></div>
+              <div class="spec"><div class="spec-l">Daily Traffic</div><div class="spec-v">~90,000 vehicles</div></div>
+              <div class="spec"><div class="spec-l">Visibility</div><div class="spec-v">⭐⭐⭐⭐⭐</div></div>
+              <div class="spec"><div class="spec-l">Facing</div><div class="spec-v">North-East</div></div>
+              <div class="spec"><div class="spec-l">Lit</div><div class="spec-v">24 / 7</div></div>
+            </div>
+          </div>
+          <div class="det-sec">
+            <h4>Location</h4>
+            <div style="background:#E5E7EB;border-radius:var(--r-md);height:100px;display:flex;align-items:center;justify-content:center;color:var(--fg2);font-size:.8rem;">
+              🗺 Map view (Google Maps)
+            </div>
+          </div>
+        </div>
+        <div class="det-foot">
+          <div class="det-foot-pr">
+            <div class="det-foot-from">Starting from</div>
+            <div class="det-foot-val">₦180,000</div>
+          </div>
+          <button class="btn-book">Book Now</button>
+        </div>
+      </div>
+
+      <!-- ── S5: BOOKING ── -->
+      <div class="screen s-book" id="sc-booking">
+        <div class="hdr-grn"><h2>Book Billboard</h2><p>Eko Bridge Mega LED · Lagos Island</p></div>
+        <div class="scroll-body book-body">
+          <div class="btype">
+            <div class="bt on">Instant Book</div>
+            <div class="bt">Request Approval</div>
+          </div>
+          <div class="cal-wrap">
+            <div class="cal-nav">
+              <span class="cal-arr">‹</span>
+              <span class="cal-mo">November 2026</span>
+              <span class="cal-arr">›</span>
+            </div>
+            <div class="cal-dh">
+              <div class="cdh">Su</div><div class="cdh">Mo</div><div class="cdh">Tu</div>
+              <div class="cdh">We</div><div class="cdh">Th</div><div class="cdh">Fr</div><div class="cdh">Sa</div>
+            </div>
+            <div class="cal-g">
+              <div class="cc om">27</div><div class="cc om">28</div><div class="cc om">29</div><div class="cc om">30</div><div class="cc om">31</div>
+              <div class="cc">1</div><div class="cc">2</div>
+              <div class="cc">3</div><div class="cc">4</div><div class="cc">5</div>
+              <div class="cc">6</div><div class="cc">7</div><div class="cc">8</div><div class="cc">9</div>
+              <div class="cc unav">10</div><div class="cc unav">11</div><div class="cc unav">12</div>
+              <div class="cc unav">13</div><div class="cc unav">14</div>
+              <div class="cc">15</div><div class="cc sel">16</div>
+              <div class="cc rng">17</div><div class="cc rng">18</div><div class="cc rng">19</div>
+              <div class="cc rng">20</div><div class="cc rng">21</div><div class="cc rng">22</div><div class="cc sel">23</div>
+              <div class="cc">24</div><div class="cc">25</div><div class="cc">26</div>
+              <div class="cc">27</div><div class="cc">28</div><div class="cc">29</div><div class="cc">30</div>
+            </div>
+          </div>
+          <div class="bsum">
+            <div class="bsr"><span>Billboard</span><span>Eko Bridge Mega LED</span></div>
+            <div class="bsr"><span>Duration</span><span>8 days (Nov 16–23)</span></div>
+            <div class="bsr"><span>Rate</span><span>₦180,000 / day</span></div>
+            <div class="bsr"><span>Subtotal</span><span>₦1,440,000</span></div>
+            <div class="bsr"><span>Platform fee (5%)</span><span>₦72,000</span></div>
+            <div class="bsr tot"><span>Total</span><span>₦1,512,000</span></div>
+          </div>
+          <div style="margin-top:14px;">
+            <label class="lbl">Upload Artwork (optional)</label>
+            <div style="border:1.5px dashed var(--bdr);border-radius:var(--r-md);padding:22px;text-align:center;background:#fff;">
+              <div style="font-size:1.8rem;margin-bottom:6px;">🖼</div>
+              <div style="font-size:.78rem;color:var(--fg2);">Tap to upload your ad creative</div>
+              <div style="font-size:.68rem;color:var(--fg2);margin-top:3px;">JPG, PNG, MP4 · max 50 MB</div>
+            </div>
+          </div>
+        </div>
+        <div class="book-foot">
+          <button class="btn-prim">Confirm Booking · ₦1,512,000</button>
+        </div>
+      </div>
+
+      <!-- ── S6: PAYMENT ── -->
+      <div class="screen s-pay" id="sc-payment">
+        <div class="pay-hdr"><h2>Payment</h2></div>
+        <div class="scroll-body pay-body">
+          <div class="ord-card">
+            <div class="ord-t">Eko Bridge Mega LED</div>
+            <div class="ord-sub">Nov 16 – 23, 2026 · 8 days · Lagos Island</div>
+            <div class="ord-pr">₦1,512,000</div>
+          </div>
+          <div class="pay-sec">
+            <div class="pay-sec-t">Payment method</div>
+            <div class="pm-tabs">
+              <div class="pm-tab on">💳 Card</div>
+              <div class="pm-tab">🏦 Bank Transfer</div>
+              <div class="pm-tab">📱 Mobile</div>
+            </div>
+            <div class="cn-inp">
+              <span class="cn-txt">•••• •••• •••• 4242</span>
+              <span class="cn-brand">💳</span>
+            </div>
+            <div class="cn-row">
+              <div class="cn-half">
+                <div class="cn-hl">Expiry</div>
+                <div class="cn-hv">MM / YY</div>
+              </div>
+              <div class="cn-half">
+                <div class="cn-hl">CVV</div>
+                <div class="cn-hv">•••</div>
+              </div>
+            </div>
+            <div class="sec-badge"><span>🔒</span> Payments secured by Stripe · SSL encrypted</div>
+          </div>
+          <div style="background:var(--g-xlt);border-radius:var(--r-md);padding:12px;font-size:.78rem;color:var(--g-dk);border-left:3px solid var(--g);margin-bottom:10px;">
+            📄 A GST-compliant invoice will be auto-generated and emailed to you after payment.
+          </div>
+        </div>
+        <div class="pay-foot">
+          <button class="btn-prim">Pay ₦1,512,000</button>
+        </div>
+      </div>
+
+      <!-- ── S7: MY CAMPAIGNS ── -->
+      <div class="screen s-camp" id="sc-campaigns">
+        <div class="hdr-grn"><h2>My Campaigns</h2><p>3 active · 1 pending approval</p></div>
+        <div class="stab-row">
+          <div class="stab on">All (7)</div>
+          <div class="stab">Active (3)</div>
+          <div class="stab">Pending (1)</div>
+          <div class="stab">Completed (3)</div>
+        </div>
+        <div class="scroll-body camp-body">
+          <div class="camp-list">
+            <div class="camp-card">
+              <div class="cc-top">
+                <div><div class="cc-nm">Eko Bridge Mega LED</div><div class="cc-lc">📍 Lagos Island</div></div>
+                <div class="status-pill sp-green">Active</div>
+              </div>
+              <div class="cc-bar"><div class="cc-fill" style="width:62%"></div></div>
+              <div class="cc-dates">📅 Oct 1 – Nov 30, 2026 · 62% elapsed</div>
+              <div class="cc-stats">
+                <div class="cs"><strong>₦3.2M</strong>Total spend</div>
+                <div class="cs"><strong>2.8M</strong>Impressions</div>
+                <div class="cs"><strong>3.4%</strong>Engagement</div>
+              </div>
+            </div>
+            <div class="camp-card">
+              <div class="cc-top">
+                <div><div class="cc-nm">Nairobi CBD Rooftop</div><div class="cc-lc">📍 Nairobi CBD</div></div>
+                <div class="status-pill sp-yellow">Pending</div>
+              </div>
+              <div class="cc-bar"><div class="cc-fill" style="width:0%"></div></div>
+              <div class="cc-dates">📅 Nov 16 – 23, 2026 · Awaiting approval</div>
+              <div class="cc-stats">
+                <div class="cs"><strong>KSh 760K</strong>Booked</div>
+                <div class="cs"><strong>—</strong>Impressions</div>
+                <div class="cs"><strong>—</strong>Engagement</div>
+              </div>
+            </div>
+            <div class="camp-card">
+              <div class="cc-top">
+                <div><div class="cc-nm">Accra Ring Road</div><div class="cc-lc">📍 Ring Road West, Accra</div></div>
+                <div class="status-pill sp-green">Active</div>
+              </div>
+              <div class="cc-bar"><div class="cc-fill" style="width:38%"></div></div>
+              <div class="cc-dates">📅 Oct 15 – Dec 15, 2026 · 38% elapsed</div>
+              <div class="cc-stats">
+                <div class="cs"><strong>GHS 51K</strong>Total spend</div>
+                <div class="cs"><strong>620K</strong>Impressions</div>
+                <div class="cs"><strong>2.1%</strong>Engagement</div>
+              </div>
+            </div>
+            <div class="camp-card">
+              <div class="cc-top">
+                <div><div class="cc-nm">Victoria Island LED Wall</div><div class="cc-lc">📍 VI, Lagos</div></div>
+                <div class="status-pill sp-gray">Completed</div>
+              </div>
+              <div class="cc-bar"><div class="cc-fill" style="width:100%;background:#9CA3AF"></div></div>
+              <div class="cc-dates">📅 Aug 1 – Sep 30, 2026 · Completed</div>
+              <div class="cc-stats">
+                <div class="cs"><strong>₦6.4M</strong>Total spend</div>
+                <div class="cs"><strong>5.2M</strong>Impressions</div>
+                <div class="cs"><strong>4.1%</strong>Engagement</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bnav">
+          <div class="bnav-i"><div class="bnav-ico">🏠</div><div class="bnav-lbl">Home</div></div>
+          <div class="bnav-i"><div class="bnav-ico">🔍</div><div class="bnav-lbl">Search</div></div>
+          <div class="bnav-i on"><div class="bnav-ico">📋</div><div class="bnav-lbl">Campaigns</div></div>
+          <div class="bnav-i"><div class="bnav-ico">📊</div><div class="bnav-lbl">Analytics</div></div>
+          <div class="bnav-i"><div class="bnav-ico">👤</div><div class="bnav-lbl">Profile</div></div>
+        </div>
+      </div>
+
+      <!-- ── S8: ANALYTICS ── -->
+      <div class="screen s-ana" id="sc-analytics">
+        <div class="hdr-grn"><h2>Analytics</h2><p>October 2026 · All campaigns</p></div>
+        <div class="scroll-body ana-body">
+          <div class="kpi-g">
+            <div class="kpi">
+              <div class="kpi-l">Total Spend</div>
+              <div class="kpi-v">₦9.6M</div>
+              <div class="kpi-ch up">↑ 23% vs last month</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-l">Impressions</div>
+              <div class="kpi-v">8.4M</div>
+              <div class="kpi-ch up">↑ 18% vs last month</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-l">Active Campaigns</div>
+              <div class="kpi-v">3</div>
+              <div class="kpi-ch up">↑ 1 new</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-l">Avg Engagement</div>
+              <div class="kpi-v">3.2%</div>
+              <div class="kpi-ch dn">↓ 0.4% vs last month</div>
+            </div>
+          </div>
+          <div class="chart-c">
+            <h4>Monthly Spend (₦ million)</h4>
+            <div class="bar-ch">
+              <div class="bg-c"><div class="bbar" style="height:42%"></div><div class="blbl">May</div></div>
+              <div class="bg-c"><div class="bbar" style="height:55%"></div><div class="blbl">Jun</div></div>
+              <div class="bg-c"><div class="bbar" style="height:48%"></div><div class="blbl">Jul</div></div>
+              <div class="bg-c"><div class="bbar" style="height:70%"></div><div class="blbl">Aug</div></div>
+              <div class="bg-c"><div class="bbar" style="height:62%"></div><div class="blbl">Sep</div></div>
+              <div class="bg-c"><div class="bbar hl" style="height:100%"></div><div class="blbl">Oct</div></div>
+            </div>
+          </div>
+          <div class="chart-c">
+            <h4>Billboard Performance</h4>
+            <div class="occ-list">
+              <div class="occ-row">
+                <div class="occ-nm">Eko Bridge Mega LED</div>
+                <div class="occ-bar-bg"><div class="occ-bar-fill" style="width:88%"></div></div>
+                <div class="occ-pct">88%</div>
+              </div>
+              <div class="occ-row">
+                <div class="occ-nm">Accra Ring Road</div>
+                <div class="occ-bar-bg"><div class="occ-bar-fill" style="width:72%"></div></div>
+                <div class="occ-pct">72%</div>
+              </div>
+              <div class="occ-row">
+                <div class="occ-nm">Victoria Island LED</div>
+                <div class="occ-bar-bg"><div class="occ-bar-fill" style="width:100%"></div></div>
+                <div class="occ-pct">100%</div>
+              </div>
+            </div>
+          </div>
+          <div class="chart-c">
+            <h4>City-wise Spend</h4>
+            <div class="occ-list">
+              <div class="occ-row">
+                <div class="occ-nm">Lagos</div>
+                <div class="occ-bar-bg"><div class="occ-bar-fill" style="width:65%"></div></div>
+                <div class="occ-pct">₦6.2M</div>
+              </div>
+              <div class="occ-row">
+                <div class="occ-nm">Nairobi</div>
+                <div class="occ-bar-bg"><div class="occ-bar-fill" style="width:22%"></div></div>
+                <div class="occ-pct">₦2.1M</div>
+              </div>
+              <div class="occ-row">
+                <div class="occ-nm">Accra</div>
+                <div class="occ-bar-bg"><div class="occ-bar-fill" style="width:14%"></div></div>
+                <div class="occ-pct">₦1.3M</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bnav">
+          <div class="bnav-i"><div class="bnav-ico">🏠</div><div class="bnav-lbl">Home</div></div>
+          <div class="bnav-i"><div class="bnav-ico">🔍</div><div class="bnav-lbl">Search</div></div>
+          <div class="bnav-i"><div class="bnav-ico">📋</div><div class="bnav-lbl">Campaigns</div></div>
+          <div class="bnav-i on"><div class="bnav-ico">📊</div><div class="bnav-lbl">Analytics</div></div>
+          <div class="bnav-i"><div class="bnav-ico">👤</div><div class="bnav-lbl">Profile</div></div>
+        </div>
+      </div>
+
+      <!-- ── S9: NOTIFICATIONS ── -->
+      <div class="screen s-notif" id="sc-notifs">
+        <div class="hdr-grn notif-hdr">
+          <h2>Notifications</h2>
+          <span class="mr">Mark all read</span>
+        </div>
+        <div class="scroll-body notif-list">
+          <div class="ni unrd">
+            <div class="ni-ico ico-pay">💰</div>
+            <div class="ni-txt">
+              <div class="ni-t">Payment confirmed</div>
+              <div class="ni-b">₦1,512,000 charged for Eko Bridge Mega LED (Nov 16–23). Invoice sent to your email.</div>
+              <div class="ni-tm">2 min ago</div>
+            </div>
+            <div class="unrd-dot"></div>
+          </div>
+          <div class="ni unrd">
+            <div class="ni-ico ico-book">📋</div>
+            <div class="ni-txt">
+              <div class="ni-t">Booking request received</div>
+              <div class="ni-b">Your request for Nairobi CBD Rooftop is awaiting owner approval. You'll hear back in 24 hrs.</div>
+              <div class="ni-tm">1 hr ago</div>
+            </div>
+            <div class="unrd-dot"></div>
+          </div>
+          <div class="ni">
+            <div class="ni-ico ico-info">📈</div>
+            <div class="ni-txt">
+              <div class="ni-t">Campaign milestone</div>
+              <div class="ni-b">Eko Bridge Mega LED has reached 2 million impressions! 🎉</div>
+              <div class="ni-tm">3 hrs ago</div>
+            </div>
+          </div>
+          <div class="ni">
+            <div class="ni-ico ico-alert">⚠️</div>
+            <div class="ni-txt">
+              <div class="ni-t">Artwork upload required</div>
+              <div class="ni-b">Please upload your creative for Accra Ring Road before Oct 18 to avoid delays.</div>
+              <div class="ni-tm">Yesterday</div>
+            </div>
+          </div>
+          <div class="ni">
+            <div class="ni-ico ico-info">🔔</div>
+            <div class="ni-txt">
+              <div class="ni-t">Booking reminder</div>
+              <div class="ni-b">Your Accra Ring Road campaign starts in 3 days. Artwork is approved ✓</div>
+              <div class="ni-tm">2 days ago</div>
+            </div>
+          </div>
+          <div class="ni">
+            <div class="ni-ico ico-pay">🧾</div>
+            <div class="ni-txt">
+              <div class="ni-t">Invoice #VB-2026-0089</div>
+              <div class="ni-b">GST invoice issued for GHS 51,000. Download from My Campaigns.</div>
+              <div class="ni-tm">Oct 10, 2026</div>
+            </div>
+          </div>
+        </div>
+        <div class="bnav">
+          <div class="bnav-i"><div class="bnav-ico">🏠</div><div class="bnav-lbl">Home</div></div>
+          <div class="bnav-i"><div class="bnav-ico">🔍</div><div class="bnav-lbl">Search</div></div>
+          <div class="bnav-i"><div class="bnav-ico">📋</div><div class="bnav-lbl">Campaigns</div></div>
+          <div class="bnav-i"><div class="bnav-ico">📊</div><div class="bnav-lbl">Analytics</div></div>
+          <div class="bnav-i"><div class="bnav-ico">👤</div><div class="bnav-lbl">Profile</div></div>
+        </div>
+      </div>
+
+      <!-- ── S10: PROFILE ── -->
+      <div class="screen s-prof" id="sc-profile">
+        <div class="prof-hdr">
+          <div class="avatar">👤</div>
+          <div class="prof-nm">Kuna Ade</div>
+          <div class="prof-role">Advertiser · SKAAH IT Solutions</div>
+          <div class="prof-stats">
+            <div class="ps"><div class="ps-v">7</div><div class="ps-l">Campaigns</div></div>
+            <div class="ps"><div class="ps-v">₦19M</div><div class="ps-l">Total Spend</div></div>
+            <div class="ps"><div class="ps-v">4.8★</div><div class="ps-l">Rating</div></div>
+          </div>
+        </div>
+        <div class="scroll-body prof-body">
+          <div class="prof-sec-t">Account</div>
+          <div class="pmenu">
+            <div class="pmi"><div class="pmi-ico">👤</div><div class="pmi-txt">Personal Information</div><div class="pmi-arr">›</div></div>
+            <div class="pmi"><div class="pmi-ico">🏢</div><div class="pmi-txt">Company Profile</div><div class="pmi-arr">›</div></div>
+            <div class="pmi"><div class="pmi-ico">💳</div><div class="pmi-txt">Payment Methods</div><div class="pmi-arr">›</div></div>
+            <div class="pmi"><div class="pmi-ico">🧾</div><div class="pmi-txt">Invoices &amp; Billing</div><div class="pmi-arr">›</div></div>
+          </div>
+          <div class="prof-sec-t">Preferences</div>
+          <div class="pmenu">
+            <div class="pmi"><div class="pmi-ico">🔔</div><div class="pmi-txt">Notifications</div><span class="pmi-badge">2</span><div class="pmi-arr">›</div></div>
+            <div class="pmi"><div class="pmi-ico">🔐</div><div class="pmi-txt">Security &amp; MFA</div><div class="pmi-arr">›</div></div>
+            <div class="pmi"><div class="pmi-ico">🌍</div><div class="pmi-txt">Language &amp; Currency</div><div class="pmi-arr">›</div></div>
+          </div>
+          <div class="prof-sec-t">Support</div>
+          <div class="pmenu">
+            <div class="pmi"><div class="pmi-ico">💬</div><div class="pmi-txt">Help &amp; Support</div><div class="pmi-arr">›</div></div>
+            <div class="pmi"><div class="pmi-ico">📄</div><div class="pmi-txt">Terms &amp; Privacy</div><div class="pmi-arr">›</div></div>
+            <div class="pmi logout"><div class="pmi-ico">🚪</div><div class="pmi-txt">Sign Out</div></div>
+          </div>
+        </div>
+        <div class="bnav">
+          <div class="bnav-i"><div class="bnav-ico">🏠</div><div class="bnav-lbl">Home</div></div>
+          <div class="bnav-i"><div class="bnav-ico">🔍</div><div class="bnav-lbl">Search</div></div>
+          <div class="bnav-i"><div class="bnav-ico">📋</div><div class="bnav-lbl">Campaigns</div></div>
+          <div class="bnav-i"><div class="bnav-ico">📊</div><div class="bnav-lbl">Analytics</div></div>
+          <div class="bnav-i on"><div class="bnav-ico">👤</div><div class="bnav-lbl">Profile</div></div>
+        </div>
+      </div>
+
+      <!-- ── S11: OWNER DASHBOARD ── -->
+      <div class="screen s-owner" id="sc-owner">
+        <div class="hdr-grn">
+          <div class="owner-header-row" style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div><h2>Owner Dashboard</h2><p>3 billboards · Oct 2026</p></div>
+            <div style="background:rgba(255,255,255,.2);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:1rem;position:relative;">
+              🔔
+              <div style="position:absolute;top:-2px;right:-2px;background:#DC2626;color:#fff;border-radius:50%;width:16px;height:16px;font-size:.6rem;font-weight:800;display:flex;align-items:center;justify-content:center;">3</div>
+            </div>
+          </div>
+        </div>
+        <div class="scroll-body" style="padding:14px;">
+          <div class="earn-card">
+            <div class="earn-l">Total Earnings · October</div>
+            <div class="earn-v">₦4,820,000</div>
+            <div class="earn-row">
+              <div><div class="earn-sub-l">After commission</div><div class="earn-sub-v">₦4,580,000</div></div>
+              <div><div class="earn-sub-l">Pending settlement</div><div class="earn-sub-v">₦1,200,000</div></div>
+            </div>
+          </div>
+          <div class="pend-alert">
+            <span style="font-size:1.2rem;">⏳</span>
+            <p><strong>2 booking requests</strong> awaiting your approval</p>
+            <button class="pend-btn">Review</button>
+          </div>
+          <div style="font-weight:800;font-size:.9rem;margin-bottom:10px;">My Billboards</div>
+          <div class="bb-own-list">
+            <div class="bbown">
+              <div class="bb-th">🪧</div>
+              <div class="bbown-inf">
+                <div class="bbown-nm">Eko Bridge Mega LED</div>
+                <div class="bbown-lc">📍 Lagos Island</div>
+                <div class="bbown-r">
+                  <div class="occ-occ">Occupancy <strong>88%</strong></div>
+                  <div class="status-pill sp-green">Available</div>
+                </div>
+              </div>
+            </div>
+            <div class="bbown">
+              <div class="bb-th" style="background:linear-gradient(135deg,#1E5799,#207AC5);">🏙️</div>
+              <div class="bbown-inf">
+                <div class="bbown-nm">Victoria Island Rooftop</div>
+                <div class="bbown-lc">📍 Victoria Island, Lagos</div>
+                <div class="bbown-r">
+                  <div class="occ-occ">Occupancy <strong>100%</strong></div>
+                  <div class="status-pill sp-red">Booked Out</div>
+                </div>
+              </div>
+            </div>
+            <div class="bbown">
+              <div class="bb-th" style="background:linear-gradient(135deg,#6B21A8,#9333EA);">🌃</div>
+              <div class="bbown-inf">
+                <div class="bbown-nm">Accra Airport Road</div>
+                <div class="bbown-lc">📍 Airport City, Accra</div>
+                <div class="bbown-r">
+                  <div class="occ-occ">Occupancy <strong>42%</strong></div>
+                  <div class="status-pill sp-yellow">Partial</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <button class="btn-out">+ Add New Billboard</button>
+          </div>
+        </div>
+        <div class="bnav">
+          <div class="bnav-i on"><div class="bnav-ico">🏠</div><div class="bnav-lbl">Dashboard</div></div>
+          <div class="bnav-i"><div class="bnav-ico">🪧</div><div class="bnav-lbl">Billboards</div></div>
+          <div class="bnav-i"><div class="bnav-ico">📅</div><div class="bnav-lbl">Bookings</div></div>
+          <div class="bnav-i"><div class="bnav-ico">💰</div><div class="bnav-lbl">Earnings</div></div>
+          <div class="bnav-i"><div class="bnav-ico">👤</div><div class="bnav-lbl">Profile</div></div>
+        </div>
+      </div>
+
+    </div><!-- /screen-port -->
+  </div><!-- /phone -->
+</div><!-- /phone-wrap -->
+
+<div class="pg-dots" id="pg-dots"></div>
+
+<script>
+const advScreens = [
+  {id:'sc-splash', label:'Splash'},
+  {id:'sc-login',  label:'Login'},
+  {id:'sc-home',   label:'Browse'},
+  {id:'sc-detail', label:'Billboard Detail'},
+  {id:'sc-booking',label:'Booking'},
+  {id:'sc-payment',label:'Payment'},
+  {id:'sc-campaigns',label:'Campaigns'},
+  {id:'sc-analytics',label:'Analytics'},
+  {id:'sc-notifs', label:'Notifications'},
+  {id:'sc-profile',label:'Profile'},
+];
+const ownScreens = [
+  {id:'sc-login',  label:'Login'},
+  {id:'sc-owner',  label:'Owner Dashboard'},
+  {id:'sc-notifs', label:'Notifications'},
+  {id:'sc-profile',label:'Profile'},
+];
+
+let role = 'adv';
+let screens = advScreens;
+let active = 0;
+
+// All screen ids
+const allIds = ['sc-splash','sc-login','sc-home','sc-detail','sc-booking',
+                'sc-payment','sc-campaigns','sc-analytics','sc-notifs','sc-profile','sc-owner'];
+
+// Status bar bg synced to screen
+const sbarBg = {
+  'sc-splash':'transparent',
+  'sc-login':'#1B7A3E',
+  'sc-home':'#1B7A3E',
+  'sc-detail':'transparent',
+  'sc-booking':'#1B7A3E',
+  'sc-payment':'#ffffff',
+  'sc-campaigns':'#1B7A3E',
+  'sc-analytics':'#1B7A3E',
+  'sc-notifs':'#1B7A3E',
+  'sc-profile':'#1B7A3E',
+  'sc-owner':'#145E30',
+};
+const sbarCol = {
+  'sc-payment':'#1A1A1A',
+};
+
+function showScreen(idx){
+  active = Math.max(0, Math.min(idx, screens.length-1));
+  const sid = screens[active].id;
+
+  // Hide all
+  allIds.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){ el.classList.remove('on'); }
+  });
+
+  // Show target
+  const el = document.getElementById(sid);
+  if(el) el.classList.add('on');
+
+  // Status bar
+  const sbar = document.getElementById('sbar');
+  const bg = sbarBg[sid] || '#1B7A3E';
+  if(sid === 'sc-splash'){
+    sbar.style.display = 'none';
+  } else {
+    sbar.style.display = 'flex';
+    sbar.style.background = bg;
+    sbar.style.color = sbarCol[sid] || '#fff';
+    const timeEl = sbar.querySelector('.sbar-time');
+    if(timeEl) timeEl.style.color = sbarCol[sid] || '#fff';
+  }
+
+  // Update nav buttons
+  document.querySelectorAll('.scr-btn').forEach((b,i)=>{
+    b.classList.toggle('on', i===active);
+  });
+
+  // Update dots
+  document.querySelectorAll('.pd').forEach((d,i)=>{
+    d.classList.toggle('on', i===active);
+  });
+}
+
+function buildNav(){
+  const nav = document.getElementById('scr-nav');
+  const dots = document.getElementById('pg-dots');
+  nav.innerHTML=''; dots.innerHTML='';
+  screens.forEach((s,i)=>{
+    const b = document.createElement('button');
+    b.className='scr-btn'+(i===active?' on':'');
+    b.textContent=s.label;
+    b.onclick=()=>showScreen(i);
+    nav.appendChild(b);
+    const d = document.createElement('div');
+    d.className='pd'+(i===active?' on':'');
+    dots.appendChild(d);
+  });
+}
+
+function setRole(r, el){
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  role = r;
+  screens = r==='adv' ? advScreens : ownScreens;
+  active = 0;
+  buildNav();
+  showScreen(0);
+}
+
+// Init
+buildNav();
+showScreen(0);
+
+// Keyboard nav
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight') showScreen(active+1);
+  if(e.key==='ArrowLeft')  showScreen(active-1);
+});
+
+// Touch / swipe
+let tx=0;
+const port = document.getElementById('screen-port');
+port.addEventListener('touchstart',e=>{ tx=e.touches[0].clientX; },{passive:true});
+port.addEventListener('touchend',e=>{
+  const dx = e.changedTouches[0].clientX - tx;
+  if(Math.abs(dx)>50){ showScreen(active+(dx<0?1:-1)); }
+},{passive:true});
+</script>
+
+</body></html>

@@ -1,0 +1,24 @@
+{
+  "recommendations": [
+    // TypeScript & React
+    "ms-vscode.vscode-typescript-next",
+    "dsznajder.es7-react-js-snippets",
+    // Tailwind CSS
+    "bradlc.vscode-tailwindcss",
+    // Formatting & Linting
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    // Editor quality-of-life
+    "streetsidesoftware.code-spell-checker",
+    "eamodio.gitlens",
+    "PKief.material-icon-theme",
+    // Next.js
+    "foxundermoon.next-js",
+    // REST API testing
+    "rangav.vscode-thunder-client",
+    // Environment files
+    "mikestead.dotenv",
+    // Path autocomplete
+    "christian-kohler.path-intellisense"
+  ]
+}
